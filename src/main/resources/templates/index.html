@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank of Hamilton</title>
+</head>
+<body>
+    <h1>Welcome to Hamilton Bank</h1>
+    <div>
+        <p>Today is <span th:text="${today}"/> </p>
+        <form th:action="@{/register}">
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>
