@@ -15,32 +15,9 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/")
+    @RequestMapping(value = { "/home", "/" })
     public String showStartPage(Model model) {
         model.addAttribute("today", new Date().toString());
         return "index";
-    }
-
-    /*@RequestMapping("/login")
-    public String showLoginPage(Model model) {
-        return "login";
-    }*/
-
-    @RequestMapping("/index")
-    public String showIndexPage(Model model) {
-        return "index";
-    }
-
-    @GetMapping(path="/register")
-    public String registerPage(Model model) {
-        model.addAttribute("user", new Customer());
-        return "register";
-    }
-
-    @PostMapping(path = "/register")
-    public String registerUser(Model model, @ModelAttribute Customer user) {
-        Customer persistedUser = userService.createUser(user);
-        model.addAttribute("user", persistedUser);
-        return "result";
     }
 }

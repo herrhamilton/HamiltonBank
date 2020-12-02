@@ -7,7 +7,7 @@
 </head>
 
 <body>
-<form th:action="@{/register}" th:object="${user}" method="post">
+<form th:action="@{/registration}" th:object="${user}" method="post">
     <div class="form-group">
         <label for="firstName">Vorname</label>
         <input th:field="*{firstName}" type="text" class="form-control" id="firstName">
@@ -25,6 +25,9 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<form th:action="@{/home}" method="post">
+    <button type="submit">zurück</button>
 </form>
 </body>
 
