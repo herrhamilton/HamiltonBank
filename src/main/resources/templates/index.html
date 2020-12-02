@@ -1,16 +1,86 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <title>Bank of Hamilton</title>
 </head>
-<body>
-    <h1>Welcome to Hamilton Bank</h1>
-    <div>
-        <p>Today is <span th:text="${today}"/> </p>
-        <form th:action="@{/register}">
-            <button type="submit">Register</button>
-        </form>
+<body style="padding-top: 80px">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">Hamilton Bank</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Vorteile<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Über uns</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Nachhaltigkeit</a>
+            </li>
+            <li>
+                <a class="btn" th:href="@{/registration}" role="button">Registrieren</a>
+            </li>
+            <li>
+                <a class="btn" th:href="@{/login}" role="button">Login</a>
+            </li>
+
+        </ul>
     </div>
+</nav>
+
+
+<!-- TODO FIX CAROUSEL-->
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="https://i.ibb.co/wKswHT6/pexels-jonathan-borba-2917382.jpg" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="https://i.ibb.co/wKswHT6/pexels-jonathan-borba-2917382.jpg" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="https://i.ibb.co/wKswHT6/pexels-jonathan-borba-2917382.jpg" class="d-block w-100" alt="...">
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Beste Bank in SW</h5>
+                <p class="card-text">Da wir voll geil sind, isses die Bank auch.</p>
+                <a href="#" class="btn btn-primary">Du glaubst uns nicht?</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Reich sein war noch nie so einfach</h5>
+                <p class="card-text">In Geldnot? Lade jetzt kostenlos mehr Guthaben auf dein Konto.</p>
+                <a href="#" class="btn btn-primary">Gleich durchstarten</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Zahlungen managen</h5>
+                <p class="card-text">Du willst deinen Nutzern Geld abknöpfen, weißt aber nicht wie?</p>
+                <a href="#" class="btn btn-primary">Finde es heraus</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
