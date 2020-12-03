@@ -1,10 +1,14 @@
 package de.othr.sw.hamilton.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 
 @Entity
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 
     @Id @GeneratedValue
     private Long id;
@@ -42,10 +46,6 @@ public class User implements Serializable {
         else
             return id.hashCode();
     }
-
-
-
-
 
     public String getFirstName() {
         return firstName;
@@ -85,5 +85,40 @@ public class User implements Serializable {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }
