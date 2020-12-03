@@ -9,13 +9,8 @@
 <body>
 <form th:action="@{/registration}" th:object="${user}" method="post">
     <div class="form-group">
-        <label for="firstName">Vorname</label>
-        <input th:field="*{firstName}" type="text" class="form-control" id="firstName">
-    </div>
-
-    <div class="form-group">
-        <label for="lastName">Nachname</label>
-        <input th:field="*{lastName}" type="text" class="form-control" id="lastName">
+        <label for="email">E-Mail</label>
+        <input th:field="*{email}" type="text" class="form-control" id="email">
     </div>
 
     <div class="form-group">
@@ -24,6 +19,21 @@
         <small id="pwHelp" class="form-text text-muted">Dein Passwort wird selbstverständlich im Klartext gespeichert.</small>
     </div>
 
+    <h2>Persönliche Daten</h2>
+    <div class="form-group">
+        <label for="firstName">Vorname</label>
+        <input th:field="*{firstName}" type="text" class="form-control" id="firstName">
+        <label for="lastName">Nachname</label>
+        <input th:field="*{lastName}" type="text" class="form-control" id="lastName">
+        <label for="street">Straße</label>
+        <input th:field="*{address.street}" type="text" class="form-control" id="street">
+        <label for="houseNr">Hausnummer</label>
+        <input th:field="*{address.houseNr}" type="text" class="form-control" id="houseNr">
+        <label for="postalCode">Postleitzahl</label>
+        <input th:field="*{address.postalCode}" type="text" class="form-control" id="postalCode">
+        <label for="city">Stadt</label>
+        <input th:field="*{address.city}" type="text" class="form-control" id="city">
+    </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 <form th:action="@{/home}" method="post">
