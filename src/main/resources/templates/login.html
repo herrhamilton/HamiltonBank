@@ -7,22 +7,17 @@
 </head>
 
 <body>
-<form th:action="@{/login}"  method="post">
+<form th:action="@{/login-submit}"  method="post">
     <div class="form-group">
         <label for="email">Email</label>
         <input type="text" class="form-control" id="email" name="username">
     </div>
-
     <div class="form-group">
         <label for="password">Passwort</label>
         <input type="password" class="form-control" id="password" name="password">
     </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Einloggen</button>
 </form>
-<form th:action="@{/home}" method="post">
-    <button type="submit">zurück</button>
-</form>
+<a class="btn" th:href="@{/index}" role="button">Zurück</a>
 </body>
-
 </html>

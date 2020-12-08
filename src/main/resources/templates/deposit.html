@@ -6,7 +6,7 @@
     <title>Geld einzahlen</title>
 </head>
 <body>
-<form th:action="@{/deposit}" th:object="${user}" method="post">
+<form th:action="@{/deposit}" method="post">
     <div class="form-group">
         <label for="amount">Betrag</label>
         <input th:name="amount" type="text" class="form-control" id="amount">

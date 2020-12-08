@@ -1,5 +1,8 @@
 package de.othr.sw.hamilton.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -11,8 +14,12 @@ public class BankAccount implements Serializable {
     private Long id;
 
     @OneToOne(mappedBy="bankAccount") //TODO: Was zu beachten bei Änderungen?
+    //TODO getter unmodifiable wegen Foreign Key oder nur bei Lists?
+    @Setter
     private Customer owner;
 
+    @Getter
+    @Setter
     private BigDecimal balance;
 
     public BankAccount() {
@@ -34,30 +41,5 @@ public class BankAccount implements Serializable {
             return 0;
         else
             return id.hashCode();
-    }
-
-    public Long getBankAccountId() {
-        return id;
-    }
-
-    public void setBankAccountId(Long bankAccountId) {
-        this.id = bankAccountId;
-    }
-
-    public Customer getOwner() {
-        // TODO: Unmodifiable?
-        return owner;
-    }
-
-    public void setOwner(Customer owner) {
-        this.owner = owner;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
     }
 }
