@@ -1,6 +1,8 @@
 package de.othr.sw.hamilton.entity;
 
 import com.sun.istack.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,10 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Date;
 
-@Entity
+@Entity @Getter @NoArgsConstructor
 public class Transaction implements Serializable {
 
     @Id
@@ -34,8 +35,6 @@ public class Transaction implements Serializable {
     @NotNull
     private BankAccount toAccount;
 
-    public Transaction() {}
-
     public Transaction(int amount, String description, BankAccount to, BankAccount from) {
         this(amount, description, to);
         this.fromAccount = from;
@@ -47,29 +46,5 @@ public class Transaction implements Serializable {
         this.description = description;
         this.toAccount = to;
         this.date = new Date();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public BankAccount getFromAccount() {
-        return fromAccount;
-    }
-
-    public BankAccount getToAccount() {
-        return toAccount;
     }
 }

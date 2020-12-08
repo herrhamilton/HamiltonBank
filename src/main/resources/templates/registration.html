@@ -7,7 +7,7 @@
 </head>
 
 <body>
-<form th:action="@{/registration}" th:object="${user}" method="post">
+<form th:action="@{/registration-submit}" th:object="${user}" method="post">
     <div class="form-group">
         <label for="email">E-Mail</label>
         <input th:field="*{email}" type="text" class="form-control" id="email">
@@ -16,7 +16,7 @@
     <div class="form-group">
         <label for="password">Passwort</label>
         <input th:field="*{passwordHash}" type="password" class="form-control" id="password" aria-describedby="pwHelp">
-        <small id="pwHelp" class="form-text text-muted">Dein Passwort wird selbstverständlich im Klartext gespeichert.</small>
+        <small id="pwHelp" class="form-text text-muted">Dein Passwort wird selbstverständlich nicht immer im Klartext gespeichert.</small>
     </div>
 
     <h2>Persönliche Daten</h2>

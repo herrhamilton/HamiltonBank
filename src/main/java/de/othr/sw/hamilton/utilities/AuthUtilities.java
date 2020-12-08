@@ -1,6 +1,5 @@
-package de.othr.sw.hamilton;
+package de.othr.sw.hamilton.utilities;
 
-import ch.qos.logback.core.pattern.color.BoldCyanCompositeConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -8,8 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.security.SecureRandom;
 
 @Configuration
-public class MeineSecurityUtilities {
-    private static String salt ="salt lol";
+public class AuthUtilities {
+    private static final String salt ="salt lol";
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
