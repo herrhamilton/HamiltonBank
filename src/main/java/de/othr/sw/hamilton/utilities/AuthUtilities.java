@@ -8,7 +8,11 @@ import java.security.SecureRandom;
 
 @Configuration
 public class AuthUtilities {
-    private static final String salt ="salt lol";
+
+    //@Value("{#environment.USER_PASSWORD_SALT}")
+    //@Value("${application-config.user-password-salt}")
+    //TODO move salt outside code when working
+    private static final String salt ="saltlol";
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {

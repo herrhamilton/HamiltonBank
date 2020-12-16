@@ -42,4 +42,12 @@ public class BankAccount implements Serializable {
         else
             return id.hashCode();
     }
+
+    public void withdraw(BigDecimal amount) {
+        this.balance = this.balance.subtract(amount);
+    }
+
+    public void deposit(BigDecimal amount) {
+        this.balance = this.balance.add(amount);
+    }
 }

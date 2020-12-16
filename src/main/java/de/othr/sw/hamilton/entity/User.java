@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 
-@Entity @Getter @NoArgsConstructor
+@Entity @Getter @Setter @NoArgsConstructor
 public class User implements Serializable, UserDetails {
 
     @Id @GeneratedValue
@@ -20,9 +20,9 @@ public class User implements Serializable, UserDetails {
 
     private String lastName;
 
+    //TODO why email and not just username?
     private String email;
 
-    @Setter
     private String passwordHash;
 
     @Embedded
@@ -66,21 +66,21 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
