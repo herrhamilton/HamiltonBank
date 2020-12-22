@@ -4,9 +4,7 @@ import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.service.TransactionService;
 import de.othr.sw.hamilton.service.UserService;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -27,8 +25,12 @@ public class TransactionController {
     }
 
     @RequestMapping(path = "/deposit-submit", method = RequestMethod.POST)
-    public String depositMoney(@RequestParam(value = "amount") int amount,
-                               @AuthenticationPrincipal Customer customer) {
+    public String depositMoney(@RequestParam(value = "amount") int amount) {
+        //TODO Requestparam zu Model doer so ändern?
+        Customer customer = (Customer) userService.getCurrentUser();
+        // TODO Input Verification, negative Werte einzahlen
+        // BigDecimal statt int?
+        //TODO Komponentendiagramm ändern wenn Message Queuing zum Bezahlen benutzt wird (hat nix mit deposit zu tun^^)
         Transaction t = new Transaction(amount, "Einzahlung", customer.getBankAccount());
         transactionService.executeTransaction(t);
         return "deposit";

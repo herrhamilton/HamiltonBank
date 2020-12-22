@@ -20,8 +20,7 @@ public class User implements Serializable, UserDetails {
 
     private String lastName;
 
-    //TODO why email and not just username?
-    private String email;
+    private String username;
 
     private String passwordHash;
 
@@ -56,12 +55,12 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public String getPassword() {
-        return getPasswordHash();
+        return passwordHash;
     }
 
     @Override
     public String getUsername() {
-        return getEmail();
+        return username;
     }
 
     @Override
