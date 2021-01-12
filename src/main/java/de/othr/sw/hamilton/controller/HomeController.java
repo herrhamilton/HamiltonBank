@@ -12,6 +12,7 @@ public class HomeController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
+    //TODO groß kleinschreibung oderm acht des spring?
     public String showLoginPage() {
         return "login";
     }
