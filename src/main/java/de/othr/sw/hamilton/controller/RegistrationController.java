@@ -31,7 +31,7 @@ public class RegistrationController {
     @RequestMapping(path = "/registration-submit", method = RequestMethod.POST)
     public String registerUser(@ModelAttribute Customer user) {
         userService.createUser(user);
-        return "index";
+        return "login";
     }
 
     @RequestMapping(path = "/overviewi", method = RequestMethod.GET)

@@ -37,17 +37,17 @@ public class Transaction implements Serializable {
     @NotNull
     private BankAccount toAccount;
 
-    //TODO WEG MIT DEM HACK!
+    //TODO WEG MIT DEM HACK! Ist da, weil man in nem input field nur primitive Datentypen nehmen kann (I guess?)
     private Long toAccId;
 
-    public Transaction(int amount, String description, BankAccount to, BankAccount from) {
+    public Transaction(BigDecimal amount, String description, BankAccount to, BankAccount from) {
         this(amount, description, to);
         this.fromAccount = from;
     }
 
     // constructor for Deposit money
-    public Transaction(int amount, String description, BankAccount to) {
-        this.amount = BigDecimal.valueOf(amount);
+    public Transaction(BigDecimal amount, String description, BankAccount to) {
+        this.amount = amount;
         this.description = description;
         this.toAccount = to;
         this.date = new Date();

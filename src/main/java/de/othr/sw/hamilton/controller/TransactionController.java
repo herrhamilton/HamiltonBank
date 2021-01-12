@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -42,9 +43,8 @@ public class TransactionController {
         //TODO Requestparam zu Model doer so ändern?
         Customer customer = (Customer) userService.getCurrentUser();
         // TODO Input Verification, negative Werte einzahlen
-        // BigDecimal statt int?
         //TODO Komponentendiagramm ändern wenn Message Queuing zum Bezahlen benutzt wird (hat nix mit deposit zu tun^^)
-        Transaction t = new Transaction(amount, "Einzahlung", customer.getBankAccount());
+        Transaction t = new Transaction(BigDecimal.valueOf(amount), "Einzahlung", customer.getBankAccount());
         transactionService.executeTransaction(t);
         return showOverview(model);
     }
@@ -62,7 +62,7 @@ public class TransactionController {
     public String showTransactionPage(Model model) {
         model.addAttribute("transaction", new Transaction());
         //TODO less hacky
-        model.addAttribute("toAccId", new String());
+        model.addAttribute("toAccId", "");
         return "transfer";
     }
 
@@ -70,6 +70,7 @@ public class TransactionController {
     public String transferMoney(@ModelAttribute Transaction transaction, Model model) {
         //TODO Requestparam zu Model doer so ändern?
         BankAccount from = ((Customer) userService.getCurrentUser()).getBankAccount();
+        //get without isPresent() -> try catch?
         BankAccount to = (bankAccountRepository.findById(transaction.getToAccId())).get();
         transaction.setFromAccount(from);
         transaction.setToAccount(to);
