@@ -3,6 +3,7 @@ package de.othr.sw.hamilton.entity;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Entity @Getter @NoArgsConstructor
+@Entity @Getter @Setter
+@NoArgsConstructor
 public class Transaction implements Serializable {
 
     @Id
@@ -35,16 +37,27 @@ public class Transaction implements Serializable {
     @NotNull
     private BankAccount toAccount;
 
+    //TODO WEG MIT DEM HACK!
+    private Long toAccId;
+
     public Transaction(int amount, String description, BankAccount to, BankAccount from) {
         this(amount, description, to);
         this.fromAccount = from;
     }
 
-    // Deposit money
+    // constructor for Deposit money
     public Transaction(int amount, String description, BankAccount to) {
         this.amount = BigDecimal.valueOf(amount);
         this.description = description;
         this.toAccount = to;
         this.date = new Date();
+    }
+
+    public Long getToAccId() {
+        return toAccId;
+    }
+
+    public void setToAccId(Long toAccId) {
+        this.toAccId = toAccId;
     }
 }
