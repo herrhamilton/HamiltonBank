@@ -10,7 +10,8 @@ import java.math.BigDecimal;
 @Entity
 public class BankAccount implements Serializable {
 
-    @Id @GeneratedValue //TODO: sequential?
+    @Id @GeneratedValue
+    @Getter//TODO: sequential?
     private Long id;
 
     @OneToOne(mappedBy="bankAccount") //TODO: Was zu beachten bei Änderungen?
