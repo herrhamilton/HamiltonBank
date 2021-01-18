@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.util.List;
 
 @Service
 public class TransactionService implements Serializable {
@@ -36,4 +37,7 @@ public class TransactionService implements Serializable {
     }
 
 
+    public List<Transaction> findTransactionsForBankAccount(BankAccount bankAccount) {
+        return transactionRepository.findByFromAccountOrToAccount(bankAccount, bankAccount);
+    }
 }

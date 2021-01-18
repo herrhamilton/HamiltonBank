@@ -1,5 +1,6 @@
 package de.othr.sw.hamilton.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +21,7 @@ public class Payment implements Serializable {
 
     @Id
     @GeneratedValue
-    //TODO separate id zum API Zugriff auf payments? Sicherer.
+    @JsonIgnore
     private Long id;
 
     // second id so PK is not exposed
@@ -44,7 +45,6 @@ public class Payment implements Serializable {
         this.amount = amount;
 
         //TODO moveinto constants file/config? change address
-        //TODO fix, hier steht null als id
         this.paymentUrl  = "localhost:8080/payment/" + this.paymentId;
     }
 }
