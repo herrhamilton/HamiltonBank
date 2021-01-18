@@ -32,13 +32,13 @@
 <div class="container">
     <div class="col-md-6 offset-md-3">
         <h2 th:text="'Hallo ' + ${user.firstName} + '!'"></h2>
-        <h1 th:text="${payment.receiver.firstName} + ${payment.receiver.lastName} + ' hat folgende Zahlung angefodert:'"></h1>
+        <h1 th:text="${payment.receiverName} + ' hat folgende Zahlung angefodert:'"></h1>
 
         <p th:text="${payment.description}"></p>
-        <p th:text="${payment.amount}"></p>
+        <p th:text="${payment.amount} + '€'"></p>
 
-        <form th:action="@{/home}" method="post">
-            <button type="submit">zurück</button>
+        <form th:action="@{/payment/{paymentId}/fulfill(paymentId = ${payment.paymentId})}" method="post">
+            <button type="submit">Geld senden</button>
         </form>
     </div>
 </div>

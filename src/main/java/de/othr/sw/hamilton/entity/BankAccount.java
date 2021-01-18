@@ -10,11 +10,12 @@ import java.math.BigDecimal;
 @Entity
 public class BankAccount implements Serializable {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Getter//TODO: sequential?
     private Long id;
 
-    @OneToOne(mappedBy="bankAccount") //TODO: Was zu beachten bei Änderungen?
+    @OneToOne(mappedBy = "bankAccount") //TODO: Was zu beachten bei Änderungen?
     //TODO getter unmodifiable wegen Foreign Key oder nur bei Lists?
     @Setter
     private Customer owner;
@@ -27,6 +28,13 @@ public class BankAccount implements Serializable {
         this.balance = BigDecimal.ZERO;
     }
 
+    public void withdraw(BigDecimal amount) {
+        this.balance = this.balance.subtract(amount);
+    }
+
+    public void deposit(BigDecimal amount) {
+        this.balance = this.balance.add(amount);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -38,17 +46,14 @@ public class BankAccount implements Serializable {
 
     @Override
     public int hashCode() {
-        if(id == null)
+        if (id == null)
             return 0;
         else
             return id.hashCode();
     }
 
-    public void withdraw(BigDecimal amount) {
-        this.balance = this.balance.subtract(amount);
-    }
-
-    public void deposit(BigDecimal amount) {
-        this.balance = this.balance.add(amount);
+    @Override
+    public String toString() {
+        return id + " - " + owner.getFirstName() + " " + owner.getLastName();
     }
 }

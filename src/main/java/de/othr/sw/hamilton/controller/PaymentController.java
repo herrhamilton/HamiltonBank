@@ -9,12 +9,10 @@ import de.othr.sw.hamilton.repository.TransactionRepository;
 import de.othr.sw.hamilton.repository.UserRepository;
 import de.othr.sw.hamilton.service.TransactionService;
 import de.othr.sw.hamilton.service.UserService;
+import javassist.NotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -44,8 +42,9 @@ public class PaymentController {
     }
 
     //@Operation(summary = "Get a new request where the specified customer asks for a specified amount")
-    @RequestMapping(path = "/request/{customerId}/{amount}", method = RequestMethod.GET)
-    public Payment createPayment(
+    @RequestMapping(path = "/payment/{customerId}/{amount}", method = RequestMethod.GET)
+    public @ResponseBody
+    Payment createPayment(
             //@Parameter(description = "account to send the money to")
             @PathVariable("customerId") Long customerId,
             @PathVariable("amount") int amount
@@ -57,10 +56,10 @@ public class PaymentController {
             Customer receiver = (Customer) (userRepository.findById(customerId)).get();
             //TODO security key and then get account from key? Check if you create request for your own account
             //TODO type/sanity check amount
-            Payment request = new Payment(receiver, BigDecimal.valueOf(amount));
-            request = paymentRepository.save(request);
+            Payment payment = new Payment(receiver.getUsername(), BigDecimal.valueOf(amount));
+            payment = paymentRepository.save(payment);
             // TODO create URL to
-            return request;
+            return payment;
         } catch (NoSuchElementException e) {
             //TODO send 404 or similar
             return null;
@@ -68,32 +67,39 @@ public class PaymentController {
     }
 
     @RequestMapping(path = "payment/{paymentId}")
-    public String getPayment(@PathVariable("paymentId") UUID paymentId, Model model) {
-        Payment payment = (Payment) paymentRepository.findByPaymentId(paymentId);
-        //TODO not found exception
+    public String getPayment(@PathVariable("paymentId") UUID paymentId, Model model) throws NotFoundException {
+        //TODO Exception Handling hier und überall
+        //TODO Unit Tests
+        //TODO ned so hässlich
+        Payment payment = paymentRepository.findOneByPaymentId(paymentId);
+        //TODO user not found exception
         Customer user = (Customer) userService.getCurrentUser();
         model.addAttribute("user", user);
         model.addAttribute("payment", payment);
         return "payment";
     }
 
-    @RequestMapping(path = "payment/{paymentId}/fulfill")
+    @RequestMapping(path = "payment/{paymentId}/fulfill", method = RequestMethod.POST)
     @Transactional
-    public String fulfillPayment(@PathVariable("paymentId") UUID paymentId, Model model,
-                                 @ModelAttribute Payment payment,
-                                 @ModelAttribute Customer user) {
+    public String fulfillPayment(@PathVariable("paymentId") UUID paymentId, Model model) {
+
+        Customer user = (Customer) userService.getCurrentUser();
 
         //TODO DRY! alles aus TransactionController
-        BankAccount to = payment.getReceiver().getBankAccount();
+        //TODO ned so ugly, check beim get()
+        Payment payment = paymentRepository.findOneByPaymentId(paymentId);
+        String receiverName = payment.getReceiverName();
+
+        BankAccount to = ((Customer) userRepository.findOneByUsername(receiverName)).getBankAccount();
         BankAccount from = user.getBankAccount();
 
         Transaction transaction = new Transaction(payment.getAmount(), payment.getDescription(), to, from);
 
         transactionService.executeTransaction(transaction);
 
+        payment.setSenderName(user.getUsername());
         payment.setFulfilled(true);
         paymentRepository.save(payment);
-
 
         //TODO move into method or sth
         List<Transaction> transactions = transactionRepository.findByFromAccountOrToAccount(user.getBankAccount(), user.getBankAccount());

@@ -4,48 +4,47 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
-@Getter //TODO id zum API Zugriff auf Request? DB Id iwie ned so geil. Wirklich alles Getter/Setter?
+@Getter //TODO Wirklich alles Getter/Setter?
 @Setter
 public class Payment implements Serializable {
 
     @Id
     @GeneratedValue
+    //TODO separate id zum API Zugriff auf payments? Sicherer.
     private Long id;
 
-    @OneToOne
-    private Customer receiver;
+    // second id so PK is not exposed
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID paymentId = UUID.randomUUID();
 
-    //TODO annotations anschauen! Bei Customer steht doch nix von Request? Richtig so?
-    @OneToOne
-    private Customer sender;
+    private String receiverName;
 
-    private BigDecimal amount;
-
-    private boolean isFulfilled = false;
-
-    private String fulfillUrl;
-
-    //TODO moveinto constants file/config? change address
-    private UUID paymentId;
-
-    private String paymentUrl;
+    private String senderName;
 
     private String description = "Ja ne Zahlung halt, was gibts da groß zu beschreiben?";
 
-    public Payment(Customer receiver, BigDecimal amount) {
-        this.receiver = receiver;
+    private BigDecimal amount;
 
-        this.paymentId = UUID.randomUUID();
+    private String paymentUrl;
+
+    private boolean isFulfilled = false;
+
+    public Payment(String username, BigDecimal amount) {
+        this.receiverName = username;
+        this.amount = amount;
+
+        //TODO moveinto constants file/config? change address
+        //TODO fix, hier steht null als id
         this.paymentUrl  = "localhost:8080/payment/" + this.paymentId;
     }
 }

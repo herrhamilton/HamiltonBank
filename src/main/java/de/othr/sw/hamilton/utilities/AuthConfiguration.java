@@ -24,7 +24,9 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
         return authUtilities.passwordEncoder();
     }
 
-    private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {"/index", "/", "/login", "/registration", "/registration-submit", "/images/**", "/css/**", "/img/**", "/fonts/**" };
+    //TODO remove payment, add sth like token wie Wobu
+    //private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {"/payment/**", "/index", "/", "/login", "/registration", "/registration-submit", "/images/**", "/css/**", "/img/**", "/fonts/**" };
+    private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {"/index", "/", "/login", "/registration", "/registration-submit", "/images/**", "/css/**", "/img/**", "/fonts/**"};
 
     public AuthConfiguration(UserDetailsService userService, AuthUtilities authUtilities) {
         this.userService = userService;

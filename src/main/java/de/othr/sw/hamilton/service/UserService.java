@@ -45,8 +45,10 @@ public class UserService implements Serializable, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(s).stream().findAny().orElseThrow(() -> new UsernameNotFoundException("User mit Email nicht gefunden: " + s));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        //TODO Remove
+        //User user = userRepository.findByUsername(s).stream().findAny().orElseThrow(() -> new UsernameNotFoundException("User mit Email nicht gefunden: " + s));
+        User user = userRepository.findOneByUsername(username);
         return user;
     }
 
