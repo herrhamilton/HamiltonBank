@@ -6,6 +6,7 @@ import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.service.PaymentService;
 import de.othr.sw.hamilton.service.TransactionService;
 import de.othr.sw.hamilton.service.UserService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-//TODO move /payment/ into "root" path
+//TODO move /payment/ into "root" path ? problem with /api
 public class PaymentController {
 
     private final UserService userService;
@@ -22,6 +23,16 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     private final TransactionService transactionService;
+
+    @ModelAttribute("currentCustomer")
+    Customer currentCustomer() {
+        return (Customer) userService.getCurrentUser();
+    }
+
+    @ModelAttribute("transactions")
+    List<Transaction> transactions() {
+        return transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount());
+    }
 
     public PaymentController(UserService userService, PaymentService paymentService, TransactionService transactionService) {
         this.userService = userService;
@@ -47,24 +58,16 @@ public class PaymentController {
         //TODO Exception Handling hier und überall
         //TODO Unit Tests
         Payment payment = paymentService.findPayment(paymentId);
-        Customer user = (Customer) userService.getCurrentUser();
-
-        model.addAttribute("user", user);
         model.addAttribute("payment", payment);
         return "payment";
     }
 
     @RequestMapping(path = "/payment/{paymentId}/fulfill", method = RequestMethod.POST)
     public String fulfillPaymentAndShowOverviewPage(@PathVariable("paymentId") UUID paymentId, Model model) {
-        Customer user = (Customer) userService.getCurrentUser();
         Payment payment = paymentService.findPayment(paymentId);
-
+        Customer user = currentCustomer();
         paymentService.fulfillPayment(payment, user);
 
-        //TODO move into method or sth
-        List<Transaction> transactions = transactionService.findTransactionsForBankAccount(user.getBankAccount());
-        model.addAttribute("user", user);
-        model.addAttribute("transactions", transactions);
         return "overview";
     }
 }

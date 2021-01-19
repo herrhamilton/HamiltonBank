@@ -8,30 +8,11 @@
 </head>
 <body class="bg-light" style="margin-top: 80px">
 
-<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">HAMILTON</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-link" th:href="@{/deposit}">Einzahlen</a>
-                <a class="nav-link" th:href="@{/transfer}">Überweisen</a>
-                <a class="nav-link" th:href="@{/statement}">Kontoauszug</a>
-            </div>
-            <div class="nav navbar-right">
-                <a class="btn btn-outline-primary navbar-right" th:href="@{/settings}" role="button">Einstellungen</a>
-                <a class="btn navbar-right" th:href="@{/logout}" role="button">Ausloggen</a>
-            </div>
-        </div>
-    </div>
-</nav>
+<div th:replace="fragments/header_authenticated :: header"></div>
 
 <div class="container">
     <div class="col-md-6 offset-md-3">
-        <h2 th:text="'Hallo ' + ${user.firstName} + '!'"></h2>
+        <h2 th:text="'Hallo ' + ${currentCustomer.firstName} + '!'"></h2>
         <div th:if="${payment.isFulfilled}">
             <p>Diese Zahlung wurde bereits beglichen. Bei Problemen wende dich bitte an den Dienst, welchen du nutzen möchtest. Vielen Dank!</p>
         </div>
