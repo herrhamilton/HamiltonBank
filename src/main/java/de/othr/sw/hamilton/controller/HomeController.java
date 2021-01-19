@@ -2,10 +2,12 @@ package de.othr.sw.hamilton.controller;
 
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
+import de.othr.sw.hamilton.service.DepotService;
 import de.othr.sw.hamilton.service.TransactionService;
 import de.othr.sw.hamilton.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,9 +20,12 @@ public class HomeController {
 
     private final TransactionService transactionService;
 
-    public HomeController(UserService userService, TransactionService transactionService) {
+    private final DepotService depotService;
+
+    public HomeController(UserService userService, TransactionService transactionService, DepotService depotService) {
         this.userService = userService;
         this.transactionService = transactionService;
+        this.depotService = depotService;
     }
 
     @ModelAttribute("currentCustomer")
@@ -30,7 +35,7 @@ public class HomeController {
 
     @ModelAttribute("transactions")
     List<Transaction> transactions() {
-        //TODO hacky again..
+        //TODO hacky again.. BEWARE: Wenn Transactions hinzugefügt werden, werden die ggf ned angezeigt weil Model vor Methode berechnet wird
         return currentCustomer() != null
                 ? transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount())
                 : new ArrayList<>();
@@ -46,5 +51,15 @@ public class HomeController {
     //TODO groß kleinschreibung oderm acht des spring?
     public String showLoginPage() {
         return "login";
+    }
+
+    //TODO make Controllers nicer
+    @RequestMapping(path="/depot")
+    public String showDepotPage(Model model) {
+        Customer user = (Customer) userService.getCurrentUser();
+        //TODO still hardcoded
+        model.addAttribute("taxreport", depotService.getTaxReport(2020));
+        model.addAttribute("portfolio", depotService.getPortfolio());
+        return "depot";
     }
 }
