@@ -1,6 +1,5 @@
 package de.othr.sw.hamilton.controller;
 
-import de.othr.sw.hamilton.entity.BankAccount;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.repository.BankAccountRepository;
@@ -12,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -20,17 +18,21 @@ public class TransactionController {
 
     private final TransactionService transactionService;
 
-    private final TransactionRepository transactionRepository;
-
     private final UserService userService;
 
-    private final BankAccountRepository bankAccountRepository;
+    @ModelAttribute("currentCustomer")
+    Customer currentCustomer() {
+        return (Customer) userService.getCurrentUser();
+    }
 
-    public TransactionController(TransactionService transactionService, TransactionRepository transactionRepository, UserService userService, BankAccountRepository bankAccountRepository) {
+    @ModelAttribute("transactions")
+    List<Transaction> transactions() {
+        return transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount());
+    }
+
+    public TransactionController(TransactionService transactionService, UserService userService) {
         this.transactionService = transactionService;
-        this.transactionRepository = transactionRepository;
         this.userService = userService;
-        this.bankAccountRepository = bankAccountRepository;
     }
 
     @RequestMapping(path = "/deposit", method = RequestMethod.GET)
@@ -49,12 +51,9 @@ public class TransactionController {
         return showOverview(model);
     }
 
+    //TODO in fact not needed anymore, but check if this will change the url path
     @RequestMapping(path = "/overview", method = RequestMethod.GET)
     public String showOverview(Model model) {
-        Customer user = (Customer)userService.getCurrentUser();
-        List<Transaction> transactions = transactionRepository.findByFromAccountOrToAccount(user.getBankAccount(), user.getBankAccount());
-        model.addAttribute("user", user);
-        model.addAttribute("transactions", transactions);
         return "overview";
     }
 
@@ -68,17 +67,7 @@ public class TransactionController {
 
     @RequestMapping(path = "/transfer-submit", method = RequestMethod.POST)
     public String transferMoney(@ModelAttribute Transaction transaction, Model model) {
-        //TODO Requestparam zu Model doer so ändern?
-        BankAccount from = ((Customer) userService.getCurrentUser()).getBankAccount();
-        //get without isPresent() -> try catch?
-        BankAccount to = (bankAccountRepository.findById(transaction.getToAccId())).get();
-        transaction.setFromAccount(from);
-        transaction.setToAccount(to);
-        transaction.setDate(new Date());
-        // TODO Input Verification, negative Werte einzahlen
-        // BigDecimal statt int?
-        //TODO Komponentendiagramm ändern wenn Message Queuing zum Bezahlen benutzt wird (hat nix mit deposit zu tun^^)
-        transactionService.executeTransaction(transaction);
+        transactionService.transferMoney(transaction);
         return showOverview(model);
     }
 }
