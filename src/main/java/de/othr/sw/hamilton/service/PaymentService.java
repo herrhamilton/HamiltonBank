@@ -9,7 +9,6 @@ import de.othr.sw.hamilton.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
@@ -27,12 +26,9 @@ public class PaymentService {
         this.transactionService = transactionService;
     }
 
-    public Payment createPayment(String username, int amount) {
-        //TODO error handling bei falschem username/amount
-        //TODO add description to payment - move payment creation from path into body?
-        Customer receiver = (Customer) userRepository.findOneByUsername(username);
+    public Payment createPayment(Payment requested) {
         //TODO type/sanity check amount of payments, transactions,...
-        Payment payment = new Payment(receiver.getUsername(), BigDecimal.valueOf(amount));
+        Payment payment = new Payment(requested.getReceiverName(), requested.getAmount(), requested.getDescription());
         payment = paymentRepository.save(payment);
         return payment;
     }
@@ -58,7 +54,7 @@ public class PaymentService {
     }
 
     public Payment findPayment(UUID paymentId) {
-        Payment payment = paymentRepository.findOneByPaymentId(paymentId);
-        return payment;
+        //TODO exception if not existing
+        return paymentRepository.findOneByPaymentId(paymentId);
     }
 }

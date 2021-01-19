@@ -29,20 +29,21 @@ public class PaymentController {
         this.transactionService = transactionService;
     }
 
-    //@Operation(summary = "Get a new request where the specified customer asks for a specified amount")
-    @RequestMapping(path = "/payment/create/{username}/{amount}", method = RequestMethod.GET)
-    public @ResponseBody
-    Payment createPayment(
-            //@Parameter(description = "account to send the money to")
-            @PathVariable("username") String username,
-            @PathVariable("amount") int amount
-            //@RequestHeader(value = AUTH_SECRET_API_KEY_HEADER, required = true) String secretKey) {
-    ) {
-        return paymentService.createPayment(username, amount);
+    @RequestMapping(path = "/api/payment/create", method = RequestMethod.POST)
+    @ResponseBody
+    public Payment createPayment(@RequestBody Payment payment) {
+        return paymentService.createPayment(payment);
     }
 
-    @RequestMapping(path = "payment/{paymentId}")
-    public String showPayment(@PathVariable("paymentId") UUID paymentId, Model model) {
+    @RequestMapping(path = "/api/payment/check/{paymentId}")
+    @ResponseBody
+    public Payment checkPayment(@PathVariable("paymentId") UUID paymentId) {
+        //TODO maybe auth, sodass nicht jeder alle Payments checken kann?
+        return paymentService.findPayment(paymentId);
+    }
+
+    @RequestMapping(path = "/payment/{paymentId}")
+    public String showPaymentPage(@PathVariable("paymentId") UUID paymentId, Model model) {
         //TODO Exception Handling hier und überall
         //TODO Unit Tests
         Payment payment = paymentService.findPayment(paymentId);
@@ -51,17 +52,12 @@ public class PaymentController {
         model.addAttribute("user", user);
         model.addAttribute("payment", payment);
         return "payment";
-
     }
 
-    @RequestMapping(path = "payment/{paymentId}/fulfill", method = RequestMethod.POST)
-    public String fulfillPayment(@PathVariable("paymentId") UUID paymentId, Model model) {
+    @RequestMapping(path = "/payment/{paymentId}/fulfill", method = RequestMethod.POST)
+    public String fulfillPaymentAndShowOverviewPage(@PathVariable("paymentId") UUID paymentId, Model model) {
         Customer user = (Customer) userService.getCurrentUser();
         Payment payment = paymentService.findPayment(paymentId);
-
-        if (payment.isFulfilled()) {
-            //TODO return errorpage, payment already fulfilled
-        }
 
         paymentService.fulfillPayment(payment, user);
 
@@ -71,6 +67,4 @@ public class PaymentController {
         model.addAttribute("transactions", transactions);
         return "overview";
     }
-
-    //TODO API Endpoint to check if request is fulfilled
 }

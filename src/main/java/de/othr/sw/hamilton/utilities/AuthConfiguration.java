@@ -25,7 +25,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     //TODO remove payment, add sth like token wie Wobu?
-    private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {"/payment/create/**", "/index", "/", "/login", "/registration", "/registration-submit", "/images/**", "/css/**", "/img/**", "/fonts/**"};
+    private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {"/api/**", "/index", "/", "/login", "/registration", "/registration-submit", "/images/**", "/css/**", "/img/**", "/fonts/**"};
 
     public AuthConfiguration(UserDetailsService userService, AuthUtilities authUtilities) {
         this.userService = userService;
@@ -50,6 +50,8 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .and()
                     .rememberMe();
+        //TODO test and remove this after deployment
+        http.csrf().disable();
     }
 
     @Autowired
