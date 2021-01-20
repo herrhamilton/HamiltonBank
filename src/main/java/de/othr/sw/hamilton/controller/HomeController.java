@@ -62,4 +62,17 @@ public class HomeController {
         model.addAttribute("portfolio", depotService.getPortfolio());
         return "depot";
     }
+
+    @RequestMapping(path="/settings")
+    public String showSettingsPage(Model model) {
+        return "settings";
+    }
+
+    @RequestMapping(path="/settings", method = RequestMethod.POST)
+    public String submitSettingsPage(@ModelAttribute Customer customer) {
+        //TODO show toast or sth to make update visible
+        userService.updateCustomer(customer);
+        return "settings";
+    }
+
 }

@@ -8,11 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 @Entity @NoArgsConstructor
+@Getter @Setter
 public class Customer extends User {
 
     @OneToOne //TODO was macht das?(cascade = {CascadeType.ALL})
-    @Getter
-    @Setter
     private BankAccount bankAccount;
 
     //TODO settings page where user can put in api key

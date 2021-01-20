@@ -57,4 +57,17 @@ public class UserService implements Serializable, UserDetailsService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return loadUserByUsername(username);
     }
+
+    public Customer updateCustomer(Customer updated) {
+        //TODO fix des ganze Chustomer/User rumgeschmuh
+        Customer customer = (Customer) loadUserByUsername(updated.getUsername());
+        //TODO unit test : password (noch) und username, bankAccount, id NICHT ändern
+        // TODO gehts auch iwie schöner?
+        customer.setFirstName(updated.getFirstName());
+        customer.setLastName(updated.getLastName());
+        customer.setStonksApiKey(updated.getStonksApiKey());
+        customer.setAddress(updated.getAddress());
+
+        return userRepository.save(customer);
+    }
 }
