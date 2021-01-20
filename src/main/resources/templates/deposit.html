@@ -10,7 +10,7 @@
 
 <div th:replace="fragments/header_authenticated :: header"></div>
 
-<form th:action="@{/deposit-submit}" method="post">
+<form th:action="@{/deposit}" method="post">
     <div class="form-group">
         <label for="amount">Betrag</label>
         <input th:name="amount" type="text" class="form-control" id="amount">

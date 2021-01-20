@@ -14,13 +14,16 @@ import java.util.UUID;
 @Service
 public class PaymentService {
 
+    private final UserService userService;
+
     private final UserRepository userRepository;
 
     private final PaymentRepository paymentRepository;
 
     private final TransactionService transactionService;
 
-    public PaymentService(UserRepository userRepository, PaymentRepository paymentRepository, TransactionService transactionService) {
+    public PaymentService(UserService userService, UserRepository userRepository, PaymentRepository paymentRepository, TransactionService transactionService) {
+        this.userService = userService;
         this.userRepository = userRepository;
         this.paymentRepository = paymentRepository;
         this.transactionService = transactionService;
@@ -34,18 +37,19 @@ public class PaymentService {
     }
 
     @Transactional
-    public void fulfillPayment(Payment payment, Customer user) {
+    public void fulfillPayment(Payment payment) {
 
         try {
+            Customer sender = (Customer) userService.getCurrentUser();
             String receiverName = payment.getReceiverName();
             Customer receiver = (Customer) userRepository.findOneByUsername(receiverName);
             BankAccount to = receiver.getBankAccount();
-            BankAccount from = user.getBankAccount();
+            BankAccount from = sender.getBankAccount();
 
             Transaction transaction = new Transaction(payment.getAmount(), payment.getDescription(), to, from);
             transactionService.executeTransaction(transaction);
 
-            payment.setSenderName(user.getUsername());
+            payment.setSenderName(sender.getUsername());
             payment.setFulfilled(true);
             paymentRepository.save(payment);
         } catch (Exception e) {

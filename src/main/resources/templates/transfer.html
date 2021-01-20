@@ -10,7 +10,7 @@
 
 <div th:replace="fragments/header_authenticated :: header"></div>
 
-<form th:action="@{/transfer-submit}" th:object="${transaction}" method="post">
+<form th:action="@{/transfer}" th:object="${transaction}" method="post">
     <div class="form-group">
         <label for="receiver">Empfänger</label>
         <input th:field="*{toAccId}" type="text" class="form-control" id="receiver">

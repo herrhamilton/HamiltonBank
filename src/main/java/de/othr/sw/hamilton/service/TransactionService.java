@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class TransactionService implements Serializable {
     }
 
     @Transactional
-    public boolean executeTransaction(Transaction transaction) {
+    public void executeTransaction(Transaction transaction) {
         if(transaction.getFromAccount() != null) {
             BankAccount fromAccount = transaction.getFromAccount();
             fromAccount.withdraw(transaction.getAmount());
@@ -38,7 +39,6 @@ public class TransactionService implements Serializable {
         toAccount.deposit(transaction.getAmount());
         bankAccountRepository.save(toAccount);
         transactionRepository.save(transaction);
-        return true;
     }
 
 
@@ -46,16 +46,23 @@ public class TransactionService implements Serializable {
         return transactionRepository.findByFromAccountOrToAccount(bankAccount, bankAccount);
     }
 
-    public void transferMoney(Transaction transaction) {
+    public void sendTransaction(Transaction transaction) {
         BankAccount from = ((Customer) userService.getCurrentUser()).getBankAccount();
-        //get without isPresent() -> try catch?
+        //TODO change transaction to username instead of id
         BankAccount to = (bankAccountRepository.findById(transaction.getToAccId())).get();
         transaction.setFromAccount(from);
         transaction.setToAccount(to);
         transaction.setDate(new Date());
         // TODO Input Verification, negative Werte einzahlen
         // BigDecimal statt int?
-        //TODO Komponentendiagramm ändern wenn Message Queuing zum Bezahlen benutzt wird (hat nix mit deposit zu tun^^)
         executeTransaction(transaction);
+    }
+
+    public void depositMoney(int amount) {
+        Customer customer = (Customer) userService.getCurrentUser();
+        //TODO Komponentendiagramm ändern wenn Message Queuing zum Bezahlen benutzt wird (hat nix mit deposit zu tun^^)
+        Transaction t = new Transaction(BigDecimal.valueOf(amount), "Einzahlung", customer.getBankAccount());
+
+        executeTransaction(t);
     }
 }

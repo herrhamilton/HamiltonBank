@@ -1,32 +1,21 @@
 package de.othr.sw.hamilton.controller;
 
-import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Payment;
-import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.service.PaymentService;
-import de.othr.sw.hamilton.service.TransactionService;
-import de.othr.sw.hamilton.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Controller
 //TODO move /payment/ into "root" path ? problem with /api
 public class PaymentController {
 
-    private final UserService userService;
-
     private final PaymentService paymentService;
 
-    private final TransactionService transactionService;
-
-    public PaymentController(UserService userService, PaymentService paymentService, TransactionService transactionService) {
-        this.userService = userService;
+    public PaymentController(PaymentService paymentService) {
         this.paymentService = paymentService;
-        this.transactionService = transactionService;
     }
 
     @RequestMapping(path = "/api/payment/create", method = RequestMethod.POST)
@@ -54,12 +43,8 @@ public class PaymentController {
     @RequestMapping(path = "/payment/{paymentId}/fulfill", method = RequestMethod.POST)
     public String fulfillPaymentAndShowOverviewPage(@PathVariable("paymentId") UUID paymentId, Model model) {
         Payment payment = paymentService.findPayment(paymentId);
-        Customer customer = (Customer) userService.getCurrentUser();
-        paymentService.fulfillPayment(payment, customer);
+        paymentService.fulfillPayment(payment);
 
-        List<Transaction> transactions = transactionService.findTransactionsForBankAccount(customer.getBankAccount());
-        model.addAttribute("currentCustomer", customer);
-        model.addAttribute("transactions", transactions);
-        return "overview";
+        return "redirect:overview";
     }
 }
