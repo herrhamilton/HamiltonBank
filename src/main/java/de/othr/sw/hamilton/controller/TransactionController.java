@@ -19,7 +19,7 @@ public class TransactionController {
 
     @ModelAttribute("currentCustomer")
     Customer currentCustomer() {
-        return (Customer) userService.getCurrentUser();
+        return  userService.getCurrentCustomer();
     }
 
     @ModelAttribute("transactions")

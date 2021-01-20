@@ -3,6 +3,7 @@ package de.othr.sw.hamilton.service;
 import de.othr.sw.hamilton.entity.Customer;
 import dev.wobu.stonks.entity.Portfolio;
 import dev.wobu.stonks.entity.TaxReport;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,7 @@ public class DepotService {
 
     //TODO update to WebClient?
     public Portfolio getPortfolio() {
-        //TODO getCurrentUser maybe zu Customer?
-        Customer customer = (Customer) userService.getCurrentUser();
+        Customer customer =  userService.getCurrentCustomer();
         String apiKey = customer.getStonksApiKey();
         //TODO alle URLs in application.properties auslagern
         RequestEntity<Void> requestEntity = RequestEntity.get("http://im-codd.oth-regensburg.de:8933/api/v1/portfolio")
@@ -44,7 +44,7 @@ public class DepotService {
     public TaxReport getTaxReport(int year) {
 
         //TODO DRY mit oben
-        Customer customer = (Customer) userService.getCurrentUser();
+        Customer customer =  userService.getCurrentCustomer();
         String apiKey = customer.getStonksApiKey();
 
         Map<String, String> params = new HashMap<>();

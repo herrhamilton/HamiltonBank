@@ -48,7 +48,7 @@ public class User implements Serializable, UserDetails {
             return id.hashCode();
     }
 
-    @Override //TODO authorities
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }

@@ -12,11 +12,10 @@ public class BankAccount implements Serializable {
 
     @Id
     @GeneratedValue
-    @Getter//TODO: sequential?
+    @Getter
     private Long id;
 
-    @OneToOne(mappedBy = "bankAccount") //TODO: Was zu beachten bei Änderungen?
-    //TODO getter unmodifiable wegen Foreign Key oder nur bei Lists?
+    @OneToOne(mappedBy = "bankAccount")
     @Setter
     private Customer owner;
 

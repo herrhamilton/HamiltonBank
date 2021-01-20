@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @Controller
-//TODO move /payment/ into "root" path ? problem with /api
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -27,7 +26,7 @@ public class PaymentController {
     @RequestMapping(path = "/api/payment/check/{paymentId}", method = RequestMethod.GET)
     @ResponseBody
     public Payment checkPayment(@PathVariable("paymentId") UUID paymentId) {
-        //TODO maybe auth, sodass nicht jeder alle Payments checken kann?
+        //TODO auth, sodass nicht jeder alle Payments checken kann
         return paymentService.findPayment(paymentId);
     }
 

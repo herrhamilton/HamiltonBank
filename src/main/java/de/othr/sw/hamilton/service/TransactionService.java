@@ -47,7 +47,7 @@ public class TransactionService implements Serializable {
     }
 
     public void sendTransaction(Transaction transaction) {
-        BankAccount from = ((Customer) userService.getCurrentUser()).getBankAccount();
+        BankAccount from = userService.getCurrentCustomer().getBankAccount();
         //TODO change transaction to username instead of id
         BankAccount to = (bankAccountRepository.findById(transaction.getToAccId())).get();
         transaction.setFromAccount(from);
@@ -59,7 +59,7 @@ public class TransactionService implements Serializable {
     }
 
     public void depositMoney(int amount) {
-        Customer customer = (Customer) userService.getCurrentUser();
+        Customer customer = userService.getCurrentCustomer();
         //TODO Komponentendiagramm ändern wenn Message Queuing zum Bezahlen benutzt wird (hat nix mit deposit zu tun^^)
         Transaction t = new Transaction(BigDecimal.valueOf(amount), "Einzahlung", customer.getBankAccount());
 

@@ -40,7 +40,7 @@ public class PaymentService {
     public void fulfillPayment(Payment payment) {
 
         try {
-            Customer sender = (Customer) userService.getCurrentUser();
+            Customer sender =  userService.getCurrentCustomer();
             String receiverName = payment.getReceiverName();
             Customer receiver = (Customer) userRepository.findOneByUsername(receiverName);
             BankAccount to = receiver.getBankAccount();

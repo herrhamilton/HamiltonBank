@@ -11,11 +11,9 @@ import javax.persistence.OneToOne;
 @Getter @Setter
 public class Customer extends User {
 
-    @OneToOne //TODO was macht das?(cascade = {CascadeType.ALL})
+    @OneToOne
     private BankAccount bankAccount;
 
     //API Keys werden der Einfachheit halber einfach auf der Seite angezeigt, Security hat hier niedrige Priorität
     private String stonksApiKey;
-
-    //TODO: private Consulting consultingCall;
 }

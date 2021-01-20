@@ -30,7 +30,7 @@ public class OverviewController {
 
     @ModelAttribute("currentCustomer")
     Customer currentCustomer() {
-        return (Customer) userService.getCurrentUser();
+        return  userService.getCurrentCustomer();
     }
 
     @RequestMapping(path = "/overview", method = RequestMethod.GET)
