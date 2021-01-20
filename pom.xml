@@ -77,23 +77,25 @@
             <artifactId>json-path</artifactId>
         </dependency>
         <dependency>
-            <groupId>dev.wobu.stonks</groupId >
+            <groupId>dev.wobu.stonks</groupId>
             <artifactId>stonks-entity</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
-        <!-- TODO SWAGGER https://springdoc.org/
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.5.2</version>
         </dependency>
-        <dependenc>
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-security</artifactId>
             <version>1.5.2</version>
-        </dependenc>
-    -->
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-data-rest</artifactId>
+            <version>1.5.2</version>
+        </dependency>
     </dependencies>
 
     <build>

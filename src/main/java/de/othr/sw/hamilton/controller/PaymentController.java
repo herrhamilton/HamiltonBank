@@ -6,7 +6,6 @@ import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.service.PaymentService;
 import de.othr.sw.hamilton.service.TransactionService;
 import de.othr.sw.hamilton.service.UserService;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,16 +23,6 @@ public class PaymentController {
 
     private final TransactionService transactionService;
 
-    @ModelAttribute("currentCustomer")
-    Customer currentCustomer() {
-        return (Customer) userService.getCurrentUser();
-    }
-
-    @ModelAttribute("transactions")
-    List<Transaction> transactions() {
-        return transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount());
-    }
-
     public PaymentController(UserService userService, PaymentService paymentService, TransactionService transactionService) {
         this.userService = userService;
         this.paymentService = paymentService;
@@ -46,7 +35,7 @@ public class PaymentController {
         return paymentService.createPayment(payment);
     }
 
-    @RequestMapping(path = "/api/payment/check/{paymentId}")
+    @RequestMapping(path = "/api/payment/check/{paymentId}", method = RequestMethod.GET)
     @ResponseBody
     public Payment checkPayment(@PathVariable("paymentId") UUID paymentId) {
         //TODO maybe auth, sodass nicht jeder alle Payments checken kann?
@@ -65,9 +54,12 @@ public class PaymentController {
     @RequestMapping(path = "/payment/{paymentId}/fulfill", method = RequestMethod.POST)
     public String fulfillPaymentAndShowOverviewPage(@PathVariable("paymentId") UUID paymentId, Model model) {
         Payment payment = paymentService.findPayment(paymentId);
-        Customer user = currentCustomer();
-        paymentService.fulfillPayment(payment, user);
+        Customer customer = (Customer) userService.getCurrentUser();
+        paymentService.fulfillPayment(payment, customer);
 
+        List<Transaction> transactions = transactionService.findTransactionsForBankAccount(customer.getBankAccount());
+        model.addAttribute("currentCustomer", customer);
+        model.addAttribute("transactions", transactions);
         return "overview";
     }
 }

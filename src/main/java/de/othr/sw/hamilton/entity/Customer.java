@@ -14,7 +14,7 @@ public class Customer extends User {
     @OneToOne //TODO was macht das?(cascade = {CascadeType.ALL})
     private BankAccount bankAccount;
 
-    //TODO settings page where user can put in api key
+    //API Keys werden der Einfachheit halber einfach auf der Seite angezeigt, Security hat hier niedrige Priorität
     private String stonksApiKey;
 
     //TODO: private Consulting consultingCall;

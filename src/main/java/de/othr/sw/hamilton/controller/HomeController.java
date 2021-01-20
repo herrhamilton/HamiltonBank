@@ -48,7 +48,6 @@ public class HomeController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
-    //TODO groß kleinschreibung oderm acht des spring?
     public String showLoginPage() {
         return "login";
     }
@@ -57,8 +56,7 @@ public class HomeController {
     @RequestMapping(path="/depot")
     public String showDepotPage(Model model) {
         Customer user = (Customer) userService.getCurrentUser();
-        //TODO still hardcoded
-        model.addAttribute("taxreport", depotService.getTaxReport(2020));
+        model.addAttribute("taxreport", depotService.getLastYearsTaxReport());
         model.addAttribute("portfolio", depotService.getPortfolio());
         return "depot";
     }
@@ -70,9 +68,7 @@ public class HomeController {
 
     @RequestMapping(path="/settings", method = RequestMethod.POST)
     public String submitSettingsPage(@ModelAttribute Customer customer) {
-        //TODO show toast or sth to make update visible
         userService.updateCustomer(customer);
         return "settings";
     }
-
 }
