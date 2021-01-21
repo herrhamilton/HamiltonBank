@@ -22,10 +22,8 @@
     </div>
     <div th:unless="${consulting.reason == null}">
         <div th:if="${consulting.isAccepted}">
-            <form th:action="@{/consulting/join/{requestId}(requestId = ${consulting.consultingId})}" method="get">
                 <p>Ein Mitarbeiter erwartet Sie.</p>
-                <button type="submit">Gespräch beitreten</button>
-            </form>
+            <a th:href="@{${consulting.consultingUrl}}" th:target="_blank">Hier klicken.</a>
         </div>
         <div th:unless="${consulting.isAccepted}">
             <p>Bisher steht noch kein Berater zur Verfügung. Wir bitten um etwas Geduld.</p>

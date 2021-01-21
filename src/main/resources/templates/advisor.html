@@ -26,7 +26,9 @@
             <td th:text="${#calendars.format(request.requestTime,'HH:mm')} + ' Uhr'"></td>
             <td>
                 <form th:action="@{/consulting/accept/{requestId}(requestId = ${request.consultingId})}" method="get">
-                    <button type="submit">Annehmen</button>
+                    <a>
+                        <button type="submit">Annehmen</button>
+                    </a>
                 </form>
             </td>
         </tr>

@@ -1,9 +1,14 @@
 package de.othr.sw.hamilton.service;
 
+import de.majaf.voci.entity.Invitation;
 import de.othr.sw.hamilton.entity.Advisor;
 import de.othr.sw.hamilton.entity.Consulting;
 import de.othr.sw.hamilton.repository.ConsultingRepository;
+import dev.wobu.stonks.entity.Portfolio;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 import java.util.List;
@@ -16,9 +21,12 @@ public class ConsultingService {
 
     private final ConsultingRepository consultingRepository;
 
-    public ConsultingService(UserService userService, ConsultingRepository consultingRepository) {
+    private final RestTemplate restClient;
+
+    public ConsultingService(UserService userService, ConsultingRepository consultingRepository, RestTemplate restClient) {
         this.userService = userService;
         this.consultingRepository = consultingRepository;
+        this.restClient = restClient;
     }
 
     public Consulting createConsulting(Consulting consulting) {
@@ -46,16 +54,23 @@ public class ConsultingService {
                 : consulting;
     }
 
-    public void acceptConsulting(UUID consultingId) {
+    public Consulting acceptConsulting(UUID consultingId) {
         Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
+        Advisor advisor = (Advisor)userService.getCurrentUser();
         consulting.setAccepted(true);
-        consulting.setAdvisor((Advisor)userService.getCurrentUser());
+        consulting.setAdvisor(advisor);
         //set Voci call Url
         //new window with voci call
-    }
 
-    public String joinConsulting(UUID consultingId) {
-        //new voci window mit consulting call
-        return "consulting";
+        //TODO move to config or sth
+        String apiKey = "6d48a1d5-1a67-40af-8da1-9c365247ea1f";
+        Invitation inv = restClient.getForObject("http://im-codd.oth-regensburg.de:8945/api/startCall?securityToken=" + apiKey, Invitation.class);
+
+        consulting.setConsultingUrl("http://im-codd.oth-regensburg.de:8945/invitation?=" + inv.getAccessToken());
+        consulting = consultingRepository.save(consulting);
+        advisor.setRunningConsulting(consulting);
+        //TODO userService oder Repo?
+        userService.saveUser(advisor);
+        return consulting;
     }
 }
