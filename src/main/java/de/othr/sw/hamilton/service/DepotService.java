@@ -26,6 +26,7 @@ public class DepotService {
 
     public Portfolio getPortfolio() {
         Customer customer =  userService.getCurrentCustomer();
+        //TODO api key hitnerlegen check
         String apiKey = customer.getStonksApiKey();
         //TODO alle URLs in application.properties auslagern
         RequestEntity<Void> requestEntity = RequestEntity.get("http://im-codd.oth-regensburg.de:8933/api/v1/portfolio")

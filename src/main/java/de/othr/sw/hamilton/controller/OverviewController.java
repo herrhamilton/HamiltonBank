@@ -38,6 +38,7 @@ public class OverviewController {
         List<Transaction> transactions = transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount());
 
         model.addAttribute("transactions", transactions);
+        model.addAttribute("portfolio", depotService.getPortfolio());
         return "overview";
     }
 
