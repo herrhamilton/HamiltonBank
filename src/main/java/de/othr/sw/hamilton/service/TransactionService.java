@@ -3,6 +3,7 @@ package de.othr.sw.hamilton.service;
 import de.othr.sw.hamilton.entity.BankAccount;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
+import de.othr.sw.hamilton.entity.TransactionForm;
 import de.othr.sw.hamilton.repository.BankAccountRepository;
 import de.othr.sw.hamilton.repository.TransactionRepository;
 import de.othr.sw.hamilton.repository.UserRepository;
@@ -49,12 +50,12 @@ public class TransactionService implements Serializable {
         return transactionRepository.findByFromAccountOrToAccount(bankAccount, bankAccount);
     }
 
-    public void sendTransaction(BigDecimal amount, String description, String toUsername) {
-        Customer receiver = (Customer) userRepository.findOneByUsername(toUsername);
+    public void sendTransaction(TransactionForm transactionForm) {
+        Customer receiver = (Customer) userRepository.findOneByUsername(transactionForm.getToUsername());
         BankAccount to = receiver.getBankAccount();
         BankAccount from = userService.getCurrentCustomer().getBankAccount();
 
-        Transaction transaction = new Transaction(amount, description, to, from);
+        Transaction transaction = new Transaction(transactionForm.getAmount(), transactionForm.getDescription(), to, from);
         // TODO Input Verification, negative Werte einzahlen
         executeTransaction(transaction);
     }

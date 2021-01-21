@@ -10,16 +10,16 @@
 
 <div th:replace="fragments/header_authenticated :: header"></div>
 
-<form th:action="@{/transfer}" method="post">
+<form th:action="@{/transfer}" method="post" th:object="${transactionForm}">
     <div class="form-group">
         <label for="receiver">Nutzername des Empfängers</label>
-        <input th:field="${toUsername}" type="text" class="form-control" id="receiver">
+        <input th:field="*{toUsername}" type="text" class="form-control" id="receiver">
 
         <label for="description">Beschreibung</label>
-        <input th:field="${description}" type="text" class="form-control" id="description">
+        <input th:field="*{description}" type="text" class="form-control" id="description">
 
         <label for="amount">Betrag</label>
-        <input th:field="${amount}" type="number" class="form-control" id="amount">
+        <input th:field="*{amount}" type="number" class="form-control" id="amount">
     </div>
 
     <button type="submit" class="btn btn-primary">Überweisen</button>

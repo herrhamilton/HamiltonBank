@@ -29,8 +29,8 @@
             <th>Betrag</th>
         </tr>
         <tr th:each="t : ${transactions}">
-            <td th:text="${#calendars.format(t.date,'dd.MM.yyyy')}">13.01.2011</td>
-            <!-- TODO schöner-->
+            <td th:text="${#calendars.format(t.date,'dd.MM.yyyy')}"></td>
+            <!-- TODO fix dass zwei Spalten ausgegeben werden-->
             <td th:if="${t.fromAccount} == ${currentCustomer.bankAccount}" th:text="${t.toAccount}"></td>
             <td th:if="${t.toAccount} == ${currentCustomer.bankAccount}" th:text="${t.fromAccount}"></td>
 

@@ -2,6 +2,7 @@ package de.othr.sw.hamilton.controller;
 
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
+import de.othr.sw.hamilton.entity.TransactionForm;
 import de.othr.sw.hamilton.service.TransactionService;
 import de.othr.sw.hamilton.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -47,15 +48,14 @@ public class TransactionController {
 
     @RequestMapping(path = "/transfer", method = RequestMethod.GET)
     public String showTransactionPage(Model model) {
-        model.addAttribute("amount", new BigDecimal(0));
-        model.addAttribute("description", "");
-        model.addAttribute("toUsername", "");
+        model.addAttribute("transactionForm", new TransactionForm());
         return "transfer";
     }
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public String transferMoney(@ModelAttribute BigDecimal amount, @ModelAttribute String description, @ModelAttribute String toUsername ) {
-        transactionService.sendTransaction(amount, description, toUsername);
+    public String transferMoney(@ModelAttribute TransactionForm transactionForm ) {
+        //TODO test this and exception handling for input
+        transactionService.sendTransaction(transactionForm);
         return "redirect:overview";
     }
 }

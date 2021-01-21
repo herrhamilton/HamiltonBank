@@ -53,6 +53,6 @@ public class BankAccount implements Serializable {
 
     @Override
     public String toString() {
-        return id + " - " + owner.getFirstName() + " " + owner.getLastName();
+        return owner.getUsername();
     }
 }
