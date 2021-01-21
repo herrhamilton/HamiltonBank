@@ -22,7 +22,7 @@
                 <a class="nav-link" href="#sustainability">Nachhaltigkeit</a>
             </div>
             <div class="nav navbar-right">
-                <a class="btn btn-outline-primary navbar-right" th:href="@{/overview}" role="button">Mein Banking</a>
+                <a class="btn btn-outline-primary navbar-right" th:href="@{/login}" role="button">Mein Banking</a>
                 <a sec:authorize="isAnonymous()" class="btn navbar-right" th:href="@{/registration}" role="button">Registrieren</a>
                 <a sec:authorize="isAuthenticated()" class="btn navbar-right" th:href="@{/logout}" role="button">Logout</a>
             </div>

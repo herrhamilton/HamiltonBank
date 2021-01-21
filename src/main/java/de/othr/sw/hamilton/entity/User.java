@@ -1,5 +1,7 @@
 package de.othr.sw.hamilton.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,10 +12,15 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 
-@Entity @Getter @Setter @NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class User implements Serializable, UserDetails {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
+    @JsonIgnore
     private Long id;
 
     private String firstName;
@@ -22,10 +29,8 @@ public class User implements Serializable, UserDetails {
 
     private String username;
 
+    @JsonProperty("password")
     private String passwordHash;
-
-    @Embedded
-    private Address address;
 
     public User(String fname, String lname) {
         this.firstName = fname;
@@ -42,18 +47,20 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public int hashCode() {
-        if(id == null)
+        if (id == null)
             return 0;
         else
             return id.hashCode();
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return passwordHash;
     }
@@ -64,21 +71,25 @@ public class User implements Serializable, UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }

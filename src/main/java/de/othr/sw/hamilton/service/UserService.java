@@ -6,14 +6,12 @@ import de.othr.sw.hamilton.entity.User;
 import de.othr.sw.hamilton.repository.BankAccountRepository;
 import de.othr.sw.hamilton.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Service
 public class UserService implements Serializable, UserDetailsService {
@@ -30,28 +28,40 @@ public class UserService implements Serializable, UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Customer createUser(Customer customer) {
+    public User createUser(User user) {
         //TODO unique User
-        customer.setPasswordHash(passwordEncoder.encode(customer.getPassword()));
-        customer = userRepository.save(customer);
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        //TODO save hier um ne id zu bekommen.. Wirklich nötig?
+        user = userRepository.save(user);
         //TODO input validation wo?
-        BankAccount bankAccount = new BankAccount();
-        bankAccount.setOwner(customer);
-        bankAccount = bankAccountRepository.save(bankAccount);
 
-        customer.setBankAccount(bankAccount);
-        return userRepository.save(customer);
+        if(user instanceof Customer) {
+            Customer customer = (Customer) user;
+            BankAccount bankAccount = new BankAccount();
+            bankAccount.setOwner(customer);
+            bankAccount = bankAccountRepository.save(bankAccount);
+
+            customer.setBankAccount(bankAccount);
+            return userRepository.save(customer);
+        }
+
+        return user;
     }
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
+        //TODO moglichkeit dass ned jede Abfrage auf die DB geht? Oder isses ok mit diesem hibernate?
         return userRepository.findOneByUsername(username);
     }
 
-    public Customer getCurrentCustomer() {
+    public User getCurrentUser() {
         //TODO sicherstellen dass jemand eingeloggt ist?
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return (Customer) loadUserByUsername(username);
+        return loadUserByUsername(username);
+    }
+
+    public Customer getCurrentCustomer() {
+        return (Customer) getCurrentUser();
     }
 
     public Customer updateCustomer(Customer updated) {
