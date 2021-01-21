@@ -5,12 +5,12 @@ import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.repository.BankAccountRepository;
 import de.othr.sw.hamilton.repository.TransactionRepository;
+import de.othr.sw.hamilton.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,12 +18,15 @@ public class TransactionService implements Serializable {
 
     private final UserService userService;
 
+    private final UserRepository userRepository;
+
     private final TransactionRepository transactionRepository;
 
     private final BankAccountRepository bankAccountRepository;
 
-    public TransactionService(UserService userService, TransactionRepository transactionRepository, BankAccountRepository bankAccountRepository) {
+    public TransactionService(UserService userService, UserRepository userRepository, TransactionRepository transactionRepository, BankAccountRepository bankAccountRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
         this.transactionRepository = transactionRepository;
         this.bankAccountRepository = bankAccountRepository;
     }
@@ -46,15 +49,13 @@ public class TransactionService implements Serializable {
         return transactionRepository.findByFromAccountOrToAccount(bankAccount, bankAccount);
     }
 
-    public void sendTransaction(Transaction transaction) {
+    public void sendTransaction(BigDecimal amount, String description, String toUsername) {
+        Customer receiver = (Customer) userRepository.findOneByUsername(toUsername);
+        BankAccount to = receiver.getBankAccount();
         BankAccount from = userService.getCurrentCustomer().getBankAccount();
-        //TODO change transaction to username instead of id
-        BankAccount to = (bankAccountRepository.findById(transaction.getToAccId())).get();
-        transaction.setFromAccount(from);
-        transaction.setToAccount(to);
-        transaction.setDate(new Date());
+
+        Transaction transaction = new Transaction(amount, description, to, from);
         // TODO Input Verification, negative Werte einzahlen
-        // BigDecimal statt int?
         executeTransaction(transaction);
     }
 

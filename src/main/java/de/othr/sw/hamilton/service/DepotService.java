@@ -3,7 +3,6 @@ package de.othr.sw.hamilton.service;
 import de.othr.sw.hamilton.entity.Customer;
 import dev.wobu.stonks.entity.Portfolio;
 import dev.wobu.stonks.entity.TaxReport;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,8 +11,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.Year;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class DepotService {
@@ -27,7 +24,6 @@ public class DepotService {
         this.userService = userService;
     }
 
-    //TODO update to WebClient?
     public Portfolio getPortfolio() {
         Customer customer =  userService.getCurrentCustomer();
         String apiKey = customer.getStonksApiKey();
@@ -37,7 +33,6 @@ public class DepotService {
                 .build();
 
         ResponseEntity<Portfolio> responseEntity = restClient.exchange(requestEntity, Portfolio.class);
-        getTaxReport(2020);
         return responseEntity.getBody();
     }
 
@@ -47,9 +42,7 @@ public class DepotService {
         Customer customer =  userService.getCurrentCustomer();
         String apiKey = customer.getStonksApiKey();
 
-        Map<String, String> params = new HashMap<>();
-        //TODO alle URLs in application.properties auslagern
-        //TODO exception year parse?
+        //TODO exception falsches year Format?
         URI uri = UriComponentsBuilder.fromUriString("http://im-codd.oth-regensburg.de:8933/api/v1/taxreport/{year}").build(year);
 
         RequestEntity<Void> requestEntity = RequestEntity.get(uri)

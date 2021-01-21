@@ -35,7 +35,6 @@ public class UserService implements Serializable, UserDetailsService {
         customer.setPasswordHash(passwordEncoder.encode(customer.getPassword()));
         customer = userRepository.save(customer);
         //TODO input validation wo?
-        //TODO zwischen Customer und Advisor unterscheiden
         BankAccount bankAccount = new BankAccount();
         bankAccount.setOwner(customer);
         bankAccount = bankAccountRepository.save(bankAccount);

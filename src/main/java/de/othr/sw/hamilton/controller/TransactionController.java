@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -46,15 +47,15 @@ public class TransactionController {
 
     @RequestMapping(path = "/transfer", method = RequestMethod.GET)
     public String showTransactionPage(Model model) {
-        model.addAttribute("transaction", new Transaction());
-        //TODO less hacky - string, weil complex types ned gesetzt werden können
-        model.addAttribute("toAccId", "");
+        model.addAttribute("amount", new BigDecimal(0));
+        model.addAttribute("description", "");
+        model.addAttribute("toUsername", "");
         return "transfer";
     }
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public String transferMoney(@ModelAttribute Transaction transaction) {
-        transactionService.sendTransaction(transaction);
+    public String transferMoney(@ModelAttribute BigDecimal amount, @ModelAttribute String description, @ModelAttribute String toUsername ) {
+        transactionService.sendTransaction(amount, description, toUsername);
         return "redirect:overview";
     }
 }
