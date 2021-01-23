@@ -23,12 +23,6 @@ public class ConsultingController {
         this.consultingService = consultingService;
     }
 
-    @ModelAttribute
-    public boolean hasAcceptedConsulting() {
-        Advisor advisor = (Advisor)userService.getCurrentUser();
-        return advisor.runningConsulting() != null;
-    }
-
     @RequestMapping(path ="/consulting", method = RequestMethod.GET)
     public String showConsultingPage(Model model) {
         Consulting consulting = consultingService.getRequestForCurrentCustomer();
@@ -44,8 +38,14 @@ public class ConsultingController {
 
     @RequestMapping(path = "/advisor", method = RequestMethod.GET)
     public String showAdvisorPage(Model model) {
-        model.addAttribute("consultingRequests", consultingService.getOpenRequests());
-        return "advisor";
+        Advisor advisor = (Advisor)userService.getCurrentUser();
+        if(advisor.getRunningConsulting() != null) {
+            model.addAttribute("consulting", advisor.getRunningConsulting());
+            return "accepted";
+        } else {
+            model.addAttribute("consultingRequests", consultingService.getOpenRequests());
+            return "advisor";
+        }
     }
 
     @RequestMapping(path = "/api/advisor", method = RequestMethod.POST)
@@ -55,11 +55,16 @@ public class ConsultingController {
         return advisor;
     }
 
-    @RequestMapping(path = "/consulting/accept/{consultingId}", method = RequestMethod.GET)
-    public String acceptConsulting(@PathVariable("consultingId") UUID consultingId) {
+    @RequestMapping(path = "/consulting/accept/{consultingId}", method = RequestMethod.POST)
+    public String acceptConsulting(@PathVariable("consultingId") UUID consultingId, Model model) {
         Consulting consulting = consultingService.acceptConsulting(consultingId);
-        //TODO is das echt n GET?
-        //TODO auf voci weiterleiten
+        model.addAttribute("consulting", consulting);
+        return "accepted";
+    }
+
+    @RequestMapping(path = "/consulting/close/{consultingId}", method = RequestMethod.POST)
+    public String closeConsulting(@PathVariable("consultingId") UUID consultingId) {
+        consultingService.closeConsulting(consultingId);
         return "advisor";
     }
 }

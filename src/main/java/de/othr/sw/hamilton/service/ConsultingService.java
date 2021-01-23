@@ -4,7 +4,7 @@ import de.majaf.voci.entity.Invitation;
 import de.othr.sw.hamilton.entity.Advisor;
 import de.othr.sw.hamilton.entity.Consulting;
 import de.othr.sw.hamilton.repository.ConsultingRepository;
-import dev.wobu.stonks.entity.Portfolio;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -48,7 +48,7 @@ public class ConsultingService {
     }
 
     public Consulting getRequestForCurrentCustomer() {
-        Consulting consulting = consultingRepository.findOneByCustomer(userService.getCurrentCustomer());
+        Consulting consulting = consultingRepository.findOneByCustomerAndIsResolvedFalse(userService.getCurrentCustomer());
         return consulting == null
                 ? new Consulting()
                 : consulting;
@@ -63,14 +63,45 @@ public class ConsultingService {
         //new window with voci call
 
         //TODO move to config or sth
-        String apiKey = "6d48a1d5-1a67-40af-8da1-9c365247ea1f";
-        Invitation inv = restClient.getForObject("http://im-codd.oth-regensburg.de:8945/api/startCall?securityToken=" + apiKey, Invitation.class);
+        String apiKey = "93164040-684b-43b9-b64f-5a0e6c5d4a12";
 
-        consulting.setConsultingUrl("http://im-codd.oth-regensburg.de:8945/invitation?=" + inv.getAccessToken());
+        RequestEntity<Void> requestEntity = RequestEntity.post("http://im-codd.oth-regensburg.de:8945/api/startCall")
+                .header("securityToken", apiKey)
+                .build();
+        ResponseEntity<Invitation> responseEntity = restClient.exchange(requestEntity, Invitation.class);
+        Invitation invitation = responseEntity.getBody();
+        String accessToken = invitation.getAccessToken();
+        consulting.setConsultingUrl("http://im-codd.oth-regensburg.de:8945/invitation?=" + accessToken);
+        //TODO weg mit dem Schmuh
+        consulting.setAccessToken(accessToken);
+        consulting.setAdvisorUrl("http://im-codd.oth-regensburg.de:8945/call?=" + accessToken);
+        consulting.setAcceptTime(new Date());
         consulting = consultingRepository.save(consulting);
         advisor.setRunningConsulting(consulting);
         //TODO userService oder Repo?
         userService.saveUser(advisor);
         return consulting;
+    }
+
+    public void closeConsulting(UUID consultingId) {
+        Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
+        //TODO UTC
+        consulting.setEndTime(new Date());
+        consulting.setResolved(true);
+        //TODO Test jetz müssen alle Werte ausgefüllt sein?
+        consulting = consultingRepository.save(consulting);
+        Advisor advisor = consulting.getAdvisor();
+        //TODO schöner?
+        advisor.setRunningConsulting(null);
+        userService.saveUser(advisor);
+
+        String apiKey = "93164040-684b-43b9-b64f-5a0e6c5d4a12";
+        //TODO wieso kann ich die Params end anhängen?
+        String url = "http://im-codd.oth-regensburg.de:8945/api/endCall?accessToken=" + consulting.getAccessToken();
+        RequestEntity<Void> requestEntity = RequestEntity.delete(
+                url)
+                .header("securityToken", apiKey)
+                .build();
+        restClient.exchange(url, HttpMethod.DELETE, requestEntity, Void.class);
     }
 }

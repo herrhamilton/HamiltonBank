@@ -1,5 +1,6 @@
 package de.othr.sw.hamilton.service;
 
+import de.othr.sw.hamilton.entity.Advisor;
 import de.othr.sw.hamilton.entity.BankAccount;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.User;
@@ -75,5 +76,9 @@ public class UserService implements Serializable, UserDetailsService {
         customer.setAddress(updated.getAddress());
 
         return userRepository.save(customer);
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 }

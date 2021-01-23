@@ -26,9 +26,11 @@
             <a th:href="@{${consulting.consultingUrl}}" th:target="_blank">Hier klicken.</a>
         </div>
         <div th:unless="${consulting.isAccepted}">
+            <label for="reason">Grund für das Gespräch</label>
+            <input readonly th:field="${consulting.reason}" type="text" class="form-control" id="reason">
             <p>Bisher steht noch kein Berater zur Verfügung. Wir bitten um etwas Geduld.</p>
         </div>
     </div>
-</div>
+</div><!-- TODO add cancel button-->
 </body>
 </html>

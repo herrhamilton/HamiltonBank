@@ -21,11 +21,16 @@ public class Consulting implements Serializable  {
 
     private String reason;
 
-    private String outcome;
+    private String summary;
 
     private boolean isAccepted;
 
     private String consultingUrl;
+
+    //TODO cleanup klasse
+    private String advisorUrl;
+
+    private String accessToken;
 
     private boolean isResolved;
 
@@ -37,7 +42,7 @@ public class Consulting implements Serializable  {
 
     private Date requestTime;
 
-    private Date startTime;
+    private Date acceptTime;
 
     private Date endTime;
 }

@@ -20,12 +20,12 @@
             <th>Grund</th>
             <th>wartet seit</th>
         </tr>
-        <tr th:each="request : ${consultingRequests}">
-            <td th:text="${request.customer}"></td>
-            <td th:text="${request.reason}"></td>
-            <td th:text="${#calendars.format(request.requestTime,'HH:mm')} + ' Uhr'"></td>
+        <tr th:each="consulting : ${consultingRequests}">
+            <td th:text="${consulting.customer}"></td>
+            <td th:text="${consulting.reason}"></td>
+            <td th:text="${#calendars.format(consulting.requestTime,'HH:mm')} + ' Uhr'"></td>
             <td>
-                <form th:action="@{/consulting/accept/{requestId}(requestId = ${request.consultingId})}" method="get">
+                <form th:action="@{/consulting/accept/{consultingId}(consultingId = ${consulting.consultingId})}" method="post">
                     <a>
                         <button type="submit">Annehmen</button>
                     </a>
