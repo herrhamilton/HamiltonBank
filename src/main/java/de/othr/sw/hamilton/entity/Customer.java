@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import java.util.UUID;
 
 @Entity @NoArgsConstructor
 @Getter @Setter
@@ -20,4 +22,7 @@ public class Customer extends User {
 
     //API Keys werden der Einfachheit halber einfach auf der Seite angezeigt, Security hat hier niedrige Priorität
     private String stonksApiKey = "";
+
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID hamiltonApiKey = UUID.randomUUID();
 }

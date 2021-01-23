@@ -46,4 +46,9 @@ public class HomeController {
         userService.createUser(user);
         return "login";
     }
+
+    @RequestMapping(path="/swagger-ui")
+    public String showSwagger() {
+        return "redirect:/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/";
+    }
 }

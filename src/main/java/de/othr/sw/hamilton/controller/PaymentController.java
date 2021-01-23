@@ -4,6 +4,8 @@ import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Payment;
 import de.othr.sw.hamilton.service.PaymentService;
 import de.othr.sw.hamilton.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,15 +26,27 @@ public class PaymentController {
 
     @RequestMapping(path = "/api/payment/create", method = RequestMethod.POST)
     @ResponseBody
-    public Payment createPayment(@RequestBody Payment payment) {
-        return paymentService.createPayment(payment);
+    public ResponseEntity<?> createPayment(@RequestHeader("api-key") UUID apiKey, @RequestBody Payment payment) {
+        Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
+        //TODO check apikey not empty
+        if(!apiKey.equals(receiver.getHamiltonApiKey())) {
+            return new ResponseEntity<>("You are not authorized to create a Payment for this username.", HttpStatus.UNAUTHORIZED);
+        }
+        payment = paymentService.createPayment(payment);
+        return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/api/payment/check/{paymentId}", method = RequestMethod.GET)
     @ResponseBody
-    public Payment checkPayment(@PathVariable("paymentId") UUID paymentId) {
-        //TODO auth, sodass nicht jeder alle Payments checken kann
-        return paymentService.findPayment(paymentId);
+    public ResponseEntity<?> checkPayment(@RequestHeader("api-key") UUID apiKey, @PathVariable("paymentId") UUID paymentId) {
+        //TODO chekc payment exists
+        Payment payment = paymentService.findPayment(paymentId);
+        Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
+        //TODO check apikey not empty
+        if(!apiKey.equals(receiver.getHamiltonApiKey())) {
+            return new ResponseEntity<>("You are not authorized to access this Payment.", HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/payment/{paymentId}")

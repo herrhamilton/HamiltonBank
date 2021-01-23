@@ -15,13 +15,14 @@
     <div class="form-group">
         <label for="username">Nutzername</label>
         <input readonly th:field="*{username}" type="text" class="form-control" id="username">
+        <label for="api-key">API-Key zur Zahlungsanforderung</label>
+        <input readonly th:field="*{hamiltonApiKey}" type="text" class="form-control" id="api-key">
     </div>
 
     <div class="form-group">
-        <!--TODO pw ändern ?-->
     </div>
-    <label for="api-key">Stonks API Key</label>
-    <input  th:field="*{stonksApiKey}" type="text" class="form-control" id="api-key">
+    <label for="stonks-key">Stonks API Key</label>
+    <input  th:field="*{stonksApiKey}" type="text" class="form-control" id="stonks-key">
     <div class="form-group">
 
     </div>
