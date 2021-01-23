@@ -15,7 +15,7 @@ import java.util.Date;
 
 @Entity @Getter @Setter
 @NoArgsConstructor
-public class Transaction implements Serializable {
+public class Transaction implements Serializable, Comparable<Transaction> {
 
     @Id
     @GeneratedValue
@@ -48,5 +48,10 @@ public class Transaction implements Serializable {
         this.description = description;
         this.toAccount = to;
         this.date = new Date();
+    }
+
+    @Override
+    public int compareTo(Transaction o) {
+        return this.date.compareTo(o.getDate());
     }
 }

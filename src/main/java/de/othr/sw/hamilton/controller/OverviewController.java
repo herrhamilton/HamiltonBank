@@ -5,12 +5,18 @@ import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.service.DepotService;
 import de.othr.sw.hamilton.service.TransactionService;
 import de.othr.sw.hamilton.service.UserService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.awt.*;
 import java.util.List;
 
 @Controller
@@ -30,7 +36,7 @@ public class OverviewController {
 
     @ModelAttribute("currentCustomer")
     Customer currentCustomer() {
-        return  userService.getCurrentCustomer();
+        return userService.getCurrentCustomer();
     }
 
     @RequestMapping(path = "/overview", method = RequestMethod.GET)
@@ -42,7 +48,7 @@ public class OverviewController {
         return "overview";
     }
 
-    @RequestMapping(path="/depot")
+    @RequestMapping(path = "/depot")
     public String showDepotPage(Model model) {
         model.addAttribute("tax" +
                 "report", depotService.getLastYearsTaxReport());
@@ -50,14 +56,26 @@ public class OverviewController {
         return "depot";
     }
 
-    @RequestMapping(path="/settings")
+    @RequestMapping(path = "/settings")
     public String showSettingsPage() {
         return "settings";
     }
 
-    @RequestMapping(path="/settings", method = RequestMethod.POST)
+    @RequestMapping(path = "/settings", method = RequestMethod.POST)
     public String submitSettings(@ModelAttribute Customer customer) {
         userService.updateCustomer(customer);
         return "settings";
+    }
+
+    @RequestMapping(path = "/statement", method = RequestMethod.GET)
+
+    public ResponseEntity<String> getStatement(@ModelAttribute Customer customer) {
+
+        String csvData = transactionService.generateStatementCsv();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=statement.csv")
+                .contentType(MediaType.valueOf("text/csv"))
+                .contentLength(csvData.length())
+                .body(csvData);
     }
 }

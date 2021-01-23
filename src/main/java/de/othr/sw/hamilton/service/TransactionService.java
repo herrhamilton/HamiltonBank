@@ -1,5 +1,9 @@
 package de.othr.sw.hamilton.service;
 
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import de.othr.sw.hamilton.entity.BankAccount;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
@@ -10,8 +14,9 @@ import de.othr.sw.hamilton.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -47,7 +52,9 @@ public class TransactionService implements Serializable {
 
 
     public List<Transaction> findTransactionsForBankAccount(BankAccount bankAccount) {
-        return transactionRepository.findByFromAccountOrToAccount(bankAccount, bankAccount);
+        List<Transaction> transactions = transactionRepository.findByFromAccountOrToAccount(bankAccount, bankAccount);
+        transactions.sort(Collections.reverseOrder());
+        return transactions;
     }
 
     public void sendTransaction(TransactionForm transactionForm) {
@@ -67,4 +74,23 @@ public class TransactionService implements Serializable {
 
         executeTransaction(t);
     }
+
+    public String generateStatementCsv() {
+        //TODO change BankAccount to Customer
+        List<Transaction> transactions = findTransactionsForBankAccount(userService.getCurrentCustomer().getBankAccount());
+        String csvData = "";
+        try(CharArrayWriter writer = new CharArrayWriter()) {
+
+            StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer).build();
+            beanToCsv.write(transactions);
+            csvData = writer.toString();
+        } catch (CsvRequiredFieldEmptyException e) {
+            //TODO
+            e.printStackTrace();
+        } catch (CsvDataTypeMismatchException e) {
+            e.printStackTrace();
+        }
+        return csvData;
+    }
+
 }
