@@ -6,17 +6,14 @@ import de.othr.sw.hamilton.service.DepotService;
 import de.othr.sw.hamilton.service.TransactionService;
 import de.othr.sw.hamilton.service.UserService;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.awt.*;
 import java.util.List;
 
 @Controller
@@ -50,8 +47,8 @@ public class OverviewController {
 
     @RequestMapping(path = "/depot")
     public String showDepotPage(Model model) {
-        model.addAttribute("tax" +
-                "report", depotService.getLastYearsTaxReport());
+        // TODO remove
+        // model.addAttribute("taxreport", depotService.getLastYearsTaxReport());
         model.addAttribute("portfolio", depotService.getPortfolio());
         return "depot";
     }

@@ -4,6 +4,7 @@ import de.majaf.voci.entity.Invitation;
 import de.othr.sw.hamilton.entity.Advisor;
 import de.othr.sw.hamilton.entity.Consulting;
 import de.othr.sw.hamilton.repository.ConsultingRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,12 @@ import java.util.UUID;
 
 @Service
 public class ConsultingService {
+
+    @Value("${appconfig.base-url}")
+    private String baseUrl;
+
+    @Value("${appconfig.voci.port}")
+    private int vociPort;
 
     private final UserService userService;
 
@@ -59,22 +66,20 @@ public class ConsultingService {
         Advisor advisor = (Advisor)userService.getCurrentUser();
         consulting.setAccepted(true);
         consulting.setAdvisor(advisor);
-        //set Voci call Url
-        //new window with voci call
 
         //TODO move to config or sth
-        String apiKey = "93164040-684b-43b9-b64f-5a0e6c5d4a12";
+        String apiKey = advisor.getVociApiKey().toString();
 
-        RequestEntity<Void> requestEntity = RequestEntity.post("http://im-codd.oth-regensburg.de:8945/api/startCall")
+        RequestEntity<Void> requestEntity = RequestEntity.post(baseUrl + ":" + vociPort + "/api/startCall")
                 .header("securityToken", apiKey)
                 .build();
         ResponseEntity<Invitation> responseEntity = restClient.exchange(requestEntity, Invitation.class);
         Invitation invitation = responseEntity.getBody();
         String accessToken = invitation.getAccessToken();
-        consulting.setConsultingUrl("http://im-codd.oth-regensburg.de:8945/invitation?=" + accessToken);
+        consulting.setConsultingUrl(baseUrl + ":" + vociPort + "/invitation?=" + accessToken);
         //TODO weg mit dem Schmuh
         consulting.setAccessToken(accessToken);
-        consulting.setAdvisorUrl("http://im-codd.oth-regensburg.de:8945/call?=" + accessToken);
+        consulting.setAdvisorUrl(baseUrl + ":" + vociPort + "/call?=" + accessToken);
         consulting.setAcceptTime(new Date());
         consulting = consultingRepository.save(consulting);
         advisor.setRunningConsulting(consulting);
@@ -97,7 +102,7 @@ public class ConsultingService {
 
         String apiKey = "93164040-684b-43b9-b64f-5a0e6c5d4a12";
         //TODO wieso kann ich die Params end anhängen?
-        String url = "http://im-codd.oth-regensburg.de:8945/api/endCall?accessToken=" + consulting.getAccessToken();
+        String url = baseUrl + ":" + vociPort + "/endCall?accessToken=" + consulting.getAccessToken();
         RequestEntity<Void> requestEntity = RequestEntity.delete(
                 url)
                 .header("securityToken", apiKey)

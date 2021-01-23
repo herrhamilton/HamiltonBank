@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -32,7 +29,7 @@ public class Payment implements Serializable {
 
     private String senderName;
 
-    private String description = "Ja ne Zahlung halt, was gibts da groß zu beschreiben?";
+    private String description;
 
     private BigDecimal amount;
 
@@ -44,8 +41,5 @@ public class Payment implements Serializable {
         this.receiverName = username;
         this.amount = amount;
         this.description = description;
-
-        //TODO moveinto constants file/config?
-        this.paymentUrl  = "http://im-codd.oth-regensburg.de:8928/payment/" + this.paymentId;
     }
 }

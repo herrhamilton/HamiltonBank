@@ -30,9 +30,11 @@ public class UserService implements Serializable, UserDetailsService {
     }
 
     public User createUser(User user) {
-        //TODO unique User
+
+        if(userRepository.findOneByUsername(user.getUsername()) != null) {
+            // TODO Meldung dass User schon existiert
+        }
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        //TODO save hier um ne id zu bekommen.. Wirklich nötig?
         user = userRepository.save(user);
         //TODO input validation wo?
 
@@ -51,7 +53,6 @@ public class UserService implements Serializable, UserDetailsService {
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        //TODO moglichkeit dass ned jede Abfrage auf die DB geht? Oder isses ok mit diesem hibernate?
         return userRepository.findOneByUsername(username);
     }
 

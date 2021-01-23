@@ -2,18 +2,22 @@ package de.othr.sw.hamilton.service;
 
 import de.othr.sw.hamilton.entity.Customer;
 import dev.wobu.stonks.entity.Portfolio;
-import dev.wobu.stonks.entity.TaxReport;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.time.Year;
+import java.util.UUID;
 
 @Service
 public class DepotService {
+
+    @Value("${appconfig.base-url}")
+    private String baseUrl;
+
+    @Value("${appconfig.stonks.port}")
+    private int stonksPort;
 
     private final RestTemplate restClient;
 
@@ -26,31 +30,32 @@ public class DepotService {
 
     public Portfolio getPortfolio() {
         Customer customer =  userService.getCurrentCustomer();
+        UUID apiKey = customer.getStonksApiKey();
         //TODO schöner
-        if(customer.getStonksApiKey().isEmpty()) {
+        if(apiKey == null) {
             return null;
         }
-        String apiKey = customer.getStonksApiKey();
-        //TODO alle URLs in application.properties auslagern
-        RequestEntity<Void> requestEntity = RequestEntity.get("http://im-codd.oth-regensburg.de:8933/api/v1/portfolio")
-                .header("X-API-Key", apiKey)
+        RequestEntity<Void> requestEntity = RequestEntity.get(baseUrl + ":" + stonksPort + "/api/v1/portfolio")
+                .header("X-API-Key", apiKey.toString())
                 .build();
 
         ResponseEntity<Portfolio> responseEntity = restClient.exchange(requestEntity, Portfolio.class);
         return responseEntity.getBody();
     }
 
+    /*
+    TODO remove?
     public TaxReport getTaxReport(int year) {
 
         //TODO DRY mit oben
         Customer customer =  userService.getCurrentCustomer();
-        String apiKey = customer.getStonksApiKey();
+        UUID apiKey = customer.getStonksApiKey();
 
         //TODO exception falsches year Format?
-        URI uri = UriComponentsBuilder.fromUriString("http://im-codd.oth-regensburg.de:8933/api/v1/taxreport/{year}").build(year);
+        URI uri = UriComponentsBuilder.fromUriString(baseUrl + ":" + stonksPort +"/api/v1/taxreport/{year}").build(year);
 
         RequestEntity<Void> requestEntity = RequestEntity.get(uri)
-                .header("X-API-Key", apiKey)
+                .header("X-API-Key", apiKey.toString())
                 .build();
 
         ResponseEntity<TaxReport> responseEntity = restClient.exchange(requestEntity, TaxReport.class);
@@ -60,4 +65,5 @@ public class DepotService {
     public TaxReport getLastYearsTaxReport() {
         return getTaxReport(Year.now().getValue() - 1);
     }
+         */
 }

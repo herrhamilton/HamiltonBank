@@ -6,6 +6,7 @@ import de.othr.sw.hamilton.entity.Payment;
 import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.repository.PaymentRepository;
 import de.othr.sw.hamilton.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -13,6 +14,12 @@ import java.util.UUID;
 
 @Service
 public class PaymentService {
+
+    @Value("${appconfig.base-url}")
+    private String baseUrl;
+
+    @Value("${server.port}")
+    private int port;
 
     private final UserService userService;
 
@@ -32,6 +39,8 @@ public class PaymentService {
     public Payment createPayment(Payment requested) {
         //TODO type/sanity check amount of payments, transactions,...
         Payment payment = new Payment(requested.getReceiverName(), requested.getAmount(), requested.getDescription());
+        String paymentUrl = baseUrl + ":" + port + "/payment/" + payment.getPaymentId();
+        payment.setPaymentUrl(paymentUrl);
         payment = paymentRepository.save(payment);
         return payment;
     }
@@ -40,7 +49,7 @@ public class PaymentService {
     public void fulfillPayment(Payment payment) {
 
         try {
-            Customer sender =  userService.getCurrentCustomer();
+            Customer sender = userService.getCurrentCustomer();
             String receiverName = payment.getReceiverName();
             Customer receiver = (Customer) userRepository.findOneByUsername(receiverName);
             BankAccount to = receiver.getBankAccount();

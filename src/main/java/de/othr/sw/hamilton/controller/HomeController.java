@@ -16,7 +16,6 @@ public class HomeController {
         this.userService = userService;
     }
 
-    //TODO customer can ask for xml AND json
     @RequestMapping(path = {"/home", "/"}, method = RequestMethod.GET)
     public String showStartPage() {
         return "index";

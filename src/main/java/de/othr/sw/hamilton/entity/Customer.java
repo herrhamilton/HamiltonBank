@@ -21,7 +21,7 @@ public class Customer extends User {
     private Address address;
 
     //API Keys werden der Einfachheit halber einfach auf der Seite angezeigt, Security hat hier niedrige Priorität
-    private String stonksApiKey = "";
+    private UUID stonksApiKey;
 
     @Column(columnDefinition = "BINARY(16)")
     private UUID hamiltonApiKey = UUID.randomUUID();
