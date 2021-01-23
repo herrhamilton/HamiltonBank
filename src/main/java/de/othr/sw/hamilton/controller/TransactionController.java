@@ -43,7 +43,7 @@ public class TransactionController {
     public String depositMoney(@RequestParam(value = "amount") int amount) {
         // TODO Input Verification, negative Werte einzahlen
         transactionService.depositMoney(amount);
-        return "redirect:overview";
+        return "redirect:/overview";
     }
 
     @RequestMapping(path = "/transfer", method = RequestMethod.GET)
@@ -56,6 +56,6 @@ public class TransactionController {
     public String transferMoney(@ModelAttribute TransactionForm transactionForm ) {
         //TODO test this and exception handling for input
         transactionService.sendTransaction(transactionForm);
-        return "redirect:overview";
+        return "redirect:/overview";
     }
 }

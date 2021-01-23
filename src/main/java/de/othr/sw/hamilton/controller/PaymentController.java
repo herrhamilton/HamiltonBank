@@ -1,7 +1,9 @@
 package de.othr.sw.hamilton.controller;
 
+import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Payment;
 import de.othr.sw.hamilton.service.PaymentService;
+import de.othr.sw.hamilton.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +13,12 @@ import java.util.UUID;
 @Controller
 public class PaymentController {
 
+    private final UserService userService;
+
     private final PaymentService paymentService;
 
-    public PaymentController(PaymentService paymentService) {
+    public PaymentController(UserService userService, PaymentService paymentService) {
+        this.userService = userService;
         this.paymentService = paymentService;
     }
 
@@ -35,6 +40,9 @@ public class PaymentController {
         //TODO Exception Handling hier und überall
         //TODO Unit Tests
         Payment payment = paymentService.findPayment(paymentId);
+        Customer customer = userService.getCurrentCustomer();
+
+        model.addAttribute("customer", customer);
         model.addAttribute("payment", payment);
         return "payment";
     }
@@ -44,6 +52,6 @@ public class PaymentController {
         Payment payment = paymentService.findPayment(paymentId);
         paymentService.fulfillPayment(payment);
 
-        return "redirect:overview";
+        return "redirect:/overview";
     }
 }

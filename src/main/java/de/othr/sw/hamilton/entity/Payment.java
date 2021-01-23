@@ -45,7 +45,7 @@ public class Payment implements Serializable {
         this.amount = amount;
         this.description = description;
 
-        //TODO moveinto constants file/config? change address
-        this.paymentUrl  = "localhost:8080/payment/" + this.paymentId;
+        //TODO moveinto constants file/config?
+        this.paymentUrl  = "http://im-codd.oth-regensburg.de:8928/payment/" + this.paymentId;
     }
 }
