@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface TransactionRepository extends CrudRepository<Transaction, Long> {
-    //TODO mvoe this into bankAccount List<Transaction> und beachte SW Skript
+    //TODO mvoe this into bankAccount prop List<Transaction> und beachte SW Skript
     List<Transaction> findByFromAccountOrToAccount(BankAccount a1, BankAccount a2);
 }

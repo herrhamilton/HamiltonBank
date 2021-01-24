@@ -39,8 +39,10 @@ public class PaymentController {
     @RequestMapping(path = "/api/payment/check/{paymentId}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<?> checkPayment(@RequestHeader("api-key") UUID apiKey, @PathVariable("paymentId") UUID paymentId) {
-        //TODO chekc payment exists
         Payment payment = paymentService.findPayment(paymentId);
+        if(payment == null) {
+            return new ResponseEntity<>("Payment with id '" + paymentId.toString() + "' could not be found", HttpStatus.NOT_FOUND);
+        }
         Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
         //TODO check apikey not empty
         if(!apiKey.equals(receiver.getHamiltonApiKey())) {

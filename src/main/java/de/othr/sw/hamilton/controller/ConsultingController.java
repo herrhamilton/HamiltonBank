@@ -17,7 +17,6 @@ public class ConsultingController {
     @Value("${appconfig.voci.url}")
     private String vociUrl;
 
-    //TODO userService da lassen oder hasAccepted.. Methode in cons Service?
     private final UserService userService;
 
     private final ConsultingService consultingService;
@@ -48,6 +47,7 @@ public class ConsultingController {
         Advisor advisor = (Advisor)userService.getCurrentUser();
         if(advisor.getRunningConsulting() != null) {
             model.addAttribute("consulting", advisor.getRunningConsulting());
+            //TODO rename templates
             return "accepted";
         } else {
             model.addAttribute("consultingRequests", consultingService.getOpenRequests());

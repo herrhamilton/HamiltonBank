@@ -67,7 +67,6 @@ public class PaymentService {
     }
 
     public Payment findPayment(UUID paymentId) {
-        //TODO exception if not existing
         return paymentRepository.findOneByPaymentId(paymentId);
     }
 }

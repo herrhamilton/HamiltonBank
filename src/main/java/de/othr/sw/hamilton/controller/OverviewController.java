@@ -47,8 +47,6 @@ public class OverviewController {
 
     @RequestMapping(path = "/depot")
     public String showDepotPage(Model model) {
-        // TODO remove
-        // model.addAttribute("taxreport", depotService.getLastYearsTaxReport());
         model.addAttribute("portfolio", depotService.getPortfolio());
         return "depot";
     }
