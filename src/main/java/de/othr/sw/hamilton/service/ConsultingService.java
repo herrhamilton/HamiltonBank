@@ -11,18 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Date;
+import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class ConsultingService {
 
-    @Value("${appconfig.base-url}")
-    private String baseUrl;
-
-    @Value("${appconfig.voci.port}")
-    private int vociPort;
+    @Value("${appconfig.voci.url}")
+    private String vociUrl;
 
     private final UserService userService;
 
@@ -36,12 +34,9 @@ public class ConsultingService {
         this.restClient = restClient;
     }
 
-    public Consulting createConsulting(Consulting consulting) {
-        consulting.setRequestTime(new Date());
-        consulting.setCustomer(userService.getCurrentCustomer());
-
-        consulting = consultingRepository.save(consulting);
-        return consulting;
+    public Advisor createAdvisor(Advisor advisor) {
+        //TODO give roles/authorities to customer/advisor?
+        return (Advisor) userService.createUser(advisor);
     }
 
     public List<Consulting> getOpenRequests() {
@@ -49,62 +44,68 @@ public class ConsultingService {
         return consultingRepository.findAllByIsResolvedFalse();
     }
 
-    public Advisor createAdvisor(Advisor advisor) {
-        //TODO give roles/authorities to customer/advisor?
-        return (Advisor) userService.createUser(advisor);
-    }
-
     public Consulting getRequestForCurrentCustomer() {
-        Consulting consulting = consultingRepository.findOneByCustomerAndIsResolvedFalse(userService.getCurrentCustomer());
+        Consulting consulting = consultingRepository
+                .findOneByCustomerAndIsResolvedFalse(userService.getCurrentCustomer());
         return consulting == null
                 ? new Consulting()
                 : consulting;
     }
 
+    public Consulting createConsulting(Consulting consulting) {
+        consulting.setRequestTime(Instant.now());
+        consulting.setCustomer(userService.getCurrentCustomer());
+
+        consulting = consultingRepository.save(consulting);
+        return consulting;
+    }
+
+    @Transactional
     public Consulting acceptConsulting(UUID consultingId) {
         Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
         Advisor advisor = (Advisor)userService.getCurrentUser();
         consulting.setAccepted(true);
         consulting.setAdvisor(advisor);
 
-        //TODO move to config or sth
         String apiKey = advisor.getVociApiKey().toString();
 
-        RequestEntity<Void> requestEntity = RequestEntity.post(baseUrl + ":" + vociPort + "/api/startCall")
-                .header("securityToken", apiKey)
-                .build();
-        ResponseEntity<Invitation> responseEntity = restClient.exchange(requestEntity, Invitation.class);
-        Invitation invitation = responseEntity.getBody();
-        String accessToken = invitation.getAccessToken();
-        consulting.setConsultingUrl(baseUrl + ":" + vociPort + "/invitation?=" + accessToken);
-        //TODO weg mit dem Schmuh
-        consulting.setAccessToken(accessToken);
-        consulting.setAdvisorUrl(baseUrl + ":" + vociPort + "/call?=" + accessToken);
-        consulting.setAcceptTime(new Date());
+        Invitation invitation = startVociCall(apiKey);
+
+        consulting.setAccessToken(invitation.getAccessToken());
+        consulting.setAcceptTime(Instant.now());
         consulting = consultingRepository.save(consulting);
         advisor.setRunningConsulting(consulting);
-        //TODO userService oder Repo?
         userService.saveUser(advisor);
         return consulting;
     }
 
+    @Transactional
     public void closeConsulting(UUID consultingId) {
         Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
-        //TODO UTC
-        consulting.setEndTime(new Date());
+        consulting.setEndTime(Instant.now());
         consulting.setResolved(true);
         //TODO Test jetz müssen alle Werte ausgefüllt sein?
         consulting = consultingRepository.save(consulting);
         Advisor advisor = consulting.getAdvisor();
-        //TODO schöner?
         advisor.setRunningConsulting(null);
         userService.saveUser(advisor);
 
-        String apiKey = "93164040-684b-43b9-b64f-5a0e6c5d4a12";
+        String apiKey = advisor.getVociApiKey().toString();
+        closeVociCall(consulting.getAccessToken(), apiKey);
+    }
+
+    private Invitation startVociCall(String apiKey) {
+        RequestEntity<Void> requestEntity = RequestEntity.post(vociUrl + "/api/startCall")
+                .header("securityToken", apiKey)
+                .build();
+        ResponseEntity<Invitation> responseEntity = restClient.exchange(requestEntity, Invitation.class);
+        return responseEntity.getBody();
+    }
+
+    private void closeVociCall(String accessToken, String apiKey) {
         //TODO wieso kann ich die Params end anhängen?
-        String url = baseUrl + ":" + vociPort + "/endCall?accessToken=" + consulting.getAccessToken();
-        RequestEntity<Void> requestEntity = RequestEntity.delete(
-                url)
+        String url = vociUrl + "/endCall?accessToken=" + accessToken;
+        RequestEntity<Void> requestEntity = RequestEntity.delete(url)
                 .header("securityToken", apiKey)
                 .build();
         restClient.exchange(url, HttpMethod.DELETE, requestEntity, Void.class);

@@ -63,6 +63,7 @@ public class UserService implements Serializable, UserDetailsService {
     }
 
     public Customer getCurrentCustomer() {
+        //TODO kann man Customer iwie lokal halten oder muss man den jedesmal abfragen?
         return (Customer) getCurrentUser();
     }
 

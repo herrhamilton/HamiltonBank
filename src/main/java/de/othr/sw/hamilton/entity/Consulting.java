@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -19,30 +19,25 @@ public class Consulting implements Serializable  {
     @Column(columnDefinition = "BINARY(16)")
     private UUID consultingId = UUID.randomUUID();
 
-    private String reason;
-
-    private String summary;
-
-    private boolean isAccepted;
-
-    private String consultingUrl;
-
-    //TODO cleanup klasse
-    private String advisorUrl;
-
-    private String accessToken;
-
-    private boolean isResolved;
-
     @OneToOne
     private Customer customer;
 
     @OneToOne
     private Advisor advisor;
 
-    private Date requestTime;
+    private String reason;
 
-    private Date acceptTime;
+    private String summary;
 
-    private Date endTime;
+    private String accessToken;
+
+    private boolean isAccepted;
+
+    private boolean isResolved;
+
+    private Instant requestTime;
+
+    private Instant acceptTime;
+
+    private Instant endTime;
 }

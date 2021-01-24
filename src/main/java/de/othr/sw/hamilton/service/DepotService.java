@@ -12,12 +12,8 @@ import java.util.UUID;
 
 @Service
 public class DepotService {
-
-    @Value("${appconfig.base-url}")
-    private String baseUrl;
-
-    @Value("${appconfig.stonks.port}")
-    private int stonksPort;
+    @Value("${appconfig.stonks.url")
+    private String stonksUrl;
 
     private final RestTemplate restClient;
 
@@ -34,9 +30,14 @@ public class DepotService {
         //TODO schöner
         if(apiKey == null) {
             return null;
+        } else {
+            return getStonksPortfolio(apiKey.toString());
         }
-        RequestEntity<Void> requestEntity = RequestEntity.get(baseUrl + ":" + stonksPort + "/api/v1/portfolio")
-                .header("X-API-Key", apiKey.toString())
+    }
+
+    private Portfolio getStonksPortfolio(String apiKey) {
+        RequestEntity<Void> requestEntity = RequestEntity.get(stonksUrl + "/api/v1/portfolio")
+                .header("X-API-Key", apiKey)
                 .build();
 
         ResponseEntity<Portfolio> responseEntity = restClient.exchange(requestEntity, Portfolio.class);
@@ -44,14 +45,12 @@ public class DepotService {
     }
 
     /*
-    TODO remove?
+    TODO remove bzw Link zu Stonks?
     public TaxReport getTaxReport(int year) {
 
-        //TODO DRY mit oben
         Customer customer =  userService.getCurrentCustomer();
         UUID apiKey = customer.getStonksApiKey();
 
-        //TODO exception falsches year Format?
         URI uri = UriComponentsBuilder.fromUriString(baseUrl + ":" + stonksPort +"/api/v1/taxreport/{year}").build(year);
 
         RequestEntity<Void> requestEntity = RequestEntity.get(uri)

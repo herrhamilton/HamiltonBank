@@ -23,7 +23,7 @@
     <div th:unless="${consulting.reason == null}">
         <div th:if="${consulting.isAccepted}">
                 <p>Ein Mitarbeiter erwartet Sie.</p>
-            <a th:href="@{${consulting.consultingUrl}}" th:target="_blank">Hier klicken.</a>
+            <a th:href="@{${consultingUrl}}" th:target="_blank">Hier klicken.</a>
         </div>
         <div th:unless="${consulting.isAccepted}">
             <label for="reason2">Grund für das Gespräch</label>
