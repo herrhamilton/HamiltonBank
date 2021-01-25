@@ -47,7 +47,6 @@ public class Transaction implements Serializable, Comparable<Transaction> {
         this.fromAccount = from;
     }
 
-    // constructor for Deposit money
     public Transaction(BigDecimal amount, String description, BankAccount to) {
         this.amount = amount;
         this.description = description;

@@ -11,26 +11,28 @@
 
 <div th:replace="fragments/header_authenticated :: header"></div>
 <div class="col-md-8 offset-md-2">
-    <!-- TODO schöner lol -->
-    <div th:if="${consulting.reason == null}">
-        <p>Um ein Gespräch mit einem Bankberater anzufordern:</p>
-        <form th:action="@{/consulting}" method="post">
-            <label for="reason">Grund für das Gespräch</label>
-            <input th:field="${consulting.reason}" type="text" class="form-control" id="reason">
-            <button type="submit">Gespräch anfordern</button>
-        </form>
-    </div>
-    <div th:unless="${consulting.reason == null}">
+    <div th:if="${hasConsulting}">
         <div th:if="${consulting.isAccepted}">
-                <p>Ein Mitarbeiter erwartet Sie.</p>
+            <p>Ein Mitarbeiter erwartet Sie.</p>
             <a th:href="@{${consultingUrl}}" th:target="_blank">Hier klicken.</a>
         </div>
         <div th:unless="${consulting.isAccepted}">
             <label for="reason2">Grund für das Gespräch</label>
             <input readonly th:field="${consulting.reason}" type="text" class="form-control" id="reason2">
             <p>Bisher steht noch kein Berater zur Verfügung. Wir bitten um etwas Geduld.</p>
+            <form th:action="@{/consulting/cancel}" method="post">
+                <button class="btn-danger" type="submit">Anfrage abbrechen</button>
+            </form>
         </div>
     </div>
-</div><!-- TODO add cancel button-->
+    <div th:unless="${hasConsulting}">
+        <p>Um ein Gespräch mit einem Bankberater anzufordern:</p>
+        <form th:action="@{/consulting}" method="post">
+            <label for="reason">Grund für das Gespräch</label>
+            <input th:field="${consulting.reason}" type="text" class="form-control" id="reason" required>
+            <button type="submit">Gespräch anfordern</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>

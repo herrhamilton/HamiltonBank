@@ -2,6 +2,7 @@ package de.othr.sw.hamilton.controller;
 
 import de.othr.sw.hamilton.entity.Advisor;
 import de.othr.sw.hamilton.entity.Consulting;
+import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.service.ConsultingService;
 import de.othr.sw.hamilton.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +36,9 @@ public class ConsultingController {
 
     @RequestMapping(path ="/consulting", method = RequestMethod.GET)
     public String showConsultingPage(Model model) {
-        Consulting consulting = consultingService.getRequestForCurrentCustomer();
+        Customer customer = userService.getCurrentCustomer();
+        Consulting consulting = consultingService.getRequestForCustomer(customer);
+        model.addAttribute("hasConsulting", customer.getPendingConsulting() != null);
         model.addAttribute("consulting", consulting);
         model.addAttribute("consultingUrl", vociUrl + "/invitation?=" + consulting.getAccessToken());
 
@@ -59,7 +62,7 @@ public class ConsultingController {
     public String createConsulting(@ModelAttribute Consulting consulting, Model model) {
         consultingService.createConsulting(consulting);
         model.addAttribute("consultingUrl", vociUrl + "/invitation?=" + consulting.getAccessToken());
-        return "consulting";
+        return "redirect:/consulting";
     }
 
     @RequestMapping(path = "/consulting/accept/{consultingId}", method = RequestMethod.POST)
@@ -74,5 +77,11 @@ public class ConsultingController {
     public String closeConsulting(@PathVariable("consultingId") UUID consultingId) {
         consultingService.closeConsulting(consultingId);
         return "advisor";
+    }
+
+    @RequestMapping(path = "/consulting/cancel", method = RequestMethod.POST)
+    public String cancelConsulting() {
+        consultingService.cancelConsulting();
+        return "redirect:/consulting";
     }
 }

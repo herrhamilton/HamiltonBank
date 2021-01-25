@@ -36,15 +36,12 @@ public class DepotService {
     }
 
     private Portfolio getStonksPortfolio(String apiKey) {
-        return null;
-        /*
         RequestEntity<Void> requestEntity = RequestEntity.get(stonksUrl + "/api/v1/portfolio")
                 .header("X-API-Key", apiKey)
                 .build();
         //TODO handle 403 Forbidden
         ResponseEntity<Portfolio> responseEntity = restClient.exchange(requestEntity, Portfolio.class);
         return responseEntity.getBody();
-    */
     }
 
     /*

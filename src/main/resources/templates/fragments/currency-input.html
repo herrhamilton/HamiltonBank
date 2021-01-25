@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="currency-input">
+    <label for="amount">Betrag</label>
+    <input type="text" class="form-control" id="amount"
+           required
+           placeholder="0,00"
+           pattern="\d+([,\.]\d{0,2})?"
+           title="Positiver Betrag mit bis zu zwei Nachkommastellen">
+</div>
+</html>

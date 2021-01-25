@@ -24,7 +24,7 @@
     <form th:object="${consulting}"
           th:action="@{/consulting/close/{consultingId}(consultingId = ${consulting.consultingId})}" method="post">
         <label for="summary">Zusammenfassung des Gesprächs</label>
-        <input th:field="*{summary}" type="text" class="form-control" id="summary">
+        <input th:field="*{summary}" type="text" class="form-control" id="summary" required>
         <button type="submit">Anfrage schließen</button>
     </form>
 

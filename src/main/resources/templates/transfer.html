@@ -18,8 +18,7 @@
         <label for="description">Beschreibung</label>
         <input th:field="*{description}" type="text" class="form-control" id="description">
 
-        <label for="amount">Betrag</label>
-        <input th:field="*{amount}" type="number" class="form-control" id="amount">
+        <div th:replace="fragments/currency-input :: currency-input"></div>
     </div>
 
     <button type="submit" class="btn btn-primary">Überweisen</button>

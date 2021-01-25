@@ -62,21 +62,24 @@ public class TransactionService implements Serializable {
         BankAccount to = receiver.getBankAccount();
         BankAccount from = userService.getCurrentCustomer().getBankAccount();
 
-        Transaction transaction = new Transaction(transactionForm.getAmount(), transactionForm.getDescription(), to, from);
-        // TODO Input Verification, negative Werte einzahlen
+        //TODO test this and exception handling for input
+        BigDecimal amount = getAmountFromString(transactionForm.getAmountString());
+
+
+
+        Transaction transaction = new Transaction(amount, transactionForm.getDescription(), to, from);
         executeTransaction(transaction);
     }
 
-    public void depositMoney(int amount) {
+    public void depositMoney(BigDecimal amount) {
         Customer customer = userService.getCurrentCustomer();
         //TODO Komponentendiagramm ändern wenn Message Queuing zum Bezahlen benutzt wird (hat nix mit deposit zu tun^^)
-        Transaction t = new Transaction(BigDecimal.valueOf(amount), "Einzahlung", customer.getBankAccount());
+        Transaction t = new Transaction(amount, "Einzahlung", customer.getBankAccount());
 
         executeTransaction(t);
     }
 
     public String generateStatementCsv() {
-        //TODO change BankAccount to Customer
         List<Transaction> transactions = findTransactionsForBankAccount(userService.getCurrentCustomer().getBankAccount());
         String csvData = "";
         try(CharArrayWriter writer = new CharArrayWriter()) {
@@ -93,4 +96,10 @@ public class TransactionService implements Serializable {
         return csvData;
     }
 
+    public BigDecimal getAmountFromString(String amountString) {
+        // TODO ggf Unit Testing
+        amountString = amountString.replace(",", ".");
+        BigDecimal amount = new BigDecimal(amountString);
+        return amount;
+    }
 }

@@ -10,8 +10,7 @@ import java.math.BigDecimal;
 // because we cannot convert input field text (=String) to "BankAccount" entity
 @Getter @Setter
 public class TransactionForm implements Serializable {
-    public BigDecimal amount;
+    public String amountString;
     public String description;
     public String toUsername;
-    private String id;
 }

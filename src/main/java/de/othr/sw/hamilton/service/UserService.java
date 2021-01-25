@@ -1,6 +1,5 @@
 package de.othr.sw.hamilton.service;
 
-import de.othr.sw.hamilton.entity.Advisor;
 import de.othr.sw.hamilton.entity.BankAccount;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.User;
@@ -68,10 +67,9 @@ public class UserService implements Serializable, UserDetailsService {
     }
 
     public Customer updateCustomer(Customer updated) {
-        //TODO fix des ganze Chustomer/User rumgeschmuh
         Customer customer = (Customer) loadUserByUsername(updated.getUsername());
         //TODO unit test : password (noch) und username, bankAccount, id NICHT ändern
-        // TODO gehts auch iwie schöner?
+        // TODO zu db query machen?
         customer.setFirstName(updated.getFirstName());
         customer.setLastName(updated.getLastName());
         customer.setStonksApiKey(updated.getStonksApiKey());

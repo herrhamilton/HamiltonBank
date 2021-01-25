@@ -46,7 +46,7 @@ public class HomeController {
         return "login";
     }
 
-    @RequestMapping(path="/swagger-ui")
+    @RequestMapping(path="/api/swagger-ui")
     public String showSwagger() {
         return "redirect:/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/";
     }

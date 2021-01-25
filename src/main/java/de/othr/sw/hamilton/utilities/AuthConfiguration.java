@@ -49,8 +49,8 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .and()
                     .rememberMe();
-        //TODO test and remove this after deployment
-        http.csrf().disable();
+        //is there a better solution?
+        http.csrf().ignoringAntMatchers("/api/**");
     }
 
     @Autowired

@@ -40,8 +40,8 @@ public class TransactionController {
     }
 
     @RequestMapping(path = "/deposit", method = RequestMethod.POST)
-    public String depositMoney(@RequestParam(value = "amount") int amount) {
-        // TODO Input Verification, negative Werte einzahlen
+    public String depositMoney(@RequestParam(value = "amount") String amountString) {
+        BigDecimal amount = transactionService.getAmountFromString(amountString);
         transactionService.depositMoney(amount);
         return "redirect:/overview";
     }
@@ -54,7 +54,7 @@ public class TransactionController {
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
     public String transferMoney(@ModelAttribute TransactionForm transactionForm ) {
-        //TODO test this and exception handling for input
+
         transactionService.sendTransaction(transactionForm);
         return "redirect:/overview";
     }

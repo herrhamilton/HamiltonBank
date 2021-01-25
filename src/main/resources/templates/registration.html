@@ -10,30 +10,30 @@
 <form th:action="@{/registration}" th:object="${user}" method="post">
     <div class="form-group">
         <label for="username">Nutzername</label>
-        <input th:field="*{username}" type="text" class="form-control" id="username">
+        <input th:field="*{username}" type="text" class="form-control" id="username" required>
     </div>
 
     <div class="form-group">
         <label for="password">Passwort</label>
-        <input th:field="*{passwordHash}" type="password" class="form-control" id="password" aria-describedby="pwHelp">
+        <input th:field="*{passwordHash}" type="password" class="form-control" id="password" aria-describedby="pwHelp" required>
         <small id="pwHelp" class="form-text text-muted">Dein Passwort wird selbstverständlich nicht im Klartext gespeichert.</small>
-        <!--TODO pw ?-->
+        <!--TODO show errors?-->
     </div>
 
     <h2>Persönliche Daten</h2>
     <div class="form-group">
         <label for="firstName">Vorname</label>
-        <input th:field="*{firstName}" type="text" class="form-control" id="firstName">
+        <input th:field="*{firstName}" type="text" class="form-control" id="firstName" required>
         <label for="lastName">Nachname</label>
-        <input th:field="*{lastName}" type="text" class="form-control" id="lastName">
+        <input th:field="*{lastName}" type="text" class="form-control" id="lastName" required>
         <label for="street">Straße</label>
-        <input th:field="*{address.street}" type="text" class="form-control" id="street">
+        <input th:field="*{address.street}" type="text" class="form-control" id="street" required>
         <label for="houseNr">Hausnummer</label>
-        <input th:field="*{address.houseNr}" type="text" class="form-control" id="houseNr">
+        <input th:field="*{address.houseNr}" type="text" class="form-control" id="houseNr" required>
         <label for="postalCode">Postleitzahl</label>
-        <input th:field="*{address.postalCode}" type="text" class="form-control" id="postalCode">
+        <input th:field="*{address.postalCode}" type="text" class="form-control" id="postalCode" required>
         <label for="city">Stadt</label>
-        <input th:field="*{address.city}" type="text" class="form-control" id="city">
+        <input th:field="*{address.city}" type="text" class="form-control" id="city" required>
     </div>
     <button type="submit" class="btn btn-primary">Registrieren</button>
 </form>

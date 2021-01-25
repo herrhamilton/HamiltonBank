@@ -37,9 +37,11 @@ public class Consulting implements Serializable {
 
     private String accessToken;
 
-    private boolean isAccepted;
+    private boolean isAccepted = false;
 
-    private boolean isResolved;
+    private boolean isResolved = false;
+
+    private boolean isCancelled = false;
 
     private Date requestTime;
 

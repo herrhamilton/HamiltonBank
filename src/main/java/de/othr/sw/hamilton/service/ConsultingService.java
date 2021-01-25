@@ -45,8 +45,8 @@ public class ConsultingService {
         return consultingRepository.findAllByIsResolvedFalse();
     }
 
-    public Consulting getRequestForCurrentCustomer() {
-        Consulting consulting = userService.getCurrentCustomer().getPendingConsulting();
+    public Consulting getRequestForCustomer(Customer customer) {
+        Consulting consulting = customer.getPendingConsulting();
         return consulting == null
                 ? new Consulting()
                 : consulting;
@@ -100,6 +100,18 @@ public class ConsultingService {
 
         String apiKey = advisor.getVociApiKey().toString();
         closeVociCall(consulting.getAccessToken(), apiKey);
+    }
+
+    @Transactional
+    public void cancelConsulting() {
+        Customer customer = userService.getCurrentCustomer();
+        Consulting consulting = customer.getPendingConsulting();
+
+        customer.setPendingConsulting(null);
+        consulting.setCancelled(true);
+        consulting.setEndTime(new Date());
+        consultingRepository.save(consulting);
+        userService.saveUser(customer);
     }
 
     private Invitation startVociCall(String apiKey) {
