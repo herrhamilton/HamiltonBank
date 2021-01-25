@@ -18,20 +18,22 @@
 
         <!-- Stonks-->
         <div th:unless="${currentCustomer.stonksApiKey}">
-            <p> Um Ihr <a th:href="@{${stonksUrl}}" >Stonks-Portfolio</a> anzuzeigen, bitte API Key in den Einstellungen hinterlegen.</p>
+            <p> Um Ihr <a th:href="@{${stonksUrl}}">Stonks-Portfolio</a> anzuzeigen, bitte API Key in den Einstellungen
+                hinterlegen.</p>
         </div>
         <div th:if="${currentCustomer.stonksApiKey}">
             <div th:switch="${stonksError}">
                 <p th:case="'auth'">Stellen Sie sicher, dass Sie den richtigen Stonks-API Key hinterlegt haben.</p>
-                <p th:case="'other'">Momentan kann nicht auf Ihr Portfolio zugegriffen werden. Versuchen Sie, <a th:href="@{${stonksUrl}}" >Stonks direkt zu erreichen.</a></p>
+                <p th:case="'other'">Momentan kann nicht auf Ihr Portfolio zugegriffen werden. Versuchen Sie, <a
+                        th:href="@{${stonksUrl}}">Stonks direkt zu erreichen.</a></p>
                 <div th:case="*">
                     <h2 th:text="'Portfoliowert: ' + ${portfolio.stockValueTotal}"></h2>
-                    <a class="btn" th:href="@{${stonksUrl}}" >zu Stonks wechseln</a>
+                    <a class="btn" th:href="@{${stonksUrl}}">zu Stonks wechseln</a>
                 </div>
             </div>
         </div>
 
-        <!-- Liste der Transaktionen-->
+        <!-- List of Transactions-->
         <form th:action="@{/statement}" method="get">
             <button class="btn-block">Kontoauszug herunterladen</button>
         </form>
@@ -42,16 +44,12 @@
                 <th>Beschreibung</th>
                 <th>Betrag</th>
             </tr>
-            <tr th:each="t : ${transactions}">
+            <tr th:each="t : ${transactions}" th:with="isOutgoing=(${t.fromAccount} == ${currentCustomer.bankAccount})">
                 <td th:text="${#calendars.format(t.date,'dd.MM.yyyy')}"></td>
-                <!-- TODO fix dass zwei Spalten ausgegeben werden-->
-                <td th:if="${t.fromAccount} == ${currentCustomer.bankAccount}" th:text="${t.toAccount}"></td>
-                <td th:if="${t.toAccount} == ${currentCustomer.bankAccount}" th:text="${t.fromAccount}"></td>
-
+                <td th:text="${isOutgoing} ? ${t.toAccount} : ${t.fromAccount}"></td>
                 <td th:text="${t.description}">Description</td>
-                <!-- TODO + - bzw rote Farbe?-->
-                <td th:text="${t.amount}"></td>
-                <td></td>
+                <td th:if="${isOutgoing}" class="text-danger" th:text="'- ' + ${t.amount}"></td>
+                <td th:unless="${isOutgoing}" class="text-success" th:text="'+ ' + ${t.amount}"></td>
             </tr>
         </table>
     </div>
