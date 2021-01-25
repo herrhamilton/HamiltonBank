@@ -42,7 +42,7 @@ public class ConsultingService {
 
     public List<Consulting> getOpenRequests() {
         //TODO exception handling here necessary?
-        return consultingRepository.findAllByIsResolvedFalse();
+        return consultingRepository.findAllByIsResolvedFalseAndIsCancelledFalse();
     }
 
     public Consulting getRequestForCustomer(Customer customer) {
@@ -68,14 +68,13 @@ public class ConsultingService {
     @Transactional
     public Consulting acceptConsulting(UUID consultingId) {
         Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
-        Advisor advisor = (Advisor)userService.getCurrentUser();
-        consulting.setAccepted(true);
-        consulting.setAdvisor(advisor);
+        Advisor advisor = (Advisor) userService.getCurrentUser();
 
         String apiKey = advisor.getVociApiKey().toString();
-
         Invitation invitation = startVociCall(apiKey);
 
+        consulting.setAccepted(true);
+        consulting.setAdvisor(advisor);
         consulting.setAccessToken(invitation.getAccessToken());
         consulting.setAcceptTime(new Date());
         consulting = consultingRepository.save(consulting);
@@ -123,11 +122,16 @@ public class ConsultingService {
     }
 
     private void closeVociCall(String accessToken, String apiKey) {
-        //TODO wieso kann ich die Params end anhängen?
-        String url = vociUrl + "/endCall?accessToken=" + accessToken;
-        RequestEntity<Void> requestEntity = RequestEntity.delete(url)
-                .header("securityToken", apiKey)
-                .build();
-        restClient.exchange(url, HttpMethod.DELETE, requestEntity, Void.class);
+        try {
+            //TODO wieso kann ich die Params end anhängen?
+            String url = vociUrl + "/endCall?accessToken=" + accessToken;
+            RequestEntity<Void> requestEntity = RequestEntity.delete(url)
+                    .header("securityToken", apiKey)
+                    .build();
+            restClient.exchange(url, HttpMethod.DELETE, requestEntity, Void.class);
+
+        } catch (Exception e) {
+            //TODO logging voci cannot be closed?
+        }
     }
 }

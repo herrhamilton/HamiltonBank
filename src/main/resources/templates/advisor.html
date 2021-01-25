@@ -13,9 +13,9 @@
 
 <!--TODO wenn niemand wartet-->
 <div class="col-md-8 offset-md-2">
+    <p th:if="${acceptFailed}">Anfrage konnte nicht angenommen werden. Bitte versuchen Sie es später erneut.</p>
     <p>Momentan warten folgende Kunden auf ein Gespräch:</p>
     <table>
-
         <tr>
             <th>Kunde</th>
             <th>Grund</th>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class OverviewController {
             model.addAttribute("portfolio", portfolio);
         } catch(HttpClientErrorException.Forbidden fe) {
             model.addAttribute("stonksError", "auth");
-        } catch(Exception e) {
+        } catch(HttpClientErrorException | HttpServerErrorException e) {
             model.addAttribute("stonksError", "other");
         }
 

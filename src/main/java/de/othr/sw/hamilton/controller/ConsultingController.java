@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.UUID;
 
@@ -54,6 +56,7 @@ public class ConsultingController {
             return "accepted";
         } else {
             model.addAttribute("consultingRequests", consultingService.getOpenRequests());
+            model.addAttribute("acceptFailed", false);
             return "advisor";
         }
     }
@@ -67,9 +70,16 @@ public class ConsultingController {
 
     @RequestMapping(path = "/consulting/accept/{consultingId}", method = RequestMethod.POST)
     public String acceptConsulting(@PathVariable("consultingId") UUID consultingId, Model model) {
-        Consulting consulting = consultingService.acceptConsulting(consultingId);
-        model.addAttribute("consulting", consulting);
-        model.addAttribute("advisorUrl",  vociUrl + "/call?=" + consulting.getAccessToken());
+        Consulting consulting = null;
+        try {
+            consulting = consultingService.acceptConsulting(consultingId);
+            model.addAttribute("consulting", consulting);
+            model.addAttribute("advisorUrl",  vociUrl + "/call?=" + consulting.getAccessToken());
+        } catch(HttpClientErrorException | HttpServerErrorException e) {
+            model.addAttribute("acceptFailed", true);
+            model.addAttribute("consultingRequests", consultingService.getOpenRequests());
+            return "advisor";
+        }
         return "accepted";
     }
 
