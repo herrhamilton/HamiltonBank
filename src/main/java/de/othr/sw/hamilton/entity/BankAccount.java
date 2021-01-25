@@ -1,6 +1,7 @@
 package de.othr.sw.hamilton.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,20 +13,15 @@ public class BankAccount implements Serializable {
 
     @Id
     @GeneratedValue
-    @Getter
     private Long id;
 
     @OneToOne(mappedBy = "bankAccount")
+    @Getter
     @Setter
     private Customer owner;
 
     @Getter
-    @Setter
-    private BigDecimal balance;
-
-    public BankAccount() {
-        this.balance = BigDecimal.ZERO;
-    }
+    private BigDecimal balance = BigDecimal.ZERO;
 
     public void withdraw(BigDecimal amount) {
         this.balance = this.balance.subtract(amount);

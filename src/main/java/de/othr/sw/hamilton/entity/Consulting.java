@@ -1,22 +1,28 @@
 package de.othr.sw.hamilton.entity;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Getter @Setter
-public class Consulting implements Serializable  {
+@Getter
+@Setter
+public class Consulting implements Serializable {
     @Id
     @GeneratedValue
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     // second id so PK is not exposed
     @Column(columnDefinition = "BINARY(16)")
+    @Getter
+    @Setter(AccessLevel.NONE)
     private UUID consultingId = UUID.randomUUID();
 
     @OneToOne
@@ -35,9 +41,9 @@ public class Consulting implements Serializable  {
 
     private boolean isResolved;
 
-    private Instant requestTime;
+    private Date requestTime;
 
-    private Instant acceptTime;
+    private Date acceptTime;
 
-    private Instant endTime;
+    private Date endTime;
 }

@@ -2,8 +2,8 @@ package de.othr.sw.hamilton.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,12 +15,13 @@ import java.util.Collection;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class User implements Serializable, UserDetails {
 
     @Id
     @GeneratedValue
     @JsonIgnore
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     private String firstName;
@@ -31,11 +32,6 @@ public class User implements Serializable, UserDetails {
 
     @JsonProperty("password")
     private String passwordHash;
-
-    public User(String fname, String lname) {
-        this.firstName = fname;
-        this.lastName = lname;
-    }
 
     @Override
     public boolean equals(Object o) {

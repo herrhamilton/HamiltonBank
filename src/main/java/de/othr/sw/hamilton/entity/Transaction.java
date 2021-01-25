@@ -11,9 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.util.Date;
 
-@Entity @Getter @Setter
+@Entity
 @NoArgsConstructor
 public class Transaction implements Serializable, Comparable<Transaction> {
 
@@ -22,19 +22,24 @@ public class Transaction implements Serializable, Comparable<Transaction> {
     private Long id;
 
     @NotNull
+    @Getter
     private BigDecimal amount;
 
     @NotNull
-    private Instant date;
+    @Getter
+    private Date date;
 
     @NotNull
+    @Getter
     private String description;
 
     @OneToOne
+    @Getter
     private BankAccount fromAccount;
 
     @OneToOne
     @NotNull
+    @Getter
     private BankAccount toAccount;
 
     public Transaction(BigDecimal amount, String description, BankAccount to, BankAccount from) {
@@ -47,7 +52,7 @@ public class Transaction implements Serializable, Comparable<Transaction> {
         this.amount = amount;
         this.description = description;
         this.toAccount = to;
-        this.date = Instant.now();
+        this.date = new Date();
     }
 
     @Override

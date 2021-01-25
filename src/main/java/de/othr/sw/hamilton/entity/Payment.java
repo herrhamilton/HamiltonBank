@@ -12,8 +12,6 @@ import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
-@Getter //TODO Wirklich alles Getter/Setter?
-@Setter
 public class Payment implements Serializable {
 
     @Id
@@ -23,22 +21,32 @@ public class Payment implements Serializable {
 
     // second id so PK is not exposed
     @Column(columnDefinition = "BINARY(16)")
+    @Getter
     private UUID paymentId = UUID.randomUUID();
 
-    private String receiverName;
-
-    private String senderName;
-
+    @Getter
     private String description;
 
+    @Getter
     private BigDecimal amount;
 
+    @Getter
+    private String receiverName;
+
+    @Getter
+    @Setter
+    private String senderName;
+
+    @Getter
+    @Setter
     private String paymentUrl;
 
+    @Getter
+    @Setter
     private boolean isFulfilled = false;
 
-    public Payment(String username, BigDecimal amount, String description) {
-        this.receiverName = username;
+    public Payment(String receiverName, BigDecimal amount, String description) {
+        this.receiverName = receiverName;
         this.amount = amount;
         this.description = description;
     }
