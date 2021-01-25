@@ -25,18 +25,16 @@ public class PortfolioService {
     }
 
     public Portfolio getStonksPortfolio() {
+        //TODO link zu stonks?
         Customer customer = userService.getCurrentCustomer();
         UUID apiKey = customer.getStonksApiKey();
         if (apiKey == null) {
             return null;
         }
-
         RequestEntity<Void> requestEntity = RequestEntity.get(stonksUrl + "/api/v1/portfolio")
                 .header("X-API-Key", apiKey.toString())
                 .build();
-        //TODO handle 403 Forbidden
         ResponseEntity<Portfolio> responseEntity = restClient.exchange(requestEntity, Portfolio.class);
         return responseEntity.getBody();
     }
-    //TODO link zu stonks?
 }

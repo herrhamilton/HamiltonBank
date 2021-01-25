@@ -17,8 +17,15 @@
         <h2 th:text="${currentCustomer.bankAccount.balance} + '€'"></h2>
 
         <!-- Stonks-->
-        <div th:unless="${portfolio == null}">
-            <h2 th:text="'Portfoliowert: ' + ${portfolio.stockValueTotal}"></h2>
+        <div th:unless="${currentCustomer.stonksApiKey}">
+            <p> Um Ihr <a th:href="@{${stonksUrl}}" >Stonks-Portfolio</a> anzuzeigen, bitte API Key in den Einstellungen hinterlegen.</p>
+        </div>
+        <div th:if="${currentCustomer.stonksApiKey}">
+            <div th:switch="${stonksError}">
+                <p th:case="'auth'">Stellen Sie sicher, dass Sie den richtigen Stonks-API Key hinterlegt haben.</p>
+                <p th:case="'other'">Momentan kann nicht auf Ihr Portfolio zugegriffen werden. Versuchen Sie, <a th:href="@{${stonksUrl}}" >Stonks direkt zu erreichen.</a></p>
+                <h2 th:case="*" th:text="'Portfoliowert: ' + ${portfolio.stockValueTotal}"></h2>
+            </div>
         </div>
 
         <!-- Liste der Transaktionen-->

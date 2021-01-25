@@ -18,14 +18,10 @@
         <input readonly th:field="*{username}" type="text" class="form-control" id="username">
         <label for="api-key">API-Key zur Zahlungsanforderung</label>
         <input readonly th:field="*{hamiltonApiKey}" type="text" class="form-control" id="api-key">
-    </div>
-
-    <div class="form-group">
-    </div>
     <label for="stonks-key">Stonks API Key</label>
-    <input th:field="*{stonksApiKey}" type="text" class="form-control" id="stonks-key">
-    <div class="form-group">
-
+    <input th:field="*{stonksApiKey}" type="text" class="form-control" id="stonks-key"
+           pattern="(\d|[a-f]){8}-(\d|[a-f]){4}-(\d|[a-f]){4}-(\d|[a-f]){4}-(\d|[a-f]){12}"
+           title="gültiges UUID-Format">
     </div>
 
     <h2>Persönliche Daten</h2>
