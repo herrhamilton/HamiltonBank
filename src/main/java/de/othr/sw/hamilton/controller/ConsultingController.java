@@ -59,8 +59,6 @@ public class ConsultingController {
     public String createConsulting(@ModelAttribute Consulting consulting, Model model) {
         consultingService.createConsulting(consulting);
         model.addAttribute("consultingUrl", vociUrl + "/invitation?=" + consulting.getAccessToken());
-
-        //TODO vorher redirect:consulting - gehts immernocH?
         return "consulting";
     }
 

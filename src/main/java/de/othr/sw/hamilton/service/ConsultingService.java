@@ -3,6 +3,7 @@ package de.othr.sw.hamilton.service;
 import de.majaf.voci.entity.Invitation;
 import de.othr.sw.hamilton.entity.Advisor;
 import de.othr.sw.hamilton.entity.Consulting;
+import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.repository.ConsultingRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,18 +46,22 @@ public class ConsultingService {
     }
 
     public Consulting getRequestForCurrentCustomer() {
-        Consulting consulting = consultingRepository
-                .findOneByCustomerAndIsResolvedFalse(userService.getCurrentCustomer());
+        Consulting consulting = userService.getCurrentCustomer().getPendingConsulting();
         return consulting == null
                 ? new Consulting()
                 : consulting;
     }
 
+    @Transactional
     public Consulting createConsulting(Consulting consulting) {
-        consulting.setRequestTime(Instant.now());
-        consulting.setCustomer(userService.getCurrentCustomer());
-
+        Customer customer = userService.getCurrentCustomer();
+        consulting.setRequestTime(new Date());
+        consulting.setCustomer(customer);
         consulting = consultingRepository.save(consulting);
+
+        customer.setPendingConsulting(consulting);
+        userService.saveUser(customer);
+
         return consulting;
     }
 
@@ -72,7 +77,7 @@ public class ConsultingService {
         Invitation invitation = startVociCall(apiKey);
 
         consulting.setAccessToken(invitation.getAccessToken());
-        consulting.setAcceptTime(Instant.now());
+        consulting.setAcceptTime(new Date());
         consulting = consultingRepository.save(consulting);
         advisor.setRunningConsulting(consulting);
         userService.saveUser(advisor);
@@ -82,13 +87,16 @@ public class ConsultingService {
     @Transactional
     public void closeConsulting(UUID consultingId) {
         Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
-        consulting.setEndTime(Instant.now());
+        consulting.setEndTime(new Date());
         consulting.setResolved(true);
         //TODO Test jetz müssen alle Werte ausgefüllt sein?
         consulting = consultingRepository.save(consulting);
+        Customer customer = consulting.getCustomer();
         Advisor advisor = consulting.getAdvisor();
+        customer.setPendingConsulting(null);
         advisor.setRunningConsulting(null);
         userService.saveUser(advisor);
+        userService.saveUser(customer);
 
         String apiKey = advisor.getVociApiKey().toString();
         closeVociCall(consulting.getAccessToken(), apiKey);

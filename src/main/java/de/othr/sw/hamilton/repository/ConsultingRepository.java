@@ -10,7 +10,5 @@ import java.util.UUID;
 public interface ConsultingRepository extends CrudRepository<Consulting, Long> {
     List<Consulting> findAllByIsResolvedFalse();
 
-    Consulting findOneByCustomerAndIsResolvedFalse(Customer customer);
-
     Consulting findOneByConsultingId(UUID consultingId);
 }
