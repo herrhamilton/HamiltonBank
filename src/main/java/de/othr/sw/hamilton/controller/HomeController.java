@@ -16,7 +16,7 @@ public class HomeController {
         this.userService = userService;
     }
 
-    @RequestMapping(path = {"/home", "/"}, method = RequestMethod.GET)
+    @RequestMapping(path = "/", method = RequestMethod.GET)
     public String showStartPage() {
         return "index";
     }
@@ -26,7 +26,7 @@ public class HomeController {
         return "login";
     }
 
-    @RequestMapping(path = "/logiin", method = RequestMethod.GET)
+    @RequestMapping(path = "/home", method = RequestMethod.GET)
     public String showAfterLoginPage() {
         User currentUser = userService.getCurrentUser();
 

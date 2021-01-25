@@ -37,7 +37,6 @@ public class PaymentService {
     }
 
     public Payment createPayment(Payment requested) {
-        //TODO type/sanity check amount of payments, transactions,...
         Payment payment = new Payment(requested.getReceiverName(), requested.getAmount(), requested.getDescription());
         String paymentUrl = baseUrl + ":" + port + "/payment/" + payment.getPaymentId();
         payment.setPaymentUrl(paymentUrl);

@@ -41,7 +41,6 @@ public class ConsultingService {
     }
 
     public List<Consulting> getOpenRequests() {
-        //TODO exception handling here necessary?
         return consultingRepository.findAllByIsResolvedFalseAndIsCancelledFalse();
     }
 

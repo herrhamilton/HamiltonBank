@@ -24,7 +24,10 @@
             <div th:switch="${stonksError}">
                 <p th:case="'auth'">Stellen Sie sicher, dass Sie den richtigen Stonks-API Key hinterlegt haben.</p>
                 <p th:case="'other'">Momentan kann nicht auf Ihr Portfolio zugegriffen werden. Versuchen Sie, <a th:href="@{${stonksUrl}}" >Stonks direkt zu erreichen.</a></p>
-                <h2 th:case="*" th:text="'Portfoliowert: ' + ${portfolio.stockValueTotal}"></h2>
+                <div th:case="*">
+                    <h2 th:text="'Portfoliowert: ' + ${portfolio.stockValueTotal}"></h2>
+                    <a class="btn" th:href="@{${stonksUrl}}" >zu Stonks wechseln</a>
+                </div>
             </div>
         </div>
 

@@ -25,7 +25,6 @@ public class PortfolioService {
     }
 
     public Portfolio getStonksPortfolio() {
-        //TODO link zu stonks?
         Customer customer = userService.getCurrentCustomer();
         UUID apiKey = customer.getStonksApiKey();
         if (apiKey == null) {

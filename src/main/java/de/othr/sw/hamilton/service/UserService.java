@@ -35,7 +35,6 @@ public class UserService implements Serializable, UserDetailsService {
         }
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         user = userRepository.save(user);
-        //TODO input validation wo?
 
         if(user instanceof Customer) {
             Customer customer = (Customer) user;

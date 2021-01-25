@@ -28,8 +28,7 @@ public class PaymentController {
     @ResponseBody
     public ResponseEntity<?> createPayment(@RequestHeader("api-key") UUID apiKey, @RequestBody Payment payment) {
         Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
-        //TODO check apikey not empty
-        if(!apiKey.equals(receiver.getHamiltonApiKey())) {
+        if(!receiver.getHamiltonApiKey().equals(apiKey)) {
             return new ResponseEntity<>("You are not authorized to create a Payment for this username.", HttpStatus.UNAUTHORIZED);
         }
         payment = paymentService.createPayment(payment);
@@ -44,8 +43,7 @@ public class PaymentController {
             return new ResponseEntity<>("Payment with id '" + paymentId.toString() + "' could not be found", HttpStatus.NOT_FOUND);
         }
         Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
-        //TODO check apikey not empty
-        if(!apiKey.equals(receiver.getHamiltonApiKey())) {
+        if(!receiver.getHamiltonApiKey().equals(apiKey)) {
             return new ResponseEntity<>("You are not authorized to access this Payment.", HttpStatus.UNAUTHORIZED);
         }
         return new ResponseEntity<>(payment, HttpStatus.OK);
