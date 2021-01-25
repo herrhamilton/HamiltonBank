@@ -21,7 +21,7 @@ public class TransactionController {
 
     @ModelAttribute("currentCustomer")
     Customer currentCustomer() {
-        return  userService.getCurrentCustomer();
+        return userService.getCurrentCustomer();
     }
 
     @ModelAttribute("transactions")
@@ -53,8 +53,7 @@ public class TransactionController {
     }
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public String transferMoney(@ModelAttribute TransactionForm transactionForm ) {
-
+    public String transferMoney(@ModelAttribute TransactionForm transactionForm) {
         transactionService.sendTransaction(transactionForm);
         return "redirect:/overview";
     }

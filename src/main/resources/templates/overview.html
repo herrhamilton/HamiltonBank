@@ -34,24 +34,27 @@
         </div>
 
         <!-- List of Transactions-->
-        <form th:action="@{/statement}" method="get">
-            <button class="btn-block">Kontoauszug herunterladen</button>
-        </form>
-        <table>
-            <tr>
-                <th>Datum</th>
-                <th>Konto</th>
-                <th>Beschreibung</th>
-                <th>Betrag</th>
-            </tr>
-            <tr th:each="t : ${transactions}" th:with="isOutgoing=(${t.fromAccount} == ${currentCustomer.bankAccount})">
-                <td th:text="${#calendars.format(t.date,'dd.MM.yyyy')}"></td>
-                <td th:text="${isOutgoing} ? ${t.toAccount} : ${t.fromAccount}"></td>
-                <td th:text="${t.description}">Description</td>
-                <td th:if="${isOutgoing}" class="text-danger" th:text="'- ' + ${t.amount}"></td>
-                <td th:unless="${isOutgoing}" class="text-success" th:text="'+ ' + ${t.amount}"></td>
-            </tr>
-        </table>
+        <div th:if="${transactions.size > 0}">
+            <form th:action="@{/statement}" method="get">
+                <button class="btn-block">Kontoauszug herunterladen</button>
+            </form>
+            <table>
+                <tr>
+                    <th>Datum</th>
+                    <th>Konto</th>
+                    <th>Beschreibung</th>
+                    <th>Betrag</th>
+                </tr>
+                <tr th:each="t : ${transactions}"
+                    th:with="isOutgoing=(${t.fromAccount} == ${currentCustomer.bankAccount})">
+                    <td th:text="${#calendars.format(t.date,'dd.MM.yyyy')}"></td>
+                    <td th:text="${isOutgoing} ? ${t.toAccount} : ${t.fromAccount}"></td>
+                    <td th:text="${t.description}">Description</td>
+                    <td th:if="${isOutgoing}" class="text-danger" th:text="'- ' + ${t.amount}"></td>
+                    <td th:unless="${isOutgoing}" class="text-success" th:text="'+ ' + ${t.amount}"></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 

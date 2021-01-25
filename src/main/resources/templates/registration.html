@@ -12,14 +12,13 @@
     <div class="form-group">
         <label for="username">Nutzername</label>
         <input th:field="*{username}" type="text" class="form-control" id="username" required>
+        <small th:if="${userExists}" class="text-danger">Nutzername bereits vergeben.</small>
     </div>
 
     <div class="form-group">
         <label for="password">Passwort</label>
         <input th:field="*{passwordHash}" type="password" class="form-control" id="password" aria-describedby="pwHelp"
                required>
-        <small id="pwHelp" class="form-text text-muted">Dein Passwort wird selbstverständlich nicht im Klartext
-            gespeichert.</small>
     </div>
 
     <h2>Persönliche Daten</h2>

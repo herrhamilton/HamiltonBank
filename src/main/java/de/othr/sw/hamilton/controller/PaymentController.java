@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Controller
@@ -27,45 +28,58 @@ public class PaymentController {
     @RequestMapping(path = "/api/payment/create", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<?> createPayment(@RequestHeader("api-key") UUID apiKey, @RequestBody Payment payment) {
-        Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
-        if(!receiver.getHamiltonApiKey().equals(apiKey)) {
-            return new ResponseEntity<>("You are not authorized to create a Payment for this username.", HttpStatus.UNAUTHORIZED);
+        try {
+            Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
+
+            if (!receiver.getHamiltonApiKey().equals(apiKey)) {
+                return new ResponseEntity<>("You cannot create a Payment for this username.", HttpStatus.UNAUTHORIZED);
+            }
+            //TODO check payment amount, description
+            payment = paymentService.createPayment(payment);
+            return new ResponseEntity<>(payment, HttpStatus.OK);
+        } catch (NoSuchElementException ex) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
-        payment = paymentService.createPayment(payment);
-        return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/api/payment/check/{paymentId}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<?> checkPayment(@RequestHeader("api-key") UUID apiKey, @PathVariable("paymentId") UUID paymentId) {
-        Payment payment = paymentService.findPayment(paymentId);
-        if(payment == null) {
+        try {
+            Payment payment = paymentService.findPayment(paymentId);
+            Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
+            if (!receiver.getHamiltonApiKey().equals(apiKey)) {
+                return new ResponseEntity<>("You cannot access this Payment.", HttpStatus.UNAUTHORIZED);
+            }
+            return new ResponseEntity<>(payment, HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
             return new ResponseEntity<>("Payment with id '" + paymentId.toString() + "' could not be found", HttpStatus.NOT_FOUND);
         }
-        Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
-        if(!receiver.getHamiltonApiKey().equals(apiKey)) {
-            return new ResponseEntity<>("You are not authorized to access this Payment.", HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/payment/{paymentId}")
     public String showPaymentPage(@PathVariable("paymentId") UUID paymentId, Model model) {
-        //TODO Exception Handling hier und überall
-        //TODO Unit Tests
-        Payment payment = paymentService.findPayment(paymentId);
         Customer customer = userService.getCurrentCustomer();
-
         model.addAttribute("customer", customer);
-        model.addAttribute("payment", payment);
+
+        try {
+            Payment payment = paymentService.findPayment(paymentId);
+            model.addAttribute("payment", payment);
+        } catch (NoSuchElementException ex) {
+            model.addAttribute("notFound", true);
+        }
         return "payment";
     }
 
     @RequestMapping(path = "/payment/{paymentId}/fulfill", method = RequestMethod.POST)
     public String fulfillPaymentAndShowOverviewPage(@PathVariable("paymentId") UUID paymentId, Model model) {
-        Payment payment = paymentService.findPayment(paymentId);
-        paymentService.fulfillPayment(payment);
-
-        return "redirect:/overview";
+        try {
+            Payment payment = paymentService.findPayment(paymentId);
+            paymentService.fulfillPayment(payment);
+            return "redirect:/overview";
+        } catch (NoSuchElementException ex) {
+            model.addAttribute("notFound", true);
+            return "payment";
+        }
     }
 }

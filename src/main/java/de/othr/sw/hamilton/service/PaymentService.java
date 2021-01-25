@@ -66,6 +66,10 @@ public class PaymentService {
     }
 
     public Payment findPayment(UUID paymentId) {
-        return paymentRepository.findOneByPaymentId(paymentId);
+        Payment payment = paymentRepository.findOneByPaymentId(paymentId);
+        if(payment == null) {
+            throw new IllegalArgumentException("Payment does not exist");
+        }
+        return payment;
     }
 }

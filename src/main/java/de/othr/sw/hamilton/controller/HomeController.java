@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
+
 @Controller
 public class HomeController {
 
@@ -26,11 +28,15 @@ public class HomeController {
         return "login";
     }
 
+    @RequestMapping(path = "/login/failed", method = RequestMethod.GET)
+    public String showLoginFailedPage(Model model) {
+        model.addAttribute("failed", true);
+        return "login";
+    }
+
     @RequestMapping(path = "/home", method = RequestMethod.GET)
     public String showAfterLoginPage() {
         User currentUser = userService.getCurrentUser();
-
-        //TODO roles instead of instanceof check?
         return currentUser instanceof Customer ? "redirect:overview" : "redirect:advisor";
     }
 
@@ -41,8 +47,14 @@ public class HomeController {
     }
 
     @RequestMapping(path = "/registration", method = RequestMethod.POST)
-    public String registerUser(@ModelAttribute Customer user) {
-        userService.createUser(user);
+    public String registerUser(@ModelAttribute Customer user, Model model) {
+        try {
+            userService.createUser(user);
+        } catch(KeyAlreadyExistsException ex) {
+            model.addAttribute("userExists", true);
+            model.addAttribute("user", user);
+            return "registration";
+        }
         return "login";
     }
 

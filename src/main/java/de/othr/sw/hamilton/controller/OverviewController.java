@@ -45,14 +45,14 @@ public class OverviewController {
     @RequestMapping(path = "/overview", method = RequestMethod.GET)
     public String showOverview(Model model) {
         List<Transaction> transactions = transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount());
-        Portfolio portfolio = null;
+        Portfolio portfolio;
 
         try {
             portfolio = portfolioService.getStonksPortfolio();
             model.addAttribute("portfolio", portfolio);
-        } catch(HttpClientErrorException.Forbidden fe) {
+        } catch (HttpClientErrorException.Forbidden fe) {
             model.addAttribute("stonksError", "auth");
-        } catch(HttpClientErrorException | HttpServerErrorException e) {
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
             model.addAttribute("stonksError", "other");
         }
 
@@ -74,11 +74,13 @@ public class OverviewController {
 
     @RequestMapping(path = "/statement", method = RequestMethod.GET)
 
-    public ResponseEntity<String> getStatement(@ModelAttribute Customer customer) {
-
+    public ResponseEntity<String> getStatement() {
+        Customer customer = userService.getCurrentCustomer();
         String csvData = transactionService.generateStatementCsv();
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=Kontoübersicht_HamiltonBank.csv")
+        return csvData == null
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=Kontouebersicht_" + customer.getUsername() + "_HamiltonBank.csv")
                 .contentType(MediaType.valueOf("text/csv"))
                 .contentLength(csvData.length())
                 .body(csvData);

@@ -40,15 +40,8 @@ public class ConsultingService {
         return (Advisor) userService.createUser(advisor);
     }
 
-    public List<Consulting> getOpenRequests() {
+    public List<Consulting> getOpenConsultings() {
         return consultingRepository.findAllByIsResolvedFalseAndIsCancelledFalse();
-    }
-
-    public Consulting getRequestForCustomer(Customer customer) {
-        Consulting consulting = customer.getPendingConsulting();
-        return consulting == null
-                ? new Consulting()
-                : consulting;
     }
 
     @Transactional
@@ -87,14 +80,16 @@ public class ConsultingService {
         Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
         consulting.setEndTime(new Date());
         consulting.setResolved(true);
-        //TODO Test jetz müssen alle Werte ausgefüllt sein?
         consulting = consultingRepository.save(consulting);
+
         Customer customer = consulting.getCustomer();
-        Advisor advisor = consulting.getAdvisor();
         customer.setPendingConsulting(null);
+
+        Advisor advisor = consulting.getAdvisor();
         advisor.setRunningConsulting(null);
-        userService.saveUser(advisor);
+
         userService.saveUser(customer);
+        userService.saveUser(advisor);
 
         String apiKey = advisor.getVociApiKey().toString();
         closeVociCall(consulting.getAccessToken(), apiKey);
@@ -104,12 +99,13 @@ public class ConsultingService {
     public void cancelConsulting() {
         Customer customer = userService.getCurrentCustomer();
         Consulting consulting = customer.getPendingConsulting();
-
-        customer.setPendingConsulting(null);
-        consulting.setCancelled(true);
-        consulting.setEndTime(new Date());
-        consultingRepository.save(consulting);
-        userService.saveUser(customer);
+        if (consulting != null) {
+            customer.setPendingConsulting(null);
+            consulting.setCancelled(true);
+            consulting.setEndTime(new Date());
+            consultingRepository.save(consulting);
+            userService.saveUser(customer);
+        }
     }
 
     private Invitation startVociCall(String apiKey) {

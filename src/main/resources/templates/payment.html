@@ -13,19 +13,23 @@
 <div class="container">
     <div class="col-md-6 offset-md-3">
         <h2 th:text="'Hallo ' + ${customer.firstName} + '!'"></h2>
-        <div th:if="${payment.isFulfilled}">
-            <p>Diese Zahlung wurde bereits beglichen. Bei Problemen wende dich bitte an den Dienst, welchen du nutzen
+
+        <p th:if="${notFound}">Diese Zahlung existiert nicht.</p>
+        <div th:unless="${notFound}">
+            <p th:if="${payment.isFulfilled}">Diese Zahlung wurde bereits beglichen. Bei Problemen wende dich bitte an
+                den
+                Dienst, welchen du nutzen
                 möchtest. Vielen Dank!</p>
-        </div>
-        <div th:unless="${payment.isFulfilled}">
-            <h1 th:text="${payment.receiverName} + ' hat folgende Zahlung angefodert:'"></h1>
+            <div th:unless="${payment.isFulfilled}">
+                <h1 th:text="${payment.receiverName} + ' hat folgende Zahlung angefodert:'"></h1>
 
-            <p th:text="${payment.description}"></p>
-            <p th:text="${payment.amount} + '€'"></p>
+                <p th:text="${payment.description}"></p>
+                <p th:text="${payment.amount} + '€'"></p>
 
-            <form th:action="@{/payment/{paymentId}/fulfill(paymentId = ${payment.paymentId})}" method="post">
-                <button type="submit">Geld senden</button>
-            </form>
+                <form th:action="@{/payment/{paymentId}/fulfill(paymentId = ${payment.paymentId})}" method="post">
+                    <button type="submit">Geld senden</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

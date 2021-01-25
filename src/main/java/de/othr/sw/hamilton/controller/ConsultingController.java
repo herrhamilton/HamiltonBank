@@ -6,12 +6,15 @@ import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.service.ConsultingService;
 import de.othr.sw.hamilton.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.UUID;
 
 @Controller
@@ -31,18 +34,25 @@ public class ConsultingController {
 
     @RequestMapping(path = "/api/advisor", method = RequestMethod.POST)
     @ResponseBody
-    public Advisor createAdvisor(@RequestBody Advisor advisor) {
-        advisor = consultingService.createAdvisor(advisor);
-        return advisor;
+    public ResponseEntity<?> createAdvisor(@RequestBody Advisor advisor) {
+        try {
+            advisor = consultingService.createAdvisor(advisor);
+            return new ResponseEntity<>(advisor, HttpStatus.OK);
+        } catch(KeyAlreadyExistsException ex) {
+            return new ResponseEntity<>("Username already in use. Please try again with another one.", HttpStatus.OK);
+        }
     }
 
     @RequestMapping(path ="/consulting", method = RequestMethod.GET)
     public String showConsultingPage(Model model) {
         Customer customer = userService.getCurrentCustomer();
-        Consulting consulting = consultingService.getRequestForCustomer(customer);
-        model.addAttribute("hasConsulting", customer.getPendingConsulting() != null);
-        model.addAttribute("consulting", consulting);
-        model.addAttribute("consultingUrl", vociUrl + "/invitation?=" + consulting.getAccessToken());
+        Consulting consulting = customer.getPendingConsulting();
+        if(consulting == null) {
+            model.addAttribute("hasConsulting", false);
+        } else {
+            model.addAttribute("consulting", consulting);
+            model.addAttribute("consultingUrl", vociUrl + "/invitation?=" + consulting.getAccessToken());
+        }
 
         return "consulting";
     }
@@ -55,7 +65,7 @@ public class ConsultingController {
             //TODO rename templates
             return "accepted";
         } else {
-            model.addAttribute("consultingRequests", consultingService.getOpenRequests());
+            model.addAttribute("consultingRequests", consultingService.getOpenConsultings());
             model.addAttribute("acceptFailed", false);
             return "advisor";
         }
@@ -70,14 +80,14 @@ public class ConsultingController {
 
     @RequestMapping(path = "/consulting/accept/{consultingId}", method = RequestMethod.POST)
     public String acceptConsulting(@PathVariable("consultingId") UUID consultingId, Model model) {
-        Consulting consulting = null;
+        Consulting consulting;
         try {
             consulting = consultingService.acceptConsulting(consultingId);
             model.addAttribute("consulting", consulting);
             model.addAttribute("advisorUrl",  vociUrl + "/call?=" + consulting.getAccessToken());
         } catch(HttpClientErrorException | HttpServerErrorException e) {
             model.addAttribute("acceptFailed", true);
-            model.addAttribute("consultingRequests", consultingService.getOpenRequests());
+            model.addAttribute("consultingRequests", consultingService.getOpenConsultings());
             return "advisor";
         }
         return "accepted";

@@ -11,7 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.Serializable;
+import java.util.NoSuchElementException;
 
 @Service
 public class UserService implements Serializable, UserDetailsService {
@@ -30,13 +32,13 @@ public class UserService implements Serializable, UserDetailsService {
 
     public User createUser(User user) {
 
-        if(userRepository.findOneByUsername(user.getUsername()) != null) {
-            // TODO Meldung dass User schon existiert
+        if (userRepository.findOneByUsername(user.getUsername()) != null) {
+            throw new KeyAlreadyExistsException("Username already in use.");
         }
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         user = userRepository.save(user);
 
-        if(user instanceof Customer) {
+        if (user instanceof Customer) {
             Customer customer = (Customer) user;
             BankAccount bankAccount = new BankAccount();
             bankAccount.setOwner(customer);
@@ -51,11 +53,14 @@ public class UserService implements Serializable, UserDetailsService {
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findOneByUsername(username);
+        User user =  userRepository.findOneByUsername(username);
+        if(user == null) {
+            throw new NoSuchElementException("User mit Username " + username + " existiert nicht.");
+        }
+        return user;
     }
 
     public User getCurrentUser() {
-        //TODO sicherstellen dass jemand eingeloggt ist?
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return loadUserByUsername(username);
     }
@@ -67,8 +72,6 @@ public class UserService implements Serializable, UserDetailsService {
 
     public Customer updateCustomer(Customer updated) {
         Customer customer = (Customer) loadUserByUsername(updated.getUsername());
-        //TODO unit test : password (noch) und username, bankAccount, id NICHT ändern
-        // TODO zu db query machen?
         customer.setFirstName(updated.getFirstName());
         customer.setLastName(updated.getLastName());
         customer.setStonksApiKey(updated.getStonksApiKey());

@@ -15,6 +15,7 @@
                 <input type="text" name="username" id="username" required/>
                 <label for="password">Passwort</label>
                 <input type="password" name="password" id="password" required/>
+                <small th:if="${failed}" class="text-danger">Nutzername oder Passwort falsch.</small>
                 <button type="submit" class="btn btn-primary">Anmelden</button>
             </form>
         </div>

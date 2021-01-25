@@ -59,21 +59,17 @@ public class TransactionService implements Serializable {
 
     public void sendTransaction(TransactionForm transactionForm) {
         Customer receiver = (Customer) userRepository.findOneByUsername(transactionForm.getToUsername());
+        //TODO input validation
         BankAccount to = receiver.getBankAccount();
         BankAccount from = userService.getCurrentCustomer().getBankAccount();
 
-        //TODO test this and exception handling for input
         BigDecimal amount = getAmountFromString(transactionForm.getAmountString());
-
-
-
         Transaction transaction = new Transaction(amount, transactionForm.getDescription(), to, from);
         executeTransaction(transaction);
     }
 
     public void depositMoney(BigDecimal amount) {
         Customer customer = userService.getCurrentCustomer();
-        //TODO Komponentendiagramm ändern wenn Message Queuing zum Bezahlen benutzt wird (hat nix mit deposit zu tun^^)
         Transaction t = new Transaction(amount, "Einzahlung", customer.getBankAccount());
 
         executeTransaction(t);
@@ -81,17 +77,18 @@ public class TransactionService implements Serializable {
 
     public String generateStatementCsv() {
         List<Transaction> transactions = findTransactionsForBankAccount(userService.getCurrentCustomer().getBankAccount());
+        if(transactions.size() == 0) {
+            return null;
+        }
         String csvData = "";
         try(CharArrayWriter writer = new CharArrayWriter()) {
 
             StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer).build();
             beanToCsv.write(transactions);
             csvData = writer.toString();
-        } catch (CsvRequiredFieldEmptyException e) {
-            //TODO
+        } catch (CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
             e.printStackTrace();
-        } catch (CsvDataTypeMismatchException e) {
-            e.printStackTrace();
+            return null;
         }
         return csvData;
     }
