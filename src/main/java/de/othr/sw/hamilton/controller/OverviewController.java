@@ -2,7 +2,7 @@ package de.othr.sw.hamilton.controller;
 
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
-import de.othr.sw.hamilton.service.DepotService;
+import de.othr.sw.hamilton.service.PortfolioService;
 import de.othr.sw.hamilton.service.TransactionService;
 import de.othr.sw.hamilton.service.UserService;
 import org.springframework.http.HttpHeaders;
@@ -21,13 +21,13 @@ public class OverviewController {
 
     private final UserService userService;
 
-    private final DepotService depotService;
+    private final PortfolioService portfolioService;
 
     private final TransactionService transactionService;
 
-    public OverviewController(UserService userService, DepotService depotService, TransactionService transactionService) {
+    public OverviewController(UserService userService, PortfolioService portfolioService, TransactionService transactionService) {
         this.userService = userService;
-        this.depotService = depotService;
+        this.portfolioService = portfolioService;
         this.transactionService = transactionService;
     }
 
@@ -41,14 +41,8 @@ public class OverviewController {
         List<Transaction> transactions = transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount());
 
         model.addAttribute("transactions", transactions);
-        model.addAttribute("portfolio", depotService.getPortfolio());
+        model.addAttribute("portfolio", portfolioService.getStonksPortfolio());
         return "overview";
-    }
-
-    @RequestMapping(path = "/depot")
-    public String showDepotPage(Model model) {
-        model.addAttribute("portfolio", depotService.getPortfolio());
-        return "depot";
     }
 
     @RequestMapping(path = "/settings")
