@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <meta charset="UTF-8">
     <title>Einstellungen</title>
 </head>
@@ -22,7 +23,7 @@
     <div class="form-group">
     </div>
     <label for="stonks-key">Stonks API Key</label>
-    <input  th:field="*{stonksApiKey}" type="text" class="form-control" id="stonks-key">
+    <input th:field="*{stonksApiKey}" type="text" class="form-control" id="stonks-key">
     <div class="form-group">
 
     </div>
@@ -30,17 +31,17 @@
     <h2>Persönliche Daten</h2>
     <div class="form-group">
         <label for="firstName">Vorname</label>
-        <input th:field="*{firstName}" type="text" class="form-control" id="firstName">
+        <input th:field="*{firstName}" type="text" class="form-control" id="firstName" required>
         <label for="lastName">Nachname</label>
-        <input th:field="*{lastName}" type="text" class="form-control" id="lastName">
+        <input th:field="*{lastName}" type="text" class="form-control" id="lastName" required>
         <label for="street">Straße</label>
-        <input th:field="*{address.street}" type="text" class="form-control" id="street">
+        <input th:field="*{address.street}" type="text" class="form-control" id="street" required>
         <label for="houseNr">Hausnummer</label>
-        <input th:field="*{address.houseNr}" type="text" class="form-control" id="houseNr">
+        <input th:field="*{address.houseNr}" type="text" class="form-control" id="houseNr" required>
         <label for="postalCode">Postleitzahl</label>
-        <input th:field="*{address.postalCode}" type="text" class="form-control" id="postalCode">
+        <input th:field="*{address.postalCode}" type="text" class="form-control" id="postalCode" required>
         <label for="city">Stadt</label>
-        <input th:field="*{address.city}" type="text" class="form-control" id="city">
+        <input th:field="*{address.city}" type="text" class="form-control" id="city" required>
     </div>
     <button type="submit" class="btn btn-primary">Speichern</button>
 </form>

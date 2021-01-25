@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <meta charset="UTF-8">
     <title>Überweisen</title>
 </head>
@@ -13,10 +14,10 @@
 <form th:action="@{/transfer}" method="post" th:object="${transactionForm}">
     <div class="form-group">
         <label for="receiver">Nutzername des Empfängers</label>
-        <input th:field="*{toUsername}" type="text" class="form-control" id="receiver">
+        <input th:field="*{toUsername}" type="text" class="form-control" id="receiver" required>
 
         <label for="description">Beschreibung</label>
-        <input th:field="*{description}" type="text" class="form-control" id="description">
+        <input th:field="*{description}" type="text" class="form-control" id="description" required>
 
         <div th:replace="fragments/currency-input :: currency-input"></div>
     </div>

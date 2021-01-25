@@ -26,7 +26,8 @@
             <td th:text="${consulting.reason}"></td>
             <td th:text="${#calendars.format(consulting.requestTime,'HH:mm')} + ' Uhr'"></td>
             <td>
-                <form th:action="@{/consulting/accept/{consultingId}(consultingId = ${consulting.consultingId})}" method="post">
+                <form th:action="@{/consulting/accept/{consultingId}(consultingId = ${consulting.consultingId})}"
+                      method="post">
                     <a>
                         <button type="submit">Annehmen</button>
                     </a>

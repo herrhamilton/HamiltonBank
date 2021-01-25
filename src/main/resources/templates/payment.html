@@ -14,7 +14,8 @@
     <div class="col-md-6 offset-md-3">
         <h2 th:text="'Hallo ' + ${customer.firstName} + '!'"></h2>
         <div th:if="${payment.isFulfilled}">
-            <p>Diese Zahlung wurde bereits beglichen. Bei Problemen wende dich bitte an den Dienst, welchen du nutzen möchtest. Vielen Dank!</p>
+            <p>Diese Zahlung wurde bereits beglichen. Bei Problemen wende dich bitte an den Dienst, welchen du nutzen
+                möchtest. Vielen Dank!</p>
         </div>
         <div th:unless="${payment.isFulfilled}">
             <h1 th:text="${payment.receiverName} + ' hat folgende Zahlung angefodert:'"></h1>
