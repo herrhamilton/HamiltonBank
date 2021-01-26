@@ -145,7 +145,7 @@
                             <classifier>remote</classifier>
                             <includes>
                                 <include>
-                                    /Payment.class
+                                    **/Payment.class
                                 </include>
                             </includes>
                         </configuration>
