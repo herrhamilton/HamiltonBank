@@ -49,11 +49,12 @@ public class ConsultingController {
         Consulting consulting = customer.getPendingConsulting();
         if(consulting == null) {
             model.addAttribute("hasConsulting", false);
+            model.addAttribute("consulting", new Consulting());
         } else {
+            model.addAttribute("hasConsulting", true);
             model.addAttribute("consulting", consulting);
-            model.addAttribute("consultingUrl", vociUrl + "/invitation?=" + consulting.getAccessToken());
+            model.addAttribute("consultingUrl", vociUrl + "/invitation?accessToken=" + consulting.getAccessToken());
         }
-
         return "consulting";
     }
 
@@ -74,7 +75,7 @@ public class ConsultingController {
     @RequestMapping(path = "/consulting", method = RequestMethod.POST)
     public String createConsulting(@ModelAttribute Consulting consulting, Model model) {
         consultingService.createConsulting(consulting);
-        model.addAttribute("consultingUrl", vociUrl + "/invitation?=" + consulting.getAccessToken());
+        model.addAttribute("consultingUrl", vociUrl + "/invitation?accessToken=" + consulting.getAccessToken());
         return "redirect:/consulting";
     }
 

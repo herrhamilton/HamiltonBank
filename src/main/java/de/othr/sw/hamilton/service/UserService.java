@@ -55,7 +55,8 @@ public class UserService implements Serializable, UserDetailsService {
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         User user =  userRepository.findOneByUsername(username);
         if(user == null) {
-            throw new NoSuchElementException("User mit Username " + username + " existiert nicht.");
+            //TODO catch this in AuthStuff?
+            throw new UsernameNotFoundException("User mit Username " + username + " existiert nicht.");
         }
         return user;
     }
@@ -71,7 +72,7 @@ public class UserService implements Serializable, UserDetailsService {
     }
 
     public Customer updateCustomer(Customer updated) {
-        Customer customer = (Customer) loadUserByUsername(updated.getUsername());
+        Customer customer = getCurrentCustomer();
         customer.setFirstName(updated.getFirstName());
         customer.setLastName(updated.getLastName());
         customer.setStonksApiKey(updated.getStonksApiKey());

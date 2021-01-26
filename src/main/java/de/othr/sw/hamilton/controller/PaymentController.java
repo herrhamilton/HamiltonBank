@@ -54,6 +54,8 @@ public class PaymentController {
             return new ResponseEntity<>(payment, HttpStatus.OK);
         } catch (IllegalArgumentException ex) {
             return new ResponseEntity<>("Payment with id '" + paymentId.toString() + "' could not be found", HttpStatus.NOT_FOUND);
+        } catch(NoSuchElementException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 

@@ -14,28 +14,30 @@
 <!--TODO wenn niemand wartet-->
 <div class="col-md-8 offset-md-2">
     <p th:if="${acceptFailed}">Anfrage konnte nicht angenommen werden. Bitte versuchen Sie es später erneut.</p>
-    <p>Momentan warten folgende Kunden auf ein Gespräch:</p>
-    <table>
-        <tr>
-            <th>Kunde</th>
-            <th>Grund</th>
-            <th>wartet seit</th>
-        </tr>
-        <tr th:each="consulting : ${consultingRequests}">
-            <td th:text="${consulting.customer}"></td>
-            <td th:text="${consulting.reason}"></td>
-            <td th:text="${#calendars.format(consulting.requestTime,'HH:mm')} + ' Uhr'"></td>
-            <td>
-                <form th:action="@{/consulting/accept/{consultingId}(consultingId = ${consulting.consultingId})}"
-                      method="post">
-                    <a>
-                        <button type="submit">Annehmen</button>
-                    </a>
-                </form>
-            </td>
-        </tr>
-
-    </table>
+    <p th:unless="${consultingRequests}">Momentan wartet kein Kunde auf ein Gespräch. Holen Sie sich einen Kaffee!</p>
+    <div th:if="${consultingRequests}">
+        <p>Momentan warten folgende Kunden auf ein Gespräch:</p>
+        <table>
+            <tr>
+                <th>Kunde</th>
+                <th>Grund</th>
+                <th>wartet seit</th>
+            </tr>
+            <tr th:each="consulting : ${consultingRequests}">
+                <td th:text="${consulting.customer}"></td>
+                <td th:text="${consulting.reason}"></td>
+                <td th:text="${#calendars.format(consulting.requestTime,'HH:mm')} + ' Uhr'"></td>
+                <td>
+                    <form th:action="@{/consulting/accept/{consultingId}(consultingId = ${consulting.consultingId})}"
+                          method="post">
+                        <a>
+                            <button type="submit">Annehmen</button>
+                        </a>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
 </body>
 </html>
