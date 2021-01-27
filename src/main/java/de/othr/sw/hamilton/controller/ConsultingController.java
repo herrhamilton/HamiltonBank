@@ -73,7 +73,7 @@ public class ConsultingController {
         if (consulting != null) {
             model.addAttribute("advisorUrl", vociUrl + "/call?=" + consulting.getAccessToken());
             model.addAttribute("consulting", consulting);
-            //TODO rename templates
+            //TODO rename templates, kann man des zusammenfügen mit /accept?
             return "accepted";
         } else {
             model.addAttribute("consultingRequests", consultingService.getOpenConsultings());
@@ -90,9 +90,8 @@ public class ConsultingController {
 
     @RequestMapping(path = "/advisor/accept/{consultingId}", method = RequestMethod.POST)
     public String acceptConsulting(@PathVariable("consultingId") UUID consultingId, Model model) {
-        Consulting consulting;
         try {
-            consulting = consultingService.acceptConsulting(consultingId);
+            Consulting consulting = consultingService.acceptConsulting(consultingId);
             model.addAttribute("consulting", consulting);
             model.addAttribute("advisorUrl", vociUrl + "/call?=" + consulting.getAccessToken());
         } catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -104,9 +103,8 @@ public class ConsultingController {
     }
 
     @RequestMapping(path = "/advisor/close/{consultingId}", method = RequestMethod.POST)
-    public String closeConsulting(@PathVariable("consultingId") UUID consultingId) {
-        consultingService.closeConsulting(consultingId);
-        //TODO add model so summary can be persisted
+    public String closeConsulting(@ModelAttribute Consulting consulting, @PathVariable("consultingId") UUID consultingId) {
+        consultingService.closeConsulting(consulting.getSummary(), consultingId);
         return "redirect:/advisor";
     }
 

@@ -15,7 +15,7 @@ public interface IConsultingService {
 
     Consulting acceptConsulting(UUID consultingId);
 
-    void closeConsulting(UUID consultingId);
+    void closeConsulting(String summary, UUID consultingId);
 
     void cancelConsulting();
 }

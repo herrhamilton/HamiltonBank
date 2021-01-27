@@ -78,12 +78,12 @@ public class ConsultingService implements IConsultingService {
 
     @Override
     @Transactional
-    public void closeConsulting(UUID consultingId) {
+    public void closeConsulting(String summary, UUID consultingId) {
         Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
         consulting.setEndTime(new Date());
         consulting.setOpen(false);
+        consulting.setSummary(summary);
         consulting = consultingRepository.save(consulting);
-
 
         Advisor advisor = consulting.getAdvisor();
         String apiKey = advisor.getVociApiKey().toString();
