@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface ConsultingRepository extends CrudRepository<Consulting, Long> {
+public interface IConsultingRepository extends CrudRepository<Consulting, Long> {
     List<Consulting> findAllByIsResolvedFalseAndIsCancelledFalse();
 
     Consulting findOneByConsultingId(UUID consultingId);

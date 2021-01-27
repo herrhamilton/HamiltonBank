@@ -2,8 +2,8 @@ package de.othr.sw.hamilton.controller;
 
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Payment;
-import de.othr.sw.hamilton.service.PaymentService;
-import de.othr.sw.hamilton.service.UserService;
+import de.othr.sw.hamilton.service.IPaymentService;
+import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,11 +16,11 @@ import java.util.UUID;
 @Controller
 public class PaymentController {
 
-    private final UserService userService;
+    private final IUserService userService;
 
-    private final PaymentService paymentService;
+    private final IPaymentService paymentService;
 
-    public PaymentController(UserService userService, PaymentService paymentService) {
+    public PaymentController(IUserService userService, IPaymentService paymentService) {
         this.userService = userService;
         this.paymentService = paymentService;
     }

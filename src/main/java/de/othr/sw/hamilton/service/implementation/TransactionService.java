@@ -1,4 +1,4 @@
-package de.othr.sw.hamilton.service;
+package de.othr.sw.hamilton.service.implementation;
 
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -8,9 +8,11 @@ import de.othr.sw.hamilton.entity.BankAccount;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.entity.TransactionForm;
-import de.othr.sw.hamilton.repository.BankAccountRepository;
-import de.othr.sw.hamilton.repository.TransactionRepository;
-import de.othr.sw.hamilton.repository.UserRepository;
+import de.othr.sw.hamilton.repository.IBankAccountRepository;
+import de.othr.sw.hamilton.repository.ITransactionRepository;
+import de.othr.sw.hamilton.repository.IUserRepository;
+import de.othr.sw.hamilton.service.ITransactionService;
+import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,23 +22,24 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class TransactionService implements Serializable {
+public class TransactionService implements Serializable, ITransactionService {
 
-    private final UserService userService;
+    private final IUserService userService;
 
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
 
-    private final TransactionRepository transactionRepository;
+    private final ITransactionRepository transactionRepository;
 
-    private final BankAccountRepository bankAccountRepository;
+    private final IBankAccountRepository bankAccountRepository;
 
-    public TransactionService(UserService userService, UserRepository userRepository, TransactionRepository transactionRepository, BankAccountRepository bankAccountRepository) {
+    public TransactionService(IUserService userService, IUserRepository userRepository, ITransactionRepository transactionRepository, IBankAccountRepository bankAccountRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.transactionRepository = transactionRepository;
         this.bankAccountRepository = bankAccountRepository;
     }
 
+    @Override
     @Transactional
     public void executeTransaction(Transaction transaction) {
         if(transaction.getFromAccount() != null) {
@@ -51,12 +54,14 @@ public class TransactionService implements Serializable {
     }
 
 
+    @Override
     public List<Transaction> findTransactionsForBankAccount(BankAccount bankAccount) {
         List<Transaction> transactions = transactionRepository.findByFromAccountOrToAccount(bankAccount, bankAccount);
         transactions.sort(Collections.reverseOrder());
         return transactions;
     }
 
+    @Override
     public void sendTransaction(TransactionForm transactionForm) {
         Customer receiver = (Customer) userRepository.findOneByUsername(transactionForm.getToUsername());
         //TODO input validation
@@ -68,6 +73,7 @@ public class TransactionService implements Serializable {
         executeTransaction(transaction);
     }
 
+    @Override
     public void depositMoney(BigDecimal amount) {
         Customer customer = userService.getCurrentCustomer();
         Transaction t = new Transaction(amount, "Einzahlung", customer.getBankAccount());
@@ -75,6 +81,7 @@ public class TransactionService implements Serializable {
         executeTransaction(t);
     }
 
+    @Override
     public String generateStatementCsv() {
         List<Transaction> transactions = findTransactionsForBankAccount(userService.getCurrentCustomer().getBankAccount());
         if(transactions.size() == 0) {
@@ -93,6 +100,7 @@ public class TransactionService implements Serializable {
         return csvData;
     }
 
+    @Override
     public BigDecimal getAmountFromString(String amountString) {
         // TODO ggf Unit Testing
         amountString = amountString.replace(",", ".");

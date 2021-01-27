@@ -1,10 +1,12 @@
-package de.othr.sw.hamilton.service;
+package de.othr.sw.hamilton.service.implementation;
 
 import de.majaf.voci.entity.Invitation;
 import de.othr.sw.hamilton.entity.Advisor;
 import de.othr.sw.hamilton.entity.Consulting;
 import de.othr.sw.hamilton.entity.Customer;
-import de.othr.sw.hamilton.repository.ConsultingRepository;
+import de.othr.sw.hamilton.repository.IConsultingRepository;
+import de.othr.sw.hamilton.service.IConsultingService;
+import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
@@ -18,32 +20,35 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class ConsultingService {
+public class ConsultingService implements IConsultingService {
 
     @Value("${appconfig.voci.url}")
     private String vociUrl;
 
-    private final UserService userService;
+    private final IUserService userService;
 
-    private final ConsultingRepository consultingRepository;
+    private final IConsultingRepository consultingRepository;
 
     private final RestTemplate restClient;
 
-    public ConsultingService(UserService userService, ConsultingRepository consultingRepository, RestTemplate restClient) {
+    public ConsultingService(IUserService userService, IConsultingRepository consultingRepository, RestTemplate restClient) {
         this.userService = userService;
         this.consultingRepository = consultingRepository;
         this.restClient = restClient;
     }
 
+    @Override
     public Advisor createAdvisor(Advisor advisor) {
         //TODO give roles/authorities to customer/advisor?
         return (Advisor) userService.createUser(advisor);
     }
 
+    @Override
     public List<Consulting> getOpenConsultings() {
         return consultingRepository.findAllByIsResolvedFalseAndIsCancelledFalse();
     }
 
+    @Override
     @Transactional
     public Consulting createConsulting(Consulting consulting) {
         Customer customer = userService.getCurrentCustomer();
@@ -57,6 +62,7 @@ public class ConsultingService {
         return consulting;
     }
 
+    @Override
     @Transactional
     public Consulting acceptConsulting(UUID consultingId) {
         Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
@@ -75,6 +81,7 @@ public class ConsultingService {
         return consulting;
     }
 
+    @Override
     @Transactional
     public void closeConsulting(UUID consultingId) {
         Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
@@ -95,6 +102,7 @@ public class ConsultingService {
         closeVociCall(consulting.getAccessToken(), apiKey);
     }
 
+    @Override
     @Transactional
     public void cancelConsulting() {
         Customer customer = userService.getCurrentCustomer();

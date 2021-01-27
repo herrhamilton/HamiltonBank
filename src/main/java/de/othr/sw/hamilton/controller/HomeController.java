@@ -2,7 +2,7 @@ package de.othr.sw.hamilton.controller;
 
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.User;
-import de.othr.sw.hamilton.service.UserService;
+import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +12,9 @@ import javax.management.openmbean.KeyAlreadyExistsException;
 @Controller
 public class HomeController {
 
-    private final UserService userService;
+    private final IUserService userService;
 
-    public HomeController(UserService userService) {
+    public HomeController(IUserService userService) {
         this.userService = userService;
     }
 

@@ -1,6 +1,8 @@
-package de.othr.sw.hamilton.service;
+package de.othr.sw.hamilton.service.implementation;
 
 import de.othr.sw.hamilton.entity.Customer;
+import de.othr.sw.hamilton.service.IPortfolioService;
+import de.othr.sw.hamilton.service.IUserService;
 import dev.wobu.stonks.entity.Portfolio;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
@@ -11,19 +13,20 @@ import org.springframework.web.client.RestTemplate;
 import java.util.UUID;
 
 @Service
-public class PortfolioService {
+public class PortfolioService implements IPortfolioService {
     @Value("${appconfig.stonks.url}")
     private String stonksUrl;
 
     private final RestTemplate restClient;
 
-    private final UserService userService;
+    private final IUserService userService;
 
-    public PortfolioService(RestTemplate restClient, UserService userService) {
+    public PortfolioService(RestTemplate restClient, IUserService userService) {
         this.restClient = restClient;
         this.userService = userService;
     }
 
+    @Override
     public Portfolio getStonksPortfolio() {
         Customer customer = userService.getCurrentCustomer();
         UUID apiKey = customer.getStonksApiKey();

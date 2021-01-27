@@ -3,8 +3,8 @@ package de.othr.sw.hamilton.controller;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.entity.TransactionForm;
-import de.othr.sw.hamilton.service.TransactionService;
-import de.othr.sw.hamilton.service.UserService;
+import de.othr.sw.hamilton.service.ITransactionService;
+import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +15,9 @@ import java.util.List;
 @Controller
 public class TransactionController {
 
-    private final TransactionService transactionService;
+    private final ITransactionService transactionService;
 
-    private final UserService userService;
+    private final IUserService userService;
 
     @ModelAttribute("currentCustomer")
     Customer currentCustomer() {
@@ -29,7 +29,7 @@ public class TransactionController {
         return transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount());
     }
 
-    public TransactionController(TransactionService transactionService, UserService userService) {
+    public TransactionController(ITransactionService transactionService, IUserService userService) {
         this.transactionService = transactionService;
         this.userService = userService;
     }

@@ -1,10 +1,11 @@
-package de.othr.sw.hamilton.service;
+package de.othr.sw.hamilton.service.implementation;
 
 import de.othr.sw.hamilton.entity.BankAccount;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.User;
-import de.othr.sw.hamilton.repository.BankAccountRepository;
-import de.othr.sw.hamilton.repository.UserRepository;
+import de.othr.sw.hamilton.repository.IBankAccountRepository;
+import de.othr.sw.hamilton.repository.IUserRepository;
+import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,23 +14,23 @@ import org.springframework.stereotype.Service;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.Serializable;
-import java.util.NoSuchElementException;
 
 @Service
-public class UserService implements Serializable, UserDetailsService {
+public class UserService implements Serializable, UserDetailsService, IUserService {
 
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
 
-    private final BankAccountRepository bankAccountRepository;
+    private final IBankAccountRepository bankAccountRepository;
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, BankAccountRepository bankAccountRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserService(IUserRepository userRepository, IBankAccountRepository bankAccountRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.bankAccountRepository = bankAccountRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
     public User createUser(User user) {
 
         if (userRepository.findOneByUsername(user.getUsername()) != null) {
@@ -61,16 +62,19 @@ public class UserService implements Serializable, UserDetailsService {
         return user;
     }
 
+    @Override
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return loadUserByUsername(username);
     }
 
+    @Override
     public Customer getCurrentCustomer() {
         //TODO kann man Customer iwie lokal halten oder muss man den jedesmal abfragen?
         return (Customer) getCurrentUser();
     }
 
+    @Override
     public Customer updateCustomer(Customer updated) {
         Customer customer = getCurrentCustomer();
         customer.setFirstName(updated.getFirstName());
@@ -81,6 +85,7 @@ public class UserService implements Serializable, UserDetailsService {
         return userRepository.save(customer);
     }
 
+    @Override
     public User saveUser(User user) {
         return userRepository.save(user);
     }

@@ -2,9 +2,9 @@ package de.othr.sw.hamilton.controller;
 
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
-import de.othr.sw.hamilton.service.PortfolioService;
-import de.othr.sw.hamilton.service.TransactionService;
-import de.othr.sw.hamilton.service.UserService;
+import de.othr.sw.hamilton.service.IPortfolioService;
+import de.othr.sw.hamilton.service.ITransactionService;
+import de.othr.sw.hamilton.service.IUserService;
 import dev.wobu.stonks.entity.Portfolio;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -30,13 +30,13 @@ public class OverviewController {
         return userService.getCurrentCustomer();
     }
 
-    private final UserService userService;
+    private final IUserService userService;
 
-    private final PortfolioService portfolioService;
+    private final IPortfolioService portfolioService;
 
-    private final TransactionService transactionService;
+    private final ITransactionService transactionService;
 
-    public OverviewController(UserService userService, PortfolioService portfolioService, TransactionService transactionService) {
+    public OverviewController(IUserService userService, IPortfolioService portfolioService, ITransactionService transactionService) {
         this.userService = userService;
         this.portfolioService = portfolioService;
         this.transactionService = transactionService;

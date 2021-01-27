@@ -3,8 +3,8 @@ package de.othr.sw.hamilton.controller;
 import de.othr.sw.hamilton.entity.Advisor;
 import de.othr.sw.hamilton.entity.Consulting;
 import de.othr.sw.hamilton.entity.Customer;
-import de.othr.sw.hamilton.service.ConsultingService;
-import de.othr.sw.hamilton.service.UserService;
+import de.othr.sw.hamilton.service.IConsultingService;
+import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +23,11 @@ public class ConsultingController {
     @Value("${appconfig.voci.url}")
     private String vociUrl;
 
-    private final UserService userService;
+    private final IUserService userService;
 
-    private final ConsultingService consultingService;
+    private final IConsultingService consultingService;
 
-    public ConsultingController(UserService userService, ConsultingService consultingService) {
+    public ConsultingController(IUserService userService, IConsultingService consultingService) {
         this.userService = userService;
         this.consultingService = consultingService;
     }

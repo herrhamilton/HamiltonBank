@@ -1,11 +1,14 @@
-package de.othr.sw.hamilton.service;
+package de.othr.sw.hamilton.service.implementation;
 
 import de.othr.sw.hamilton.entity.BankAccount;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Payment;
 import de.othr.sw.hamilton.entity.Transaction;
-import de.othr.sw.hamilton.repository.PaymentRepository;
-import de.othr.sw.hamilton.repository.UserRepository;
+import de.othr.sw.hamilton.repository.IPaymentRepository;
+import de.othr.sw.hamilton.repository.IUserRepository;
+import de.othr.sw.hamilton.service.IPaymentService;
+import de.othr.sw.hamilton.service.ITransactionService;
+import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +16,7 @@ import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Service
-public class PaymentService {
+public class PaymentService implements IPaymentService {
 
     @Value("${appconfig.base-url}")
     private String baseUrl;
@@ -21,21 +24,22 @@ public class PaymentService {
     @Value("${server.port}")
     private int port;
 
-    private final UserService userService;
+    private final IUserService userService;
 
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
 
-    private final PaymentRepository paymentRepository;
+    private final IPaymentRepository paymentRepository;
 
-    private final TransactionService transactionService;
+    private final ITransactionService transactionService;
 
-    public PaymentService(UserService userService, UserRepository userRepository, PaymentRepository paymentRepository, TransactionService transactionService) {
+    public PaymentService(IUserService userService, IUserRepository userRepository, IPaymentRepository paymentRepository, ITransactionService transactionService) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.paymentRepository = paymentRepository;
         this.transactionService = transactionService;
     }
 
+    @Override
     public Payment createPayment(Payment requested) {
         Payment payment = new Payment(requested.getReceiverName(), requested.getAmount(), requested.getDescription());
         String paymentUrl = baseUrl + ":" + port + "/payment/" + payment.getPaymentId();
@@ -44,6 +48,7 @@ public class PaymentService {
         return payment;
     }
 
+    @Override
     @Transactional
     public void fulfillPayment(Payment payment) {
 
@@ -65,6 +70,7 @@ public class PaymentService {
         }
     }
 
+    @Override
     public Payment findPayment(UUID paymentId) {
         Payment payment = paymentRepository.findOneByPaymentId(paymentId);
         if(payment == null) {
