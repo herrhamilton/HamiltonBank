@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IConsultingRepository extends CrudRepository<Consulting, Long> {
-    List<Consulting> findAllByIsResolvedFalseAndIsCancelledFalse();
+    List<Consulting> findAllByIsOpenTrue();
 
     Consulting findOneByConsultingId(UUID consultingId);
 }

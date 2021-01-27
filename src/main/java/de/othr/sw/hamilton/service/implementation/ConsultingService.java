@@ -42,7 +42,7 @@ public class ConsultingService implements IConsultingService {
 
     @Override
     public List<Consulting> getOpenConsultings() {
-        return consultingRepository.findAllByIsResolvedFalseAndIsCancelledFalse();
+        return consultingRepository.findAllByIsOpenTrue();
     }
 
     @Override
@@ -52,9 +52,6 @@ public class ConsultingService implements IConsultingService {
         consulting.setRequestTime(new Date());
         consulting.setCustomer(customer);
         consulting = consultingRepository.save(consulting);
-
-        customer.setPendingConsulting(consulting);
-        userService.saveUser(customer);
 
         return consulting;
     }
@@ -73,8 +70,6 @@ public class ConsultingService implements IConsultingService {
         consulting.setAccessToken(invitation.getAccessToken());
         consulting.setAcceptTime(new Date());
         consulting = consultingRepository.save(consulting);
-        advisor.setRunningConsulting(consulting);
-        userService.saveUser(advisor);
         return consulting;
     }
 
@@ -83,18 +78,11 @@ public class ConsultingService implements IConsultingService {
     public void closeConsulting(UUID consultingId) {
         Consulting consulting = consultingRepository.findOneByConsultingId(consultingId);
         consulting.setEndTime(new Date());
-        consulting.setResolved(true);
+        consulting.setOpen(false);
         consulting = consultingRepository.save(consulting);
 
-        Customer customer = consulting.getCustomer();
-        customer.setPendingConsulting(null);
 
         Advisor advisor = consulting.getAdvisor();
-        advisor.setRunningConsulting(null);
-
-        userService.saveUser(customer);
-        userService.saveUser(advisor);
-
         String apiKey = advisor.getVociApiKey().toString();
         closeVociCall(consulting.getAccessToken(), apiKey);
     }
@@ -103,13 +91,11 @@ public class ConsultingService implements IConsultingService {
     @Transactional
     public void cancelConsulting() {
         Customer customer = userService.getCurrentCustomer();
-        Consulting consulting = customer.getPendingConsulting();
+        Consulting consulting = customer.getOpenConsulting();
         if (consulting != null) {
-            customer.setPendingConsulting(null);
-            consulting.setCancelled(true);
+            consulting.setOpen(false);
             consulting.setEndTime(new Date());
             consultingRepository.save(consulting);
-            userService.saveUser(customer);
         }
     }
 

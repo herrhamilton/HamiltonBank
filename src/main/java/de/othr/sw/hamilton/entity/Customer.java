@@ -3,13 +3,11 @@ package de.othr.sw.hamilton.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -31,7 +29,15 @@ public class Customer extends User {
     @Setter(AccessLevel.NONE)
     private UUID hamiltonApiKey = UUID.randomUUID();
 
-    @OneToOne
+    @OneToMany(mappedBy = "customer")
     @JsonIgnore
-    private Consulting pendingConsulting;
+    private List<Consulting> consultings;
+
+    public Consulting getOpenConsulting() {
+        //TODO darf max. 1 sein
+        Optional<Consulting> pendingConsulting = getConsultings().stream()
+                .filter(c -> c.isOpen()).findFirst();
+
+        return pendingConsulting.orElse(null);
+    }
 }

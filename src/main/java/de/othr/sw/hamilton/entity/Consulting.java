@@ -25,10 +25,10 @@ public class Consulting implements Serializable {
     @Setter(AccessLevel.NONE)
     private UUID consultingId = UUID.randomUUID();
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Customer customer;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Advisor advisor;
 
     private String reason;
@@ -39,13 +39,13 @@ public class Consulting implements Serializable {
 
     private boolean isAccepted = false;
 
-    private boolean isResolved = false;
-
-    private boolean isCancelled = false;
+    private boolean isOpen = true;
 
     private Date requestTime;
 
     private Date acceptTime;
 
     private Date endTime;
+
+    //TODO isresolved doch wieder dazu?
 }
