@@ -1,69 +1,56 @@
 package de.othr.sw.hamilton.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
-public class Payment implements Serializable {
+public class Payment extends PaymentRequest implements Serializable {
 
     @Id
     @GeneratedValue
     @JsonIgnore
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     // second id so PK is not exposed
     @Column(columnDefinition = "BINARY(16)")
     @Getter
-    private UUID paymentId = UUID.randomUUID();
+    @Setter(AccessLevel.NONE)
+    private final UUID paymentId = UUID.randomUUID();
 
-    @Getter
-    @NotEmpty
-    private String description;
-
-    //TODO move die Attribute in sowas wie PaymentRequest?
-    @Getter
-    @NotNull
-    @DecimalMin(value = "0.00", inclusive = false)
-    @Digits(integer=8, fraction=2)
-    private BigDecimal amount;
-
-    @Getter
-    @NotEmpty
-    private String receiverName;
-
-    @Getter
-    @Setter
     private String senderName;
 
-    @Getter
-    @Setter
     private String paymentUrl;
 
-    @Getter
-    @Setter
     private boolean isFulfilled = false;
 
+    private Date fulfillDate;
+
     @OneToOne
-    @Getter
-    @Setter
     @JsonIgnore
     private Transaction transaction;
 
-    public Payment(String receiverName, BigDecimal amount, String description) {
-        this.receiverName = receiverName;
-        this.amount = amount;
-        this.description = description;
+    public Payment(PaymentRequest requested) {
+        super(requested.getReceiverName(), requested.getAmount(), requested.getDescription());
+    }
+
+    public void fulfill(Transaction transaction) {
+        String senderName = transaction.getFromAccount().getOwner().getUsername();
+        setTransaction(transaction);
+        setSenderName(senderName);
+        setFulfilled(true);
+        setFulfillDate(new Date());
     }
 }

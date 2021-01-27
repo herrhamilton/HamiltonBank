@@ -12,7 +12,6 @@ import javax.management.openmbean.KeyAlreadyExistsException;
 
 @RestController
 @Scope(value = BeanDefinition.SCOPE_SINGLETON)
-@RequestMapping(path = "/api/advisor", method = RequestMethod.POST)
 public class ConsultingRestController {
 
     private final IConsultingService consultingService;
@@ -22,6 +21,7 @@ public class ConsultingRestController {
     }
 
     @ResponseBody
+    @RequestMapping(path = "/api/advisor", method = RequestMethod.POST)
     public ResponseEntity<?> createAdvisor(@RequestBody Advisor advisor) {
         try {
             advisor = consultingService.createAdvisor(advisor);

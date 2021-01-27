@@ -44,7 +44,6 @@ public class AdvisorController {
         if (consulting != null) {
             model.addAttribute("advisorUrl", vociUrl + "/call?accessToken=" + consulting.getAccessToken());
             model.addAttribute("consulting", consulting);
-            //TODO rename templates, kann man des zusammenfügen mit /accept?
             return "accepted";
         } else {
             model.addAttribute("consultingRequests", consultingService.getOpenConsultings());

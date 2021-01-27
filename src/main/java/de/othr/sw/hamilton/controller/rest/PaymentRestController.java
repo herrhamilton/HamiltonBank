@@ -2,6 +2,7 @@ package de.othr.sw.hamilton.controller.rest;
 
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Payment;
+import de.othr.sw.hamilton.entity.PaymentRequest;
 import de.othr.sw.hamilton.service.IPaymentService;
 import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -35,12 +36,12 @@ public class PaymentRestController {
 
     @RequestMapping(path = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<?> createPayment(@RequestHeader("api-key") UUID apiKey, @Valid @RequestBody Payment payment) {
+    public ResponseEntity<?> createPayment(@RequestHeader("api-key") UUID apiKey, @Valid @RequestBody PaymentRequest paymentRequest) {
         try {
-            Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
+            Customer receiver = (Customer) userService.loadUserByUsername(paymentRequest.getReceiverName());
 
             if (receiver.getHamiltonApiKey().equals(apiKey)) {
-                payment = paymentService.createPayment(payment);
+                Payment payment = paymentService.createPayment(paymentRequest);
                 return new ResponseEntity<>(payment, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("You cannot create a Payment for this username.", HttpStatus.UNAUTHORIZED);

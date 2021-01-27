@@ -26,7 +26,7 @@ public class Customer extends User {
 
     @Column(columnDefinition = "BINARY(16)")
     @Setter(AccessLevel.NONE)
-    private UUID hamiltonApiKey = UUID.randomUUID();
+    private final UUID hamiltonApiKey = UUID.randomUUID();
 
     @OneToMany(mappedBy = "customer")
     @JsonIgnore

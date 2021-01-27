@@ -1,9 +1,6 @@
 package de.othr.sw.hamilton.service.implementation;
 
-import de.othr.sw.hamilton.entity.BankAccount;
-import de.othr.sw.hamilton.entity.Customer;
-import de.othr.sw.hamilton.entity.Payment;
-import de.othr.sw.hamilton.entity.Transaction;
+import de.othr.sw.hamilton.entity.*;
 import de.othr.sw.hamilton.repository.IPaymentRepository;
 import de.othr.sw.hamilton.service.IPaymentService;
 import de.othr.sw.hamilton.service.ITransactionService;
@@ -14,6 +11,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -39,8 +37,8 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public Payment createPayment(Payment requested) {
-        Payment payment = new Payment(requested.getReceiverName(), requested.getAmount(), requested.getDescription());
+    public Payment createPayment(PaymentRequest requested) {
+        Payment payment = new Payment(requested);
         String paymentUrl = baseUrl + ":" + port + "/payment/" + payment.getPaymentId();
         payment.setPaymentUrl(paymentUrl);
         payment = paymentRepository.save(payment);
@@ -60,9 +58,7 @@ public class PaymentService implements IPaymentService {
         Transaction transaction = new Transaction(payment.getAmount(), payment.getDescription(), to, from);
         transactionService.executeTransaction(transaction);
 
-        payment.setTransaction(transaction);
-        payment.setSenderName(sender.getUsername());
-        payment.setFulfilled(true);
+        payment.fulfill(transaction);
         paymentRepository.save(payment);
     }
 
