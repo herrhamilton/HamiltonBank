@@ -3,6 +3,8 @@ package de.othr.sw.hamilton.controller;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.User;
 import de.othr.sw.hamilton.service.IUserService;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 @Controller
+@Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class HomeController {
 
     private final IUserService userService;

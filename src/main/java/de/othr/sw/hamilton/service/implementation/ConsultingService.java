@@ -8,6 +8,8 @@ import de.othr.sw.hamilton.repository.IConsultingRepository;
 import de.othr.sw.hamilton.service.IConsultingService;
 import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class ConsultingService implements IConsultingService {
 
     private final IUserService userService;

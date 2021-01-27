@@ -5,6 +5,8 @@ import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.entity.TransactionForm;
 import de.othr.sw.hamilton.service.ITransactionService;
 import de.othr.sw.hamilton.service.IUserService;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
+@Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class TransactionController {
 
     private final ITransactionService transactionService;

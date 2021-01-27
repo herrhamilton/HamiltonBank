@@ -4,6 +4,8 @@ import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Payment;
 import de.othr.sw.hamilton.service.IPaymentService;
 import de.othr.sw.hamilton.service.IUserService;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Controller
+@Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class PaymentController {
 
     private final IUserService userService;

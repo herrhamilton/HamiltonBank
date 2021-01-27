@@ -6,6 +6,8 @@ import de.othr.sw.hamilton.entity.User;
 import de.othr.sw.hamilton.repository.IBankAccountRepository;
 import de.othr.sw.hamilton.repository.IUserRepository;
 import de.othr.sw.hamilton.service.IUserService;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +18,7 @@ import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.Serializable;
 
 @Service
+@Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class UserService implements Serializable, UserDetailsService, IUserService {
 
     private final IUserRepository userRepository;

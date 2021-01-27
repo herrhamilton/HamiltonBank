@@ -7,6 +7,8 @@ import de.othr.sw.hamilton.service.ITransactionService;
 import de.othr.sw.hamilton.service.IUserService;
 import dev.wobu.stonks.entity.Portfolio;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import java.util.List;
 
 @Controller
+@Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class OverviewController {
     @Value("${appconfig.stonks.url}")
     private String stonksUrl;

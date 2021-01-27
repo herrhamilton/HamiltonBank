@@ -6,6 +6,7 @@ import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.service.IConsultingService;
 import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.UUID;
 
 @Controller
+@Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class ConsultingController {
 
     @Value("${appconfig.voci.url}")

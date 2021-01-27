@@ -24,7 +24,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
         return authUtilities.passwordEncoder();
     }
 
-    private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {"/api/**", "/index", "/", "/login", "/registration", "/registration-submit", "/images/**", "/css/**", "/img/**", "/fonts/**"};
+    private static final String[] ALLOW_ACCESS_WITHOUT_AUTHENTICATION = {"/api/**", "/index", "/", "/login", "/registration", "/registration", "/images/**", "/css/**", "/img/**", "/fonts/**"};
 
     public AuthConfiguration(UserDetailsService userService, AuthUtilities authUtilities) {
         this.userService = userService;

@@ -10,12 +10,15 @@ import de.othr.sw.hamilton.service.IPaymentService;
 import de.othr.sw.hamilton.service.ITransactionService;
 import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Service
+@Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class PaymentService implements IPaymentService {
 
     @Value("${appconfig.base-url}")

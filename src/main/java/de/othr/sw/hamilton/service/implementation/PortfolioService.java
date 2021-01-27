@@ -5,7 +5,8 @@ import de.othr.sw.hamilton.service.IPortfolioService;
 import de.othr.sw.hamilton.service.IUserService;
 import dev.wobu.stonks.entity.Portfolio;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.UUID;
 
 @Service
+@Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class PortfolioService implements IPortfolioService {
 
     private final RestTemplate restClient;

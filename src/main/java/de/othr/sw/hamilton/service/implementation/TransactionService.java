@@ -13,6 +13,8 @@ import de.othr.sw.hamilton.repository.ITransactionRepository;
 import de.othr.sw.hamilton.repository.IUserRepository;
 import de.othr.sw.hamilton.service.ITransactionService;
 import de.othr.sw.hamilton.service.IUserService;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class TransactionService implements Serializable, ITransactionService {
 
     private final IUserService userService;
