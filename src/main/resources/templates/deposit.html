@@ -9,7 +9,7 @@
 
 <body class="bg-light" style="margin-top: 80px">
 
-<div th:replace="fragments/header_authenticated :: header"></div>
+<div th:replace="fragments/header_customer :: header"></div>
 
 <form th:action="@{/deposit}" method="post">
     <div th:replace="fragments/currency-input :: currency-input"></div>

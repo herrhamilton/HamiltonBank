@@ -17,6 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -83,9 +84,8 @@ public class ConsultingController {
     }
 
     @RequestMapping(path = "/consulting", method = RequestMethod.POST)
-    public String createConsulting(@ModelAttribute Consulting consulting, Model model) {
+    public String createConsulting(@ModelAttribute Consulting consulting) {
         consultingService.createConsulting(consulting);
-        model.addAttribute("consultingUrl", vociUrl + "/invitation?accessToken=" + consulting.getAccessToken());
         return "redirect:/consulting";
     }
 
@@ -104,11 +104,11 @@ public class ConsultingController {
         return "accepted";
     }
 
-    @RequestMapping(path = "/consulting/close/{consultingId}", method = RequestMethod.POST)
+    @RequestMapping(path = "/advisor/close/{consultingId}", method = RequestMethod.POST)
     public String closeConsulting(@PathVariable("consultingId") UUID consultingId) {
         consultingService.closeConsulting(consultingId);
-        //TODO add summary model
-        return "advisor";
+        //TODO add model so summary can be persisted
+        return "redirect:/advisor";
     }
 
     @RequestMapping(path = "/consulting/cancel", method = RequestMethod.POST)

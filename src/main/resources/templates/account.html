@@ -10,7 +10,7 @@
 <body class="bg-light" style="margin-top: 80px">
 <!--TODO besseres für body margin überlegen -->
 
-<div th:replace="fragments/header_authenticated :: header"></div>
+<div th:replace="fragments/header_customer :: header"></div>
 
 <form th:action="@{/settings}" th:object="${currentCustomer}" method="post">
     <div class="form-group">

@@ -9,7 +9,7 @@
 
 <body class="bg-light" style="margin-top: 80px">
 
-<!--TODO header logout-->
+<div th:replace="fragments/header_advisor :: header"></div>
 
 <div class="col-md-8 offset-md-2">
     <p>Du hast folgendes Gespräch akzeptiert:</p>
@@ -22,7 +22,7 @@
     <h2>Gespräch beendet?</h2>
 
     <form th:object="${consulting}"
-          th:action="@{/consulting/close/{consultingId}(consultingId = ${consulting.consultingId})}" method="post">
+          th:action="@{/advisor/close/{consultingId}(consultingId = ${consulting.consultingId})}" method="post">
         <label for="summary">Zusammenfassung des Gesprächs</label>
         <input th:field="*{summary}" type="text" class="form-control" id="summary" required>
         <button type="submit">Anfrage schließen</button>
