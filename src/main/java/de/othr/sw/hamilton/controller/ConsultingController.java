@@ -68,7 +68,6 @@ public class ConsultingController {
     public String showAdvisorPage(Model model) {
         Advisor advisor = (Advisor) userService.getCurrentUser();
 
-        //TODO darf max. 1 sein
         Consulting consulting = advisor.getRunningConsulting();
 
         if (consulting != null) {

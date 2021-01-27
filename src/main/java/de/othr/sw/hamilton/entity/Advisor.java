@@ -7,7 +7,6 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,7 +25,6 @@ public class Advisor extends User {
 
     @JsonIgnore
     public Consulting getRunningConsulting() {
-        //TODO darf max. 1 sein
         Optional<Consulting> pendingConsulting = getConsultings().stream()
                 .filter(c -> c.isOpen()).findFirst();
 
