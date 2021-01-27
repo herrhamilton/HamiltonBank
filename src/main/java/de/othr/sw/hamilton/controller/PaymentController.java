@@ -97,7 +97,7 @@ public class PaymentController {
     }
 
     /* catches MethodArgumentNotValidException
-    *  Answers with BAD_REQUEST and error string like "receiverName: cannot be empty" */
+     *  Answers with BAD_REQUEST and error string like "receiverName: cannot be empty" */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<ObjectError> objectErrors = ex.getBindingResult().getAllErrors();

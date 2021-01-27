@@ -46,6 +46,4 @@ public class Consulting implements Serializable {
     private Date acceptTime;
 
     private Date endTime;
-
-    //TODO isresolved doch wieder dazu?
 }

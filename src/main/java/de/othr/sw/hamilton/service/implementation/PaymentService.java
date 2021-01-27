@@ -5,7 +5,6 @@ import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Payment;
 import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.repository.IPaymentRepository;
-import de.othr.sw.hamilton.repository.IUserRepository;
 import de.othr.sw.hamilton.service.IPaymentService;
 import de.othr.sw.hamilton.service.ITransactionService;
 import de.othr.sw.hamilton.service.IUserService;
@@ -29,15 +28,12 @@ public class PaymentService implements IPaymentService {
 
     private final IUserService userService;
 
-    private final IUserRepository userRepository;
-
     private final IPaymentRepository paymentRepository;
 
     private final ITransactionService transactionService;
 
-    public PaymentService(IUserService userService, IUserRepository userRepository, IPaymentRepository paymentRepository, ITransactionService transactionService) {
+    public PaymentService(IUserService userService, IPaymentRepository paymentRepository, ITransactionService transactionService) {
         this.userService = userService;
-        this.userRepository = userRepository;
         this.paymentRepository = paymentRepository;
         this.transactionService = transactionService;
     }
@@ -55,28 +51,24 @@ public class PaymentService implements IPaymentService {
     @Transactional
     public void fulfillPayment(Payment payment) {
 
-        try {
-            Customer sender = userService.getCurrentCustomer();
-            String receiverName = payment.getReceiverName();
-            Customer receiver = (Customer) userRepository.findOneByUsername(receiverName);
-            BankAccount to = receiver.getBankAccount();
-            BankAccount from = sender.getBankAccount();
+        Customer sender = userService.getCurrentCustomer();
+        String receiverName = payment.getReceiverName();
+        Customer receiver = (Customer) userService.loadUserByUsername(receiverName);
+        BankAccount to = receiver.getBankAccount();
+        BankAccount from = sender.getBankAccount();
 
-            Transaction transaction = new Transaction(payment.getAmount(), payment.getDescription(), to, from);
-            transactionService.executeTransaction(transaction);
+        Transaction transaction = new Transaction(payment.getAmount(), payment.getDescription(), to, from);
+        transactionService.executeTransaction(transaction);
 
-            payment.setSenderName(sender.getUsername());
-            payment.setFulfilled(true);
-            paymentRepository.save(payment);
-        } catch (Exception e) {
-            //TODO receiver not found
-        }
+        payment.setSenderName(sender.getUsername());
+        payment.setFulfilled(true);
+        paymentRepository.save(payment);
     }
 
     @Override
     public Payment findPayment(UUID paymentId) {
         Payment payment = paymentRepository.findOneByPaymentId(paymentId);
-        if(payment == null) {
+        if (payment == null) {
             throw new IllegalArgumentException("Payment does not exist");
         }
         return payment;

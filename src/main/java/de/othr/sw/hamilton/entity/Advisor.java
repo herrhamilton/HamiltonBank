@@ -23,6 +23,7 @@ public class Advisor extends User {
     @Column(columnDefinition = "BINARY(16)")
     private UUID vociApiKey;
 
+    // duplicate with Customer, but cannot move to User, because of JPA "mappedBy"
     @JsonIgnore
     public Consulting getRunningConsulting() {
         Optional<Consulting> pendingConsulting = getConsultings().stream()

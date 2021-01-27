@@ -21,7 +21,6 @@ public class Customer extends User {
     @Embedded
     private Address address;
 
-    //API Keys werden der Einfachheit halber einfach auf der Seite angezeigt, Security hat hier niedrige Priorität
     @Column(columnDefinition = "BINARY(16)")
     private UUID stonksApiKey;
 
@@ -33,8 +32,8 @@ public class Customer extends User {
     @JsonIgnore
     private List<Consulting> consultings;
 
+    // duplicate with Advisor, but cannot move to User, because of JPA "mappedBy"
     public Consulting getOpenConsulting() {
-        //TODO darf max. 1 sein
         Optional<Consulting> pendingConsulting = getConsultings().stream()
                 .filter(c -> c.isOpen()).findFirst();
 
