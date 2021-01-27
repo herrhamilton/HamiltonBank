@@ -50,21 +50,21 @@ public class TransactionController {
         return "redirect:/overview";
     }
 
-    @RequestMapping(path = "/transfer", method = RequestMethod.GET)
+    @RequestMapping(path = "/transaction", method = RequestMethod.GET)
     public String showTransactionPage(Model model) {
         model.addAttribute("transactionForm", new TransactionForm());
-        return "transfer";
+        return "transaction";
     }
 
-    @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public String transferMoney(@ModelAttribute TransactionForm transactionForm, Model model) {
+    @RequestMapping(path = "/transaction", method = RequestMethod.POST)
+    public String transactionMoney(@ModelAttribute TransactionForm transactionForm, Model model) {
         try {
             transactionService.sendTransaction(transactionForm);
             return "redirect:/overview";
         } catch (UsernameNotFoundException ex) {
             model.addAttribute("userNotFound", true);
             model.addAttribute("transactionForm", transactionForm);
-            return "transfer";
+            return "transaction";
         }
     }
 }
