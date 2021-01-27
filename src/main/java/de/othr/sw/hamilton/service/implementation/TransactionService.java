@@ -68,7 +68,7 @@ public class TransactionService implements Serializable, ITransactionService {
         BankAccount to = receiver.getBankAccount();
         BankAccount from = userService.getCurrentCustomer().getBankAccount();
 
-        BigDecimal amount = getAmountFromString(transactionForm.getAmountString());
+        BigDecimal amount = getAmountFromString(transactionForm.getAmount());
         Transaction transaction = new Transaction(amount, transactionForm.getDescription(), to, from);
         executeTransaction(transaction);
     }
