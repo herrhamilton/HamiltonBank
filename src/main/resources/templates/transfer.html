@@ -15,7 +15,7 @@
     <div class="form-group">
         <label for="receiver">Nutzername des Empfängers</label>
         <input th:field="*{toUsername}" type="text" class="form-control" id="receiver" required>
-
+        <small th:if="${userNotFound}" class="text-danger">Nutzername nicht gefunden.</small>
         <label for="description">Beschreibung</label>
         <input th:field="*{description}" type="text" class="form-control" id="description" required>
 

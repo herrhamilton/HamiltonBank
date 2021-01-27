@@ -41,7 +41,6 @@ public class Payment implements Serializable {
 
     @Getter
     @NotEmpty
-    //TODO maybe doch Customer statt String und evtl Transaction dranhängen wenn abgeschlossen?
     private String receiverName;
 
     @Getter
@@ -55,6 +54,12 @@ public class Payment implements Serializable {
     @Getter
     @Setter
     private boolean isFulfilled = false;
+
+    @OneToOne
+    @Getter
+    @Setter
+    @JsonIgnore
+    private Transaction transaction;
 
     public Payment(String receiverName, BigDecimal amount, String description) {
         this.receiverName = receiverName;

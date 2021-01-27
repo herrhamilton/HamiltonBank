@@ -7,6 +7,7 @@ import de.othr.sw.hamilton.service.ITransactionService;
 import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -56,8 +57,14 @@ public class TransactionController {
     }
 
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public String transferMoney(@ModelAttribute TransactionForm transactionForm) {
-        transactionService.sendTransaction(transactionForm);
-        return "redirect:/overview";
+    public String transferMoney(@ModelAttribute TransactionForm transactionForm, Model model) {
+        try {
+            transactionService.sendTransaction(transactionForm);
+            return "redirect:/overview";
+        } catch (UsernameNotFoundException ex) {
+            model.addAttribute("userNotFound", true);
+            model.addAttribute("transactionForm", transactionForm);
+            return "transfer";
+        }
     }
 }

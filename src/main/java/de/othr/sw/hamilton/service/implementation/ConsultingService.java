@@ -121,7 +121,7 @@ public class ConsultingService implements IConsultingService {
             restClient.exchange(url, HttpMethod.DELETE, requestEntity, Void.class);
 
         } catch (Exception e) {
-            //TODO logging voci cannot be closed?
+            e.printStackTrace();
         }
     }
 }

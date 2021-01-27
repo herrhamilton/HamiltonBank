@@ -60,6 +60,7 @@ public class PaymentService implements IPaymentService {
         Transaction transaction = new Transaction(payment.getAmount(), payment.getDescription(), to, from);
         transactionService.executeTransaction(transaction);
 
+        payment.setTransaction(transaction);
         payment.setSenderName(sender.getUsername());
         payment.setFulfilled(true);
         paymentRepository.save(payment);

@@ -10,7 +10,6 @@ import de.othr.sw.hamilton.entity.Transaction;
 import de.othr.sw.hamilton.entity.TransactionForm;
 import de.othr.sw.hamilton.repository.IBankAccountRepository;
 import de.othr.sw.hamilton.repository.ITransactionRepository;
-import de.othr.sw.hamilton.repository.IUserRepository;
 import de.othr.sw.hamilton.service.ITransactionService;
 import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -29,15 +28,12 @@ public class TransactionService implements Serializable, ITransactionService {
 
     private final IUserService userService;
 
-    private final IUserRepository userRepository;
-
     private final ITransactionRepository transactionRepository;
 
     private final IBankAccountRepository bankAccountRepository;
 
-    public TransactionService(IUserService userService, IUserRepository userRepository, ITransactionRepository transactionRepository, IBankAccountRepository bankAccountRepository) {
+    public TransactionService(IUserService userService, ITransactionRepository transactionRepository, IBankAccountRepository bankAccountRepository) {
         this.userService = userService;
-        this.userRepository = userRepository;
         this.transactionRepository = transactionRepository;
         this.bankAccountRepository = bankAccountRepository;
     }
@@ -45,7 +41,7 @@ public class TransactionService implements Serializable, ITransactionService {
     @Override
     @Transactional
     public void executeTransaction(Transaction transaction) {
-        if(transaction.getFromAccount() != null) {
+        if (transaction.getFromAccount() != null) {
             BankAccount fromAccount = transaction.getFromAccount();
             fromAccount.withdraw(transaction.getAmount());
             bankAccountRepository.save(fromAccount);
@@ -66,8 +62,7 @@ public class TransactionService implements Serializable, ITransactionService {
 
     @Override
     public void sendTransaction(TransactionForm transactionForm) {
-        Customer receiver = (Customer) userRepository.findOneByUsername(transactionForm.getToUsername());
-        //TODO input validation
+        Customer receiver = (Customer) userService.loadUserByUsername(transactionForm.getToUsername());
         BankAccount to = receiver.getBankAccount();
         BankAccount from = userService.getCurrentCustomer().getBankAccount();
 
@@ -87,11 +82,11 @@ public class TransactionService implements Serializable, ITransactionService {
     @Override
     public String generateStatementCsv() {
         List<Transaction> transactions = findTransactionsForBankAccount(userService.getCurrentCustomer().getBankAccount());
-        if(transactions.size() == 0) {
+        if (transactions.size() == 0) {
             return null;
         }
         String csvData = "";
-        try(CharArrayWriter writer = new CharArrayWriter()) {
+        try (CharArrayWriter writer = new CharArrayWriter()) {
 
             StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer).build();
             beanToCsv.write(transactions);
@@ -105,9 +100,7 @@ public class TransactionService implements Serializable, ITransactionService {
 
     @Override
     public BigDecimal getAmountFromString(String amountString) {
-        // TODO ggf Unit Testing
         amountString = amountString.replace(",", ".");
-        BigDecimal amount = new BigDecimal(amountString);
-        return amount;
+        return new BigDecimal(amountString);
     }
 }
