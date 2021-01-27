@@ -31,6 +31,7 @@ public class Payment implements Serializable {
     private BigDecimal amount;
 
     @Getter
+    //TODO maybe doch Customer statt String und evtl Transaction dranhängen wenn abgeschlossen?
     private String receiverName;
 
     @Getter
