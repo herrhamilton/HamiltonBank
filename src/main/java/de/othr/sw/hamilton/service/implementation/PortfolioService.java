@@ -4,6 +4,7 @@ import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.service.IPortfolioService;
 import de.othr.sw.hamilton.service.IUserService;
 import dev.wobu.stonks.entity.Portfolio;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +15,12 @@ import java.util.UUID;
 
 @Service
 public class PortfolioService implements IPortfolioService {
-    @Value("${appconfig.stonks.url}")
-    private String stonksUrl;
 
     private final RestTemplate restClient;
 
     private final IUserService userService;
 
-    public PortfolioService(RestTemplate restClient, IUserService userService) {
+    public PortfolioService(@Qualifier("stonks") RestTemplate restClient, IUserService userService) {
         this.restClient = restClient;
         this.userService = userService;
     }
@@ -33,7 +32,7 @@ public class PortfolioService implements IPortfolioService {
         if (apiKey == null) {
             return null;
         }
-        RequestEntity<Void> requestEntity = RequestEntity.get(stonksUrl + "/api/v1/portfolio")
+        RequestEntity<Void> requestEntity = RequestEntity.get("/api/v1/portfolio")
                 .header("X-API-Key", apiKey.toString())
                 .build();
         ResponseEntity<Portfolio> responseEntity = restClient.exchange(requestEntity, Portfolio.class);

@@ -61,15 +61,15 @@ public class OverviewController {
         return "overview";
     }
 
-    @RequestMapping(path = "/settings")
+    @RequestMapping(path = "/account")
     public String showSettingsPage() {
-        return "settings";
+        return "account";
     }
 
-    @RequestMapping(path = "/settings", method = RequestMethod.POST)
+    @RequestMapping(path = "/account", method = RequestMethod.POST)
     public String submitSettings(@ModelAttribute Customer customer) {
         userService.updateCustomer(customer);
-        return "settings";
+        return "account";
     }
 
     @RequestMapping(path = "/statement", method = RequestMethod.GET)

@@ -79,7 +79,7 @@ public class ConsultingController {
         return "redirect:/consulting";
     }
 
-    @RequestMapping(path = "/consulting/accept/{consultingId}", method = RequestMethod.POST)
+    @RequestMapping(path = "/advisor/accept/{consultingId}", method = RequestMethod.POST)
     public String acceptConsulting(@PathVariable("consultingId") UUID consultingId, Model model) {
         Consulting consulting;
         try {

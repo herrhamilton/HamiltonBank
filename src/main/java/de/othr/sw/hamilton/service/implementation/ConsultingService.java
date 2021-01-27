@@ -7,7 +7,7 @@ import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.repository.IConsultingRepository;
 import de.othr.sw.hamilton.service.IConsultingService;
 import de.othr.sw.hamilton.service.IUserService;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -22,16 +22,13 @@ import java.util.UUID;
 @Service
 public class ConsultingService implements IConsultingService {
 
-    @Value("${appconfig.voci.url}")
-    private String vociUrl;
-
     private final IUserService userService;
 
     private final IConsultingRepository consultingRepository;
 
     private final RestTemplate restClient;
 
-    public ConsultingService(IUserService userService, IConsultingRepository consultingRepository, RestTemplate restClient) {
+    public ConsultingService(IUserService userService, IConsultingRepository consultingRepository, @Qualifier("voci") RestTemplate restClient) {
         this.userService = userService;
         this.consultingRepository = consultingRepository;
         this.restClient = restClient;
@@ -117,7 +114,8 @@ public class ConsultingService implements IConsultingService {
     }
 
     private Invitation startVociCall(String apiKey) {
-        RequestEntity<Void> requestEntity = RequestEntity.post(vociUrl + "/api/startCall")
+        RequestEntity<Void> requestEntity = RequestEntity
+                .post("/api/startCall")
                 .header("securityToken", apiKey)
                 .build();
         ResponseEntity<Invitation> responseEntity = restClient.exchange(requestEntity, Invitation.class);
@@ -127,7 +125,7 @@ public class ConsultingService implements IConsultingService {
     private void closeVociCall(String accessToken, String apiKey) {
         try {
             //TODO wieso kann ich die Params end anhängen?
-            String url = vociUrl + "/endCall?accessToken=" + accessToken;
+            String url = "/endCall?accessToken=" + accessToken;
             RequestEntity<Void> requestEntity = RequestEntity.delete(url)
                     .header("securityToken", apiKey)
                     .build();
