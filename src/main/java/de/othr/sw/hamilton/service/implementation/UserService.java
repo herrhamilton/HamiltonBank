@@ -59,7 +59,6 @@ public class UserService implements Serializable, UserDetailsService, IUserServi
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         User user =  userRepository.findOneByUsername(username);
         if(user == null) {
-            //TODO catch this in AuthStuff?
             throw new UsernameNotFoundException("User mit Username " + username + " existiert nicht.");
         }
         return user;
@@ -73,7 +72,6 @@ public class UserService implements Serializable, UserDetailsService, IUserServi
 
     @Override
     public Customer getCurrentCustomer() {
-        //TODO kann man Customer iwie lokal halten oder muss man den jedesmal abfragen?
         return (Customer) getCurrentUser();
     }
 

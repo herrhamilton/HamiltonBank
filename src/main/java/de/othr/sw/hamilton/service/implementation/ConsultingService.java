@@ -113,7 +113,6 @@ public class ConsultingService implements IConsultingService {
 
     private void closeVociCall(String accessToken, String apiKey) {
         try {
-            //TODO wieso kann ich die Params end anhängen?
             String url = "/endCall?accessToken=" + accessToken;
             RequestEntity<Void> requestEntity = RequestEntity.delete(url)
                     .header("securityToken", apiKey)

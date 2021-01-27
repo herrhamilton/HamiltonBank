@@ -3,27 +3,21 @@ package de.othr.sw.hamilton.controller;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.User;
 import de.othr.sw.hamilton.service.IUserService;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 @Controller
-@Scope(value = BeanDefinition.SCOPE_SINGLETON)
-public class HomeController {
+public class UserController {
 
     private final IUserService userService;
 
-    public HomeController(IUserService userService) {
+    public UserController(IUserService userService) {
         this.userService = userService;
-    }
-
-    @RequestMapping(path = "/", method = RequestMethod.GET)
-    public String showStartPage() {
-        return "index";
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
@@ -59,10 +53,5 @@ public class HomeController {
             return "registration";
         }
         return "login";
-    }
-
-    @RequestMapping(path="/api/swagger-ui")
-    public String showSwagger() {
-        return "redirect:/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/";
     }
 }
