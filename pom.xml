@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.4.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>de.othr.sw</groupId>
     <artifactId>hamilton</artifactId>
@@ -150,6 +150,9 @@
                             <includes>
                                 <include>
                                     **/Payment.class
+                                </include>
+                                <include>
+                                    **/PaymentRequest.class
                                 </include>
                             </includes>
                         </configuration>

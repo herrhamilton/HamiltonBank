@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -56,9 +55,10 @@ public class PaymentService implements IPaymentService {
         BankAccount from = sender.getBankAccount();
 
         Transaction transaction = new Transaction(payment.getAmount(), payment.getDescription(), to, from);
+        String senderName = transaction.getFromAccount().getOwner().getUsername();
         transactionService.executeTransaction(transaction);
 
-        payment.fulfill(transaction);
+        payment.fulfill(senderName);
         paymentRepository.save(payment);
     }
 

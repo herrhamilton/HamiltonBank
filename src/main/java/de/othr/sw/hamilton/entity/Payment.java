@@ -1,6 +1,5 @@
 package de.othr.sw.hamilton.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,14 +15,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 public class Payment extends PaymentRequest implements Serializable {
-
-    @Id
-    @GeneratedValue
-    @JsonIgnore
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private Long id;
-
     // second id so PK is not exposed
     @Column(columnDefinition = "BINARY(16)")
     @Getter
@@ -38,17 +29,11 @@ public class Payment extends PaymentRequest implements Serializable {
 
     private Date fulfillDate;
 
-    @OneToOne
-    @JsonIgnore
-    private Transaction transaction;
-
     public Payment(PaymentRequest requested) {
         super(requested.getReceiverName(), requested.getAmount(), requested.getDescription());
     }
 
-    public void fulfill(Transaction transaction) {
-        String senderName = transaction.getFromAccount().getOwner().getUsername();
-        setTransaction(transaction);
+    public void fulfill(String senderName) {
         setSenderName(senderName);
         setFulfilled(true);
         setFulfillDate(new Date());
