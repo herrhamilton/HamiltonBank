@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -25,12 +29,18 @@ public class Payment implements Serializable {
     private UUID paymentId = UUID.randomUUID();
 
     @Getter
+    @NotEmpty
     private String description;
 
+    //TODO move die Attribute in sowas wie PaymentRequest?
     @Getter
+    @NotNull
+    @DecimalMin(value = "0.00", inclusive = false)
+    @Digits(integer=8, fraction=2)
     private BigDecimal amount;
 
     @Getter
+    @NotEmpty
     //TODO maybe doch Customer statt String und evtl Transaction dranhängen wenn abgeschlossen?
     private String receiverName;
 

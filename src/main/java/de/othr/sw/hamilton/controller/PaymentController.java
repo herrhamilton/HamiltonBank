@@ -10,12 +10,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class PaymentController {
 
@@ -30,18 +36,20 @@ public class PaymentController {
 
     @RequestMapping(path = "/api/payment/create", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<?> createPayment(@RequestHeader("api-key") UUID apiKey, @RequestBody Payment payment) {
+    public ResponseEntity<?> createPayment(@RequestHeader("api-key") UUID apiKey, @Valid @RequestBody Payment payment) {
         try {
             Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
 
-            if (!receiver.getHamiltonApiKey().equals(apiKey)) {
+            if (receiver.getHamiltonApiKey().equals(apiKey)) {
+                payment = paymentService.createPayment(payment);
+                return new ResponseEntity<>(payment, HttpStatus.OK);
+            } else {
                 return new ResponseEntity<>("You cannot create a Payment for this username.", HttpStatus.UNAUTHORIZED);
             }
-            //TODO check payment amount, description
-            payment = paymentService.createPayment(payment);
-            return new ResponseEntity<>(payment, HttpStatus.OK);
         } catch (NoSuchElementException ex) {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException ex) {
+            return new ResponseEntity<>("Could not parse request. Please check your input", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -57,7 +65,7 @@ public class PaymentController {
             return new ResponseEntity<>(payment, HttpStatus.OK);
         } catch (IllegalArgumentException ex) {
             return new ResponseEntity<>("Payment with id '" + paymentId.toString() + "' could not be found", HttpStatus.NOT_FOUND);
-        } catch(NoSuchElementException ex) {
+        } catch (NoSuchElementException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -86,5 +94,21 @@ public class PaymentController {
             model.addAttribute("notFound", true);
             return "payment";
         }
+    }
+
+    /* catches MethodArgumentNotValidException
+    *  Answers with BAD_REQUEST and error string like "receiverName: cannot be empty" */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        List<ObjectError> objectErrors = ex.getBindingResult().getAllErrors();
+        List<FieldError> fieldErrors = objectErrors.stream()
+                .map(err -> (FieldError) err)
+                .collect(Collectors.toList());
+
+        String errorMessage = fieldErrors.stream()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .collect(Collectors.joining(",\n"));
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 }
