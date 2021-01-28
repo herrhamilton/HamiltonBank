@@ -6,37 +6,55 @@
     <meta charset="UTF-8">
     <title>Beraterübersicht</title>
 </head>
-
 <body class="bg-light" style="margin-top: 80px">
 
-<div th:replace="fragments/header_advisor :: header"></div>
+<div th:replace="fragments/header :: header(false)"></div>
+<div class="col-8 offset-md-2 bg-light">
+    <div class="row">
+        <div class="col-7">
+            <h3 th:if="${acceptFailed}">Anfrage konnte nicht angenommen werden. Bitte versuchen Sie es später
+                erneut.</h3>
+            <h3 th:unless="${consultingRequests.size > 0}">Momentan wartet kein Kunde auf ein Gespräch. Holen Sie sich
+                einen
+                Kaffee!</h3>
+            <div th:if="${consultingRequests.size > 0}">
+                <h3>Momentan warten folgende Kunden auf ein Gespräch:</h3>
+                <table class="table table-striped">
 
-<div class="col-8 offset-md-2">
-    <p th:if="${acceptFailed}">Anfrage konnte nicht angenommen werden. Bitte versuchen Sie es später erneut.</p>
-    <p th:unless="${consultingRequests.size > 0}">Momentan wartet kein Kunde auf ein Gespräch. Holen Sie sich einen Kaffee!</p>
-    <div th:if="${consultingRequests.size > 0}">
-        <p>Momentan warten folgende Kunden auf ein Gespräch:</p>
-        <table>
-            <tr>
-                <th>Kunde</th>
-                <th>Grund</th>
-                <th>wartet seit</th>
-            </tr>
-            <tr th:each="consulting : ${consultingRequests}">
-                <td th:text="${consulting.customer}"></td>
-                <td th:text="${consulting.reason}"></td>
-                <td th:text="${#calendars.format(consulting.requestTime,'HH:mm')} + ' Uhr'"></td>
-                <td>
-                    <form th:action="@{/advisor/accept/{consultingId}(consultingId = ${consulting.consultingId})}"
-                          method="post">
-                        <a>
-                            <button type="submit">Annehmen</button>
-                        </a>
-                    </form>
-                </td>
-            </tr>
-        </table>
+                    <thead>
+                    <tr>
+                        <th scope="col">Kunde</th>
+                        <th scope="col">Grund</th>
+                        <th scope="col">wartet seit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="consulting : ${consultingRequests}">
+                        <td th:text="${consulting.customer.username}"></td>
+                        <td th:text="${consulting.reason}"></td>
+                        <td th:text="${#calendars.format(consulting.requestTime,'HH:mm')} + ' Uhr'"></td>
+                        <td>
+                            <form th:action="@{/advisor/accept/{consultingId}(consultingId = ${consulting.consultingId})}"
+                                  method="post">
+                                <a>
+                                    <button type="submit">Annehmen</button>
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-5">
+            <img class="img-fluid float-end"
+                 src="https://images.pexels.com/photos/6598969/pexels-photo-6598969.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260">
+            <!--src="/images/woman_snowy_forest.jpeg">-->
+        </div>
     </div>
+</div>
+<div class="col-8 offset-md-2">
+
 </div>
 <div th:replace="fragments/footer :: footer"></div>
 </body>

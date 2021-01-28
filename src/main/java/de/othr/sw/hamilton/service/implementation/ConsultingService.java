@@ -39,7 +39,6 @@ public class ConsultingService implements IConsultingService {
 
     @Override
     public Advisor createAdvisor(Advisor advisor) {
-        //TODO give roles/authorities to customer/advisor?
         return (Advisor) userService.createUser(advisor);
     }
 

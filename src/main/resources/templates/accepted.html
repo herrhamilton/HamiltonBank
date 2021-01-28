@@ -9,25 +9,52 @@
 
 <body class="bg-light" style="margin-top: 80px">
 
-<div th:replace="fragments/header_advisor :: header"></div>
+<div th:replace="fragments/header :: header(false)"></div>
 
-<div class="col-8 offset-md-2">
-    <form th:object="${consulting}" th:action="@{/advisor/close/{consultingId}(consultingId = ${consulting.consultingId})}" method="post">
 
-        <p>Du hast folgendes Gespräch akzeptiert:</p>
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Beraterübersicht</title>
+</head>
+<body class="bg-light" style="margin-top: 80px">
 
-        <p th:text="'Kunde: ' + *{customer}"></p>
-        <p th:text="'Grund: ' + *{reason}"></p>
-        <p>Um zum Gespräch zu kommen:</p>
-        <a class="btn" th:href="@{${advisorUrl}}" th:target="_blank">Hier klicken.</a>
+<div th:replace="fragments/header :: header(false)"></div>
+<div class="col-8 offset-md-2 bg-light">
+    <div class="row">
+        <div class="col-7">
+            <form th:object="${consulting}"
+                  th:action="@{/advisor/close/{consultingId}(consultingId = ${consulting.consultingId})}" method="post">
 
-        <h2>Gespräch beendet?</h2>
+                <p>Du hast folgendes Gespräch akzeptiert:</p>
+                <a class="btn btn-dark" th:href="@{${advisorUrl}}" th:target="_blank">zum Gespräch</a>
 
-        <label for="summary">Zusammenfassung des Gesprächs</label>
-        <input th:field="*{summary}" type="text" class="form-control" id="summary" required>
-        <button type="submit">Anfrage schließen</button>
-    </form>
+                <table class="table col-6 offset-3">
+                    <tr scope="row">
+                        <td>Kunde</td>
+                        <td th:text="*{customer.username}"></td>
+                    </tr>
+                    <tr scope="row">
+                        <td>Beschreibung</td>
+                        <td th:text="*{reason}"></td>
+                    </tr>
+                </table>
 
+
+                <small>Zusammenfassung des Gesprächs</small>
+                <input th:field="*{summary}" type="text" class="form-control" id="summary" required>
+                <button class="btn btn-outline-dark m-1" type="submit">Anfrage schließen</button>
+            </form>
+        </div>
+        <div class="col-5">
+            <img class="img-fluid float-end"
+                 src="https://images.pexels.com/photos/6598969/pexels-photo-6598969.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260">
+            <!--src="/images/woman_snowy_forest.jpeg">-->
+        </div>
+    </div>
 </div>
 <div th:replace="fragments/footer :: footer"></div>
 </body>
