@@ -21,12 +21,12 @@ public class ConsultingController {
     @RequestMapping(path = "", method = RequestMethod.POST)
     public String createConsulting(@ModelAttribute Consulting consulting) {
         consultingService.createConsulting(consulting);
-        return "redirect:/consulting";
+        return "redirect:/overview";
     }
 
     @RequestMapping(path = "/cancel", method = RequestMethod.POST)
     public String cancelConsulting() {
         consultingService.cancelConsulting();
-        return "redirect:/consulting";
+        return "redirect:/overview";
     }
 }

@@ -93,4 +93,63 @@ A lot of duplicate code here, unfortunately no way found to pass fragments as pa
         </div>
     </div>
 </div>
+
+<!-- ACCOUNT -->
+<div th:fragment="account" class="container px-0">
+    <div class="card">
+        <div class="card-header bg-light" id="headingAccount">
+            <h2 class="mb-0">
+                <button class="btn btn-outline-dark btn-lg" data-toggle="collapse" data-target="#collapseAccount"
+                        aria-expanded="false" aria-controls="collapseAccount">
+                    Accountdetails
+                </button>
+            </h2>
+        </div>
+
+        <div id="collapseAccount" class="collapse p-4" aria-labelledby="headingAccount">
+            <form th:action="@{/account}" th:object="${user}" method="post">
+                <div class="form-group">
+                    <input th:field="*{username}" type="text" name="username" id="username"
+                           readonly
+                           class="form-control rounded m-1">
+                    <div class="dropdown-divider"></div>
+                    <small>HAMILTON API-Key</small>
+                    <input readonly th:field="*{hamiltonApiKey}" type="text" class="form-control rounded m-1" id="api-key">
+                    <small>STONKS API-Key</small>
+                    <input th:field="*{stonksApiKey}" type="text" class="form-control" id="stonks-key" placeholder="12345678-1234-1234-1234-1234-123456789abc"
+                           pattern="(\d|[a-f]){8}-(\d|[a-f]){4}-(\d|[a-f]){4}-(\d|[a-f]){4}-(\d|[a-f]){12}"
+                           title="gültiges UUID-Format">
+
+                    <div class="dropdown-divider"></div>
+                    <small>Name</small>
+                    <input th:field="*{firstName}" placeholder="Vorname" type="text" required
+                           class="form-control rounded m-1">
+                    <input th:field="*{lastName}" placeholder="Nachname" type="text" required
+                           class="form-control rounded m-1">
+
+                    <div class="dropdown-divider"></div>
+                    <small>Adresse</small>
+                    <div class="input-group">
+                        <input th:field="*{address.street}" placeholder="Straße" type="text" required
+                               class="form-control rounded m-1">
+                        <span class="input-group-btn"
+                              style="width:0px;"></span>
+                        <input th:field="*{address.houseNr}" placeholder="Hausnummer" type="text" required
+                               class="form-control rounded m-1">
+                    </div>
+                    <div class="input-group">
+                        <input th:field="*{address.postalCode}" placeholder="Postleitzahl" type="text" required
+                               class="form-control rounded m-1">
+                        <span class="input-group-btn"
+                              style="width:0px;"></span>
+                        <input th:field="*{address.city}" placeholder="Stadt" type="text" required
+                               class="form-control rounded m-1">
+                    </div>
+
+                </div>
+                <button type="submit" class="btn btn-dark btn-lg">Speichern</button>
+            </form>
+        </div>
+    </div>
+</div>
 </html>

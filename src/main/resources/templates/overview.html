@@ -8,7 +8,8 @@
 </head>
 <body class="bg-light" style="margin-top: 80px">
 
-<div th:replace="fragments/header_customer :: header"></div>
+<div th:replace="fragments/header :: header(false)"></div>
+
 <div class="col-8 offset-md-2 bg-light">
     <div class="row">
 
@@ -25,6 +26,9 @@
 
             <div class="mh-100" style="height: 40px;"></div>
             <div th:replace="fragments/dropdowns :: consulting"></div>
+
+            <div class="mh-100" style="height: 40px;"></div>
+            <div th:replace="fragments/dropdowns :: account"></div>
 
         </div>
         <div class="col-5 offset-1">

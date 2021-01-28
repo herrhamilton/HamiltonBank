@@ -63,6 +63,7 @@ public class OverviewController {
         modelAttributes.forEach((k, v) -> model.addAttribute(k, v));
         model.addAttribute("transactions", transactions);
         model.addAttribute("transactionForm", new TransactionForm());
+        model.addAttribute("user", userService.getCurrentCustomer());
 
         return "overview";
     }
