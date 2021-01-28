@@ -36,42 +36,41 @@ public class PaymentRestController {
 
     @RequestMapping(path = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<?> createPayment(@RequestHeader("api-key") UUID apiKey, @Valid @RequestBody PaymentRequest paymentRequest) {
-        try {
-            Customer receiver = (Customer) userService.loadUserByUsername(paymentRequest.getReceiverName());
+    public ResponseEntity<Payment> createPayment(@RequestHeader("api-key") UUID apiKey, @Valid @RequestBody PaymentRequest paymentRequest) {
+        Customer receiver = (Customer) userService.loadUserByUsername(paymentRequest.getReceiverName());
 
-            if (receiver.getHamiltonApiKey().equals(apiKey)) {
-                Payment payment = paymentService.createPayment(paymentRequest);
-                return new ResponseEntity<>(payment, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("You cannot create a Payment for this username.", HttpStatus.UNAUTHORIZED);
-            }
-        } catch (NoSuchElementException ex) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException ex) {
-            return new ResponseEntity<>("Could not parse request. Please check your input", HttpStatus.BAD_REQUEST);
+        if (receiver.getHamiltonApiKey().equals(apiKey)) {
+            Payment payment = paymentService.createPayment(paymentRequest);
+            return new ResponseEntity<>(payment, HttpStatus.OK);
+        } else {
+            throw new IllegalArgumentException("API Key does not belong to username");
         }
     }
 
     @RequestMapping(path = "/check/{paymentId}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<?> checkPayment(@RequestHeader("api-key") UUID apiKey, @PathVariable("paymentId") UUID paymentId) {
-        try {
-            Payment payment = paymentService.findPayment(paymentId);
-            Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
-            if (!receiver.getHamiltonApiKey().equals(apiKey)) {
-                return new ResponseEntity<>("You cannot access this Payment.", HttpStatus.UNAUTHORIZED);
-            }
+    public ResponseEntity<Payment> checkPayment(@RequestHeader("api-key") UUID apiKey, @PathVariable("paymentId") UUID paymentId) {
+        Payment payment = paymentService.findPayment(paymentId);
+        Customer receiver = (Customer) userService.loadUserByUsername(payment.getReceiverName());
+
+        if (receiver.getHamiltonApiKey().equals(apiKey)) {
             return new ResponseEntity<>(payment, HttpStatus.OK);
-        } catch (IllegalArgumentException ex) {
-            return new ResponseEntity<>("Payment with id '" + paymentId.toString() + "' could not be found", HttpStatus.NOT_FOUND);
-        } catch (NoSuchElementException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } else {
+            throw new IllegalArgumentException("API Key does not belong to username");
         }
     }
 
-    /* catches MethodArgumentNotValidException
-     *  Answers with BAD_REQUEST and error string like "receiverName: cannot be empty" */
+    @ExceptionHandler(IllegalArgumentException.class)
+    private ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    private ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+     /*   errorMessage looks like "amount: must be greater than 0.00, description: cannot be empty" */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<ObjectError> objectErrors = ex.getBindingResult().getAllErrors();

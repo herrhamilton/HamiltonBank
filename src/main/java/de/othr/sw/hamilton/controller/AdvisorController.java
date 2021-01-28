@@ -2,6 +2,8 @@ package de.othr.sw.hamilton.controller;
 
 import de.othr.sw.hamilton.entity.Advisor;
 import de.othr.sw.hamilton.entity.Consulting;
+import de.othr.sw.hamilton.entity.Customer;
+import de.othr.sw.hamilton.entity.User;
 import de.othr.sw.hamilton.service.IConsultingService;
 import de.othr.sw.hamilton.service.IUserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,8 +39,11 @@ public class AdvisorController {
 
     @RequestMapping(path = "", method = RequestMethod.GET)
     public String showAdvisorPage(Model model) {
-        Advisor advisor = (Advisor) userService.getCurrentUser();
-
+        User currentUser = userService.getCurrentUser();
+        if(currentUser instanceof Customer) {
+            return "redirect:/overview";
+        }
+        Advisor advisor = (Advisor) currentUser;
         Consulting consulting = advisor.getRunningConsulting();
 
         if (consulting != null) {

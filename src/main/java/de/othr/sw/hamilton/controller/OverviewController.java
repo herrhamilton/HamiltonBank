@@ -1,9 +1,6 @@
 package de.othr.sw.hamilton.controller;
 
-import de.othr.sw.hamilton.entity.Consulting;
-import de.othr.sw.hamilton.entity.Customer;
-import de.othr.sw.hamilton.entity.Transaction;
-import de.othr.sw.hamilton.entity.TransactionForm;
+import de.othr.sw.hamilton.entity.*;
 import de.othr.sw.hamilton.service.IPortfolioService;
 import de.othr.sw.hamilton.service.ITransactionService;
 import de.othr.sw.hamilton.service.IUserService;
@@ -54,6 +51,11 @@ public class OverviewController {
 
     @RequestMapping(path = "/overview", method = RequestMethod.GET)
     public String showOverview(Model model) {
+        User currentUser = userService.getCurrentUser();
+        if(currentUser instanceof Advisor) {
+            return "redirect:/advisor";
+        }
+
         List<Transaction> transactions = transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount());
         Map<String, Object> modelAttributes = new HashMap<>();
 
@@ -63,20 +65,15 @@ public class OverviewController {
         modelAttributes.forEach((k, v) -> model.addAttribute(k, v));
         model.addAttribute("transactions", transactions);
         model.addAttribute("transactionForm", new TransactionForm());
-        model.addAttribute("user", userService.getCurrentCustomer());
+        model.addAttribute("user", currentUser);
 
         return "overview";
-    }
-
-    @RequestMapping(path = "/account")
-    public String showSettingsPage() {
-        return "account";
     }
 
     @RequestMapping(path = "/account", method = RequestMethod.POST)
     public String submitSettings(@ModelAttribute Customer customer) {
         userService.updateCustomer(customer);
-        return "account";
+        return "redirect:/overview";
     }
 
     @RequestMapping(path = "/statement", method = RequestMethod.GET)

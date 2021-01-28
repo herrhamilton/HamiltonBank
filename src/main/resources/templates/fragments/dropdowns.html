@@ -116,7 +116,7 @@ A lot of duplicate code here, unfortunately no way found to pass fragments as pa
                     <small>HAMILTON API-Key</small>
                     <input readonly th:field="*{hamiltonApiKey}" type="text" class="form-control rounded m-1" id="api-key">
                     <small>STONKS API-Key</small>
-                    <input th:field="*{stonksApiKey}" type="text" class="form-control" id="stonks-key" placeholder="12345678-1234-1234-1234-1234-123456789abc"
+                    <input th:field="*{stonksApiKey}" type="text" class="form-control" id="stonks-key"
                            pattern="(\d|[a-f]){8}-(\d|[a-f]){4}-(\d|[a-f]){4}-(\d|[a-f]){4}-(\d|[a-f]){12}"
                            title="gültiges UUID-Format">
 
