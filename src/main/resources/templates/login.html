@@ -5,22 +5,32 @@
           integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <title>Login</title>
 </head>
-<body>
-<div class="container">
-    <div class="row">
-        <div class="col-md-4 offset-md-4">
-            <form th:action="@{/login}" method="post">
-                <h2>HAMILTON</h2>
-                <label for="username">Nutzername</label>
-                <input type="text" name="username" id="username" required/>
-                <label for="password">Passwort</label>
-                <input type="password" name="password" id="password" required/>
+<body class="bg-dark">
+<div class="mh-100" style="height: 40px;"></div>
+<div class="col-2 offset-md-5">
+    <div class="mh-100" style="height: 160px;"></div>
+    <div class="bg-light text-lg-center rounded px-2 py-4">
+        <div class="mh-100" style="height: 10px;"></div>
+
+        <h1><a class="text-dark" th:href="@{/}">HAMILTON</a></h1>
+
+        <div class="mh-100" style="height: 20px;"></div>
+
+        <form class="px-3 py-4" th:action="@{/login}" method="post">
+            <div class="form-group row">
+                <input type="text" placeholder="Nutzername" name="username" id="username" required
+                       class="form-control rounded m-1" >
+            </div>
+            <div class="form-group row">
+                <input type="text" placeholder="Passwort" name="password" id="password" required
+                       class="form-control rounded m-1">
                 <small th:if="${failed}" class="text-danger">Nutzername oder Passwort falsch.</small>
-                <button type="submit" class="btn btn-primary">Anmelden</button>
-            </form>
-        </div>
+            </div>
+            <div class="mh-100" style="height: 30px;"></div>
+            <button type="submit" class="btn btn-dark btn-lg">Anmelden</button>
+        </form>
+        <div class="mh-100" style="height: 30px;"></div>
     </div>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

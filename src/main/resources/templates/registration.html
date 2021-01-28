@@ -7,41 +7,63 @@
     <title>Registrierung</title>
 </head>
 
-<body>
-<form th:action="@{/registration}" th:object="${user}" method="post">
-    <div class="form-group">
-        <label for="username">Nutzername</label>
-        <input th:field="*{username}" type="text" class="form-control" id="username" required>
-        <small th:if="${userExists}" class="text-danger">Nutzername bereits vergeben.</small>
-    </div>
+<body class="bg-dark">
+<div class="mh-100" style="height: 40px;"></div>
+<div class="col-4 offset-md-4">
+    <div class="mh-100" style="height: 160px;"></div>
+    <div class="bg-light text-lg-center rounded px-4 py-4">
+        <div class="mh-100" style="height: 10px;"></div>
 
-    <div class="form-group">
-        <label for="password">Passwort</label>
-        <input th:field="*{passwordHash}" type="password" class="form-control" id="password" aria-describedby="pwHelp"
-               required>
-    </div>
+        <div class="col-8 offset-2">
+            <h1><a class="text-dark" th:href="@{/}">HAMILTON</a></h1>
 
-    <h2>Persönliche Daten</h2>
-    <div class="form-group">
-        <label for="firstName">Vorname</label>
-        <input th:field="*{firstName}" type="text" class="form-control" id="firstName" required>
-        <label for="lastName">Nachname</label>
-        <input th:field="*{lastName}" type="text" class="form-control" id="lastName" required>
-        <label for="street">Straße</label>
-        <input th:field="*{address.street}" type="text" class="form-control" id="street" required>
-        <label for="houseNr">Hausnummer</label>
-        <input th:field="*{address.houseNr}" type="text" class="form-control" id="houseNr" required>
-        <label for="postalCode">Postleitzahl</label>
-        <input th:field="*{address.postalCode}" type="text" class="form-control" id="postalCode" required>
-        <label for="city">Stadt</label>
-        <input th:field="*{address.city}" type="text" class="form-control" id="city" required>
+            <div class="mh-100" style="height: 20px;"></div>
+
+            <form th:action="@{/registration}" th:object="${user}" method="post">
+                <div class="form-group">
+                    <input th:field="*{username}" type="text" placeholder="Nutzername" name="username" id="username"
+                           required
+                           class="form-control rounded m-1">
+                    <input th:field="*{passwordHash}" type="password" placeholder="Passwort" name="password"
+                           id="password"
+                           required
+                           class="form-control rounded m-1">
+
+                    <div class="dropdown-divider"></div>
+                    <small>Name</small>
+                    <input th:field="*{firstName}" placeholder="Vorname" type="text" required
+                           class="form-control rounded m-1">
+                    <input th:field="*{lastName}" placeholder="Nachname" type="text" required
+                           class="form-control rounded m-1">
+
+                    <div class="dropdown-divider"></div>
+                    <small>Adresse</small>
+                    <div class="input-group">
+                        <input th:field="*{address.street}" placeholder="Straße" type="text" required
+                               class="form-control rounded m-1">
+                        <span class="input-group-btn"
+                              style="width:0px;"></span>
+                        <input th:field="*{address.houseNr}" placeholder="Hausnummer" type="text" required
+                               class="form-control rounded m-1">
+                    </div>
+                    <div class="input-group">
+                        <input th:field="*{address.postalCode}" placeholder="Postleitzahl" type="text" required
+                               class="form-control rounded m-1">
+                        <span class="input-group-btn"
+                              style="width:0px;"></span>
+                        <input th:field="*{address.city}" placeholder="Stadt" type="text" required
+                               class="form-control rounded m-1">
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-dark btn-lg">Registrieren</button>
+            </form>
+        </div>
+
+        <div class="mh-100" style="height: 30px;"></div>
     </div>
-    <button type="submit" class="btn btn-primary">Registrieren</button>
-</form>
-<form th:action="@{/}" method="get">
-    <button class="btn btn-dark" type="submit">zurück</button>
-</form>
-<div th:replace="fragments/footer :: footer"></div>
+</div>
 </body>
 
 </html>
