@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!-- https://codepen.io/nicolasparada/pen/lLHhw
+A lot of duplicate code here, unfortunately no way found to pass fragments as parameters to other fragments -->
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<!-- DEPOSIT -->
+<div th:fragment="deposit" class="container px-0">
+    <div class="card">
+        <div class="card-header bg-light" id="headingDeposit">
+            <h2 class="mb-0">
+                <button class="btn btn-outline-dark btn-lg" data-toggle="collapse" data-target="#collapseDeposit"
+                        aria-expanded="false" aria-controls="collapseDeposit">
+                    Geld einzahlen
+                </button>
+            </h2>
+        </div>
+
+        <div id="collapseDeposit" class="collapse p-4" aria-labelledby="headingDeposit">
+            <form th:action="@{/deposit}" method="post">
+                <div th:replace="fragments/currency-input :: currency-input"></div>
+                <button type="submit" class="btn btn-dark my-1">Einzahlen</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- TRANSACTION -->
+<div th:fragment="transaction" class="container px-0">
+    <div class="card">
+        <div class="card-header" id="headingTransaction">
+            <h2 class="mb-0">
+                <button class="btn btn-outline-dark btn-lg" data-toggle="collapse" data-target="#collapseTransaction"
+                        aria-expanded="false" aria-controls="collapseTransaction">
+                    Geld überweisen
+                </button>
+            </h2>
+        </div>
+
+        <div id="collapseTransaction" class="collapse p-4" aria-labelledby="headingTransaction">
+            <form th:action="@{/transaction}" method="post" th:object="${transactionForm}">
+                <div class="form-group">
+                    <label for="receiver">Nutzername des Empfängers</label>
+                    <input th:field="*{toUsername}" type="text" class="form-control" id="receiver" required>
+                    <small th:if="${userNotFound}" class="text-danger">Nutzername nicht gefunden.</small>
+                    <label for="description">Beschreibung</label>
+                    <input th:field="*{description}" type="text" class="form-control" id="description" required>
+
+                    <div th:replace="fragments/currency-input :: currency-input"></div>
+                </div>
+
+                <button type="submit" class="btn btn-dark my-1">Überweisen</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- CONSULTING -->
+<div th:fragment="consulting" class="container px-0">
+    <div class="card">
+        <div class="card-header" id="headingConsulting">
+            <h2 class="mb-0">
+                <a th:if="${consulting.isAccepted}" th:href="@{${consultingUrl}}" th:target="_blank"
+                   class="btn btn-outline-dark btn-lg">
+                    Ein Mitarbeiter erwartet Sie.
+                </a>
+                <button th:unless="${consulting.isAccepted}" class="btn btn-outline-dark btn-lg" data-toggle="collapse"
+                        data-target="#collapseConsulting"
+                        aria-expanded="false" aria-controls="collapseConsulting">
+                    Beratungsgespräch
+                </button>
+            </h2>
+        </div>
+
+        <div id="collapseConsulting" class="collapse p-4" aria-labelledby="headingConsulting">
+            <div class="">
+                <div th:if="${hasConsulting}">
+                    <label for="reason2">Grund für das Gespräch</label>
+                    <input readonly th:field="${consulting.reason}" type="text" class="form-control" id="reason2">
+                    <p>Bisher steht noch kein Berater zur Verfügung. Wir bitten um etwas Geduld.</p>
+                    <form th:action="@{/consulting/cancel}" method="post">
+                        <button class="btn-danger" type="submit">Anfrage abbrechen</button>
+                    </form>
+                </div>
+                <div th:unless="${hasConsulting}">
+                    <p>Um ein Gespräch mit einem Bankberater anzufordern:</p>
+                    <form th:action="@{/consulting}" method="post">
+                        <label for="reason">Grund für das Gespräch</label>
+                        <input th:field="${consulting.reason}" type="text" class="form-control" id="reason" required>
+                        <button type="submit">Gespräch anfordern</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

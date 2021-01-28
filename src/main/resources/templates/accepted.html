@@ -11,7 +11,7 @@
 
 <div th:replace="fragments/header_advisor :: header"></div>
 
-<div class="col-md-8 offset-md-2">
+<div class="col-8 offset-md-2">
     <form th:object="${consulting}" th:action="@{/advisor/close/{consultingId}(consultingId = ${consulting.consultingId})}" method="post">
 
         <p>Du hast folgendes Gespräch akzeptiert:</p>

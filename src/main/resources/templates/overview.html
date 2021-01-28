@@ -9,54 +9,40 @@
 <body class="bg-light" style="margin-top: 80px">
 
 <div th:replace="fragments/header_customer :: header"></div>
+<div class="col-8 offset-md-2 bg-light">
+    <div class="row">
 
-<div class="container">
-    <div class="col-md-8 offset-md-2">
-        <h1 th:text="${currentCustomer.firstName} + ', ja moinsen!'"></h1>
-        <h2>Kontostand</h2>
-        <h2 th:text="${currentCustomer.bankAccount.balance} + '€'"></h2>
+        <div class="col-6">
+            <div class="mh-100" style="height: 40px;"></div>
+            <h2 th:text="${'Kontostand: ' + currentCustomer.bankAccount.balance} + '€'"></h2>
+            <div th:replace="fragments/stonks :: stonks"></div>
 
-        <!-- Stonks-->
-        <div th:unless="${currentCustomer.stonksApiKey}">
-            <p> Um Ihr <a th:href="@{${stonksUrl}}">Stonks-Portfolio</a> anzuzeigen, bitte API Key in den Einstellungen
-                hinterlegen.</p>
+            <div class="mh-100" style="height: 40px;"></div>
+            <div th:replace="fragments/dropdowns :: deposit"></div>
+
+            <div class="mh-100" style="height: 40px;"></div>
+            <div th:replace="fragments/dropdowns :: transaction"></div>
+
+            <div class="mh-100" style="height: 40px;"></div>
+            <div th:replace="fragments/dropdowns :: consulting"></div>
+
         </div>
-        <div th:if="${currentCustomer.stonksApiKey}">
-            <div th:switch="${stonksError}">
-                <p th:case="'auth'">Stellen Sie sicher, dass Sie den richtigen Stonks-API Key hinterlegt haben.</p>
-                <p th:case="'other'">Momentan kann nicht auf Ihr Portfolio zugegriffen werden. Versuchen Sie, <a
-                        th:href="@{${stonksUrl}}">Stonks direkt zu erreichen.</a></p>
-                <div th:case="*">
-                    <h2 th:text="'Portfoliowert: ' + ${portfolio.stockValueTotal}"></h2>
-                    <a class="btn" th:href="@{${stonksUrl}}">zu Stonks wechseln</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- List of Transactions-->
-        <div th:if="${transactions.size > 0}">
-            <form th:action="@{/statement}" method="get">
-                <button class="btn-block">Kontoauszug herunterladen</button>
-            </form>
-            <table>
-                <tr>
-                    <th>Datum</th>
-                    <th>Konto</th>
-                    <th>Beschreibung</th>
-                    <th>Betrag</th>
-                </tr>
-                <tr th:each="t : ${transactions}"
-                    th:with="isOutgoing=(${t.fromAccount} == ${currentCustomer.bankAccount})">
-                    <td th:text="${#calendars.format(t.date,'dd.MM.yyyy')}"></td>
-                    <td th:text="${isOutgoing} ? ${t.toAccount} : ${t.fromAccount}"></td>
-                    <td th:text="${t.description}">Description</td>
-                    <td th:if="${isOutgoing}" class="text-danger" th:text="'- ' + ${t.amount}"></td>
-                    <td th:unless="${isOutgoing}" class="text-success" th:text="'+ ' + ${t.amount}"></td>
-                </tr>
-            </table>
+        <div class="col-5 offset-1">
+            <div th:replace="fragments/transactionList :: transactionList"></div>
         </div>
     </div>
 </div>
 <div th:replace="fragments/footer :: footer"></div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
 </body>
 </html>

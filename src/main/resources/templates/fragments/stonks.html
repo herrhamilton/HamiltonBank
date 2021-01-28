@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="stonks">
+    <div th:unless="${currentCustomer.stonksApiKey}">
+        <p> Um Ihr <a th:href="@{${stonksUrl}}">Stonks-Portfolio</a> anzuzeigen, bitte API Key in den Einstellungen
+            hinterlegen.</p>
+    </div>
+    <div th:if="${currentCustomer.stonksApiKey}">
+        <div th:switch="${stonksError}">
+            <p th:case="'auth'">Stellen Sie sicher, dass Sie den richtigen Stonks-API Key hinterlegt haben.</p>
+            <p th:case="'other'">Momentan kann nicht auf Ihr Portfolio zugegriffen werden. Versuchen Sie, <a
+                    th:href="@{${stonksUrl}}">Stonks direkt zu erreichen.</a></p>
+            <div th:case="*">
+                <h2 th:text="'Portfoliowert: ' + ${portfolio.stockValueTotal} + '€'"></h2>
+                <a class="btn" th:href="@{${stonksUrl}}">zu Stonks wechseln</a>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

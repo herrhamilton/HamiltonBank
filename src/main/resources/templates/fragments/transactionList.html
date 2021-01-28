@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="transactionList">
+    <div th:if="${transactions.size > 0}">
+
+        <div class="container">
+            <div class="row">
+                <h2 class="col">Transaktionen</h2>
+                <form class="col" th:action="@{/statement}" method="get">
+                    <button class="btn btn-outline-dark">herunterladen</button>
+                </form>
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Datum</th>
+                <th scope="col">Konto</th>
+                <th scope="col">Beschreibung</th>
+                <th scope="col">Betrag</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr scope="row"
+                th:each="t : ${transactions}"
+                th:with="isOutgoing=(${t.fromAccount} == ${currentCustomer.bankAccount})">
+                <td th:text="${#calendars.format(t.date,'dd.MM.yyyy')}"></td>
+                <td th:text="${isOutgoing} ? ${t.toAccount} : ${t.fromAccount}"></td>
+                <td th:text="${t.description}">Description</td>
+                <td th:if="${isOutgoing}" class="text-danger" th:text="'-' + ${t.amount}"></td>
+                <td th:unless="${isOutgoing}" class="text-success" th:text="'+' + ${t.amount}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</html>

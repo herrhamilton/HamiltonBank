@@ -11,7 +11,7 @@
 
 <div th:replace="fragments/header_advisor :: header"></div>
 
-<div class="col-md-8 offset-md-2">
+<div class="col-8 offset-md-2">
     <p th:if="${acceptFailed}">Anfrage konnte nicht angenommen werden. Bitte versuchen Sie es später erneut.</p>
     <p th:unless="${consultingRequests.size > 0}">Momentan wartet kein Kunde auf ein Gespräch. Holen Sie sich einen Kaffee!</p>
     <div th:if="${consultingRequests.size > 0}">

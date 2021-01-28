@@ -1,7 +1,9 @@
 package de.othr.sw.hamilton.controller;
 
+import de.othr.sw.hamilton.entity.Consulting;
 import de.othr.sw.hamilton.entity.Customer;
 import de.othr.sw.hamilton.entity.Transaction;
+import de.othr.sw.hamilton.entity.TransactionForm;
 import de.othr.sw.hamilton.service.IPortfolioService;
 import de.othr.sw.hamilton.service.ITransactionService;
 import de.othr.sw.hamilton.service.IUserService;
@@ -20,13 +22,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope(value = BeanDefinition.SCOPE_SINGLETON)
 public class OverviewController {
     @Value("${appconfig.stonks.url}")
     private String stonksUrl;
+
+    @Value("${appconfig.voci.url}")
+    private String vociUrl;
 
     @ModelAttribute("currentCustomer")
     Customer currentCustomer() {
@@ -48,8 +55,10 @@ public class OverviewController {
     @RequestMapping(path = "/overview", method = RequestMethod.GET)
     public String showOverview(Model model) {
         List<Transaction> transactions = transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount());
+        Map<String, Object> modelAttributes = new HashMap<>();
         Portfolio portfolio;
 
+        modelAttributes += getStonksModelAttributes();
         try {
             portfolio = portfolioService.getStonksPortfolio();
             model.addAttribute("portfolio", portfolio);
@@ -58,9 +67,23 @@ public class OverviewController {
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             model.addAttribute("stonksError", "other");
         }
-
         model.addAttribute("stonksUrl", stonksUrl);
         model.addAttribute("transactions", transactions);
+        ///////////////////////////////7
+        model.addAttribute("transactionForm", new TransactionForm());
+////////////////////////////////////
+        Customer customer = userService.getCurrentCustomer();
+
+        Consulting consulting = customer.getOpenConsulting();
+
+        if (consulting != null) {
+            model.addAttribute("hasConsulting", true);
+            model.addAttribute("consulting", consulting);
+            model.addAttribute("consultingUrl", vociUrl + "/invitation?accessToken=" + consulting.getAccessToken());
+        } else {
+            model.addAttribute("hasConsulting", false);
+            model.addAttribute("consulting", new Consulting());
+        }
         return "overview";
     }
 

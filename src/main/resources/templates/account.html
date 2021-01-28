@@ -11,7 +11,7 @@
 
 <div th:replace="fragments/header_customer :: header"></div>
 
-<form th:action="@{/settings}" th:object="${currentCustomer}" method="post">
+<form th:action="@{/account}" th:object="${currentCustomer}" method="post">
     <div class="form-group">
         <label for="username">Nutzername</label>
         <input readonly th:field="*{username}" type="text" class="form-control" id="username">
