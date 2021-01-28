@@ -56,34 +56,14 @@ public class OverviewController {
     public String showOverview(Model model) {
         List<Transaction> transactions = transactionService.findTransactionsForBankAccount(currentCustomer().getBankAccount());
         Map<String, Object> modelAttributes = new HashMap<>();
-        Portfolio portfolio;
 
-        modelAttributes += getStonksModelAttributes();
-        try {
-            portfolio = portfolioService.getStonksPortfolio();
-            model.addAttribute("portfolio", portfolio);
-        } catch (HttpClientErrorException.Forbidden fe) {
-            model.addAttribute("stonksError", "auth");
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            model.addAttribute("stonksError", "other");
-        }
-        model.addAttribute("stonksUrl", stonksUrl);
+        modelAttributes.putAll(getStonksModelAttributes());
+        modelAttributes.putAll(getConsultingModelAttributes());
+
+        modelAttributes.forEach((k, v) -> model.addAttribute(k, v));
         model.addAttribute("transactions", transactions);
-        ///////////////////////////////7
         model.addAttribute("transactionForm", new TransactionForm());
-////////////////////////////////////
-        Customer customer = userService.getCurrentCustomer();
 
-        Consulting consulting = customer.getOpenConsulting();
-
-        if (consulting != null) {
-            model.addAttribute("hasConsulting", true);
-            model.addAttribute("consulting", consulting);
-            model.addAttribute("consultingUrl", vociUrl + "/invitation?accessToken=" + consulting.getAccessToken());
-        } else {
-            model.addAttribute("hasConsulting", false);
-            model.addAttribute("consulting", new Consulting());
-        }
         return "overview";
     }
 
@@ -110,5 +90,37 @@ public class OverviewController {
                 .contentType(MediaType.valueOf("text/csv"))
                 .contentLength(csvData.length())
                 .body(csvData);
+    }
+
+    private Map<String, Object> getStonksModelAttributes() {
+        Map<String, Object> stonksAttributes = new HashMap<>();
+        stonksAttributes.put("stonksUrl", stonksUrl);
+
+        try {
+            Portfolio portfolio = portfolioService.getStonksPortfolio();
+            stonksAttributes.put("portfolio", portfolio);
+        } catch (HttpClientErrorException.Forbidden fe) {
+            stonksAttributes.put("stonksError", "auth");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            stonksAttributes.put("stonksError", "other");
+        }
+        return stonksAttributes;
+    }
+
+    private Map<String,?> getConsultingModelAttributes() {
+        Map<String, Object> stonksAttributes = new HashMap<>();
+
+        Customer customer = userService.getCurrentCustomer();
+        Consulting consulting = customer.getOpenConsulting();
+
+        if (consulting != null) {
+            stonksAttributes.put("hasConsulting", true);
+            stonksAttributes.put("consulting", consulting);
+            stonksAttributes.put("consultingUrl", vociUrl + "/invitation?accessToken=" + consulting.getAccessToken());
+        } else {
+            stonksAttributes.put("hasConsulting", false);
+            stonksAttributes.put("consulting", new Consulting());
+        }
+        return stonksAttributes;
     }
 }

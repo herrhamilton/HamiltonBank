@@ -38,22 +38,11 @@ public class TransactionController {
         this.userService = userService;
     }
 
-    @RequestMapping(path = "/deposit", method = RequestMethod.GET)
-    public String showDepositPage() {
-        return "deposit";
-    }
-
     @RequestMapping(path = "/deposit", method = RequestMethod.POST)
     public String depositMoney(@RequestParam(value = "amount") String amountString) {
         BigDecimal amount = transactionService.getAmountFromString(amountString);
         transactionService.depositMoney(amount);
         return "redirect:/overview";
-    }
-
-    @RequestMapping(path = "/transaction", method = RequestMethod.GET)
-    public String showTransactionPage(Model model) {
-        model.addAttribute("transactionForm", new TransactionForm());
-        return "transaction";
     }
 
     @RequestMapping(path = "/transaction", method = RequestMethod.POST)
