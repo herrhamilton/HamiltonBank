@@ -1,5 +1,7 @@
 # Bank of Hamilton
-Project for Software Development Class
+_Project for Software Development Class. The implementation was a lot of fun and the project interfaced with other students' projects via REST APIs_
+
+Beware that the information below is outdated and was only relevant for evaluation.
 
 ## Changes from Milestone 1
 Can be found in the PDF which is part of the project submission
